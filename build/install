@@ -1,0 +1,5 @@
+mkdir stage 2>/dev/null
+find out -type f -name "*.o" -exec cp {} stage \;
+cd stage
+ar cr stage/Unet.a `find . -type f -name "*.o" -printf "%f "`
+ranlib stage/Unet.a

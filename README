@@ -1,0 +1,5 @@
+UNIX-Net (unet)
+===============
+
+Object-oriented high-level C++ Unix network framework.
+See "/examples" directory for examples of usage.

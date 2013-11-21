@@ -1,0 +1,4 @@
+*
+!*.gyp
+!install
+!.gitignore
