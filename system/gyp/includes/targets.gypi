@@ -43,7 +43,7 @@
                                                                                         'OS == "linux"',
                                                                                         {
                                                                                             'ldflags'   :   [
-                                                                                                                '-lpthread',
+                                                                                                                #'-lpthread',
                                                                                                             ],
                                                                                         },
                                                                                     ],
