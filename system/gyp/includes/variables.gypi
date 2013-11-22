@@ -40,8 +40,6 @@
                                                             '-s',                       # Remove all symbol table and relocation information from the executable.
                                                         ],
                         'LDFLAGS_STANDARD'          :   [
-                                                            '-gdwarf-2',                # Do not to emit DWARF3 info
-                                                            '-gstrict-dwarf',           # Do not to emit DWARF3 info
                                                         ],
                     },
 }

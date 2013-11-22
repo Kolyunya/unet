@@ -13,7 +13,7 @@
                         'UNIT_DEPENDENCIES'     :   [
                                                         './../../Socket/build/Socket.gyp:Socket',
                                                         './../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
-                                                        #'./../../../Address/NullAddress/build/NullAddress.gyp:NullAddress',
+                                                        './../../../Address/NullAddress/build/NullAddress.gyp:NullAddress',
                                                         './../../../Address/AddressFactory/build/AddressFactory.gyp:AddressFactory',
                                                     ],
                         'UNIT_CFLAGS'           :   [

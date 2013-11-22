@@ -11,7 +11,7 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../../Exception/Exception/build/Exception.gyp:Exception',
+                                                        './../../../Address/Address/build/Address.gyp:Address',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

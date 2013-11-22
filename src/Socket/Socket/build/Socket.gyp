@@ -13,6 +13,7 @@
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
                                                         './../../../Exception/Exception/build/Exception.gyp:Exception',
+                                                        './../../../Address/Address/build/Address.gyp:Address',
                                                         './../../../File/File/build/File.gyp:File',
                                                     ],
                         'UNIT_CFLAGS'           :   [
