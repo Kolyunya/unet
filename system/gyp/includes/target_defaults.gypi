@@ -5,7 +5,7 @@
                                                             '<@(UNIT_CFLAGS)',
                                                         ],
                                 'ldflags'           :   [
-                                                            '-pthread',
+                                                            '<@(LDFLAGS_STANDARD)',
                                                             '<@(UNIT_LDFLAGS)',
                                                         ],
                                 'include_dirs'      :   [
