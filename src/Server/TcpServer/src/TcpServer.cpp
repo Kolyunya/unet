@@ -41,28 +41,32 @@ namespace Unet
         this->serverSocket.close();
     }
 
-    void                TcpServer::routineAccept ( TcpServer* /*serverPtr*/ ) noexcept
+    void                TcpServer::routineAccept ( TcpServer* serverPtr ) noexcept
     {
         while ( true )
-        {/*
+        {
             try
             {
-                TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
-                TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
-                serverPtr->clientSockets.push_back(acceptedTcpSocketRvalRef);
+                /*  Next line is equivalent to:
+
+                    TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
+                    TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
+                    serverPtr->clientSockets.push_back(std::move(acceptedTcpSocketRvalRef));
+                */
+                serverPtr->clientSockets.push_back(serverPtr->serverSocket.accept());
             }
             catch ( ... )
             {
                 continue;
-            }*/
+            }
         }
     }
 
-    void                TcpServer::routineRecieve ( TcpServer* /*serverPtr*/ ) noexcept
+    void                TcpServer::routineRecieve ( TcpServer* serverPtr ) noexcept
     {
         while ( true )
-        {/*
-            for ( TcpSocket&& clientSocket : serverPtr->clientSockets )
+        {
+            for ( TcpSocket& clientSocket : serverPtr->clientSockets )
             {
                 try
                 {
@@ -70,14 +74,14 @@ namespace Unet
                     //  an exception will be thrown and caught. This will save some machine time
                     //  when the serverSocket does have unread data.
                     std::string recievedMessage = clientSocket.recieveMessage();
-                    Unet::Datagram recievedDatagram(clientMesage,clientSocket.getPeerAddress());
-                    serverPtr->DispatchEvent(ServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                    Unet::Datagram recievedDatagram(recievedMessage,clientSocket.getPeerAddress());
+                    serverPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
                 }
                 catch ( ... )
                 {
                     continue;
                 }
-            }*/
+            }
         }
     }
 

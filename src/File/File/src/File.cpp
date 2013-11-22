@@ -22,7 +22,7 @@ namespace Unet
 {
 
 
-                File::File ( void )
+                File::File ( void ) noexcept
                     :
                         descriptor(-1)
     {
@@ -33,7 +33,7 @@ namespace Unet
 
     }
 
-                File::File ( unsigned int descriptor )
+                File::File ( unsigned int descriptor ) noexcept
     {
         /***
             @description    Constructor which creates a file object which manages file refered by "descriptor"

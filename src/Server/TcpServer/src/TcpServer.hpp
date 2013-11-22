@@ -8,6 +8,7 @@
 #include <Unet/SocketServer.hpp>
 #include <Unet/SocketServerEvent.hpp>
 #include <Unet/TcpSocket.hpp>
+#include <Unet/Datagram.hpp>
 
 namespace Unet
 {
