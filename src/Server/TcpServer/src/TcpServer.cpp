@@ -8,27 +8,27 @@ namespace Unet
         this->destructRoutine();
         this->destructSocket();
     }
-    
+
     unsigned char       TcpServer::getMessageDelimiter ( void ) const
     {
-        return this->tcpSocket.getMessageDelimiter();
+        return this->serverSocket.getMessageDelimiter();
     }
-    
-    void                TcpServer::setMessageDelimiter ( usigned char messageDelimiter )
+
+    void                TcpServer::setMessageDelimiter ( unsigned char messageDelimiter )
     {
-        this->tcpSocket.setMessageDelimiter(messageDelimiter);
+        this->serverSocket.setMessageDelimiter(messageDelimiter);
     }
-    
+
     unsigned char       TcpServer::getConnectionsLimit ( void ) const
     {
-        this->tcpSocket.getConnectionsLimit();
+        return this->serverSocket.getConnectionsLimit();
     }
-    
-    void                TcpServer::setConnectionsLimit ( unsigned char connectionsLimit ) const
+
+    void                TcpServer::setConnectionsLimit ( unsigned char connectionsLimit )
     {
-        this->tcpSocket.setConnectionsLimit(connectionsLimit);
+        this->serverSocket.setConnectionsLimit(connectionsLimit);
     }
-    
+
     void                TcpServer::launch ( void )
     {
         this->configureSocket();
@@ -38,55 +38,55 @@ namespace Unet
 
     void                TcpServer::stop ( void )
     {
-        this->tcpSocket.close();
+        this->serverSocket.close();
     }
 
-    void                TcpServer::routineAccept ( TcpServer* tcpServerPtr ) noexcept
+    void                TcpServer::routineAccept ( TcpServer* /*serverPtr*/ ) noexcept
     {
         while ( true )
-        {
+        {/*
             try
             {
-                TcpSocket acceptedTcpSocket = this->tcpSocket.accept();
+                TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
                 TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
-                this->clientSockets.push_back(acceptedTcpSocketRvalRef);
+                serverPtr->clientSockets.push_back(acceptedTcpSocketRvalRef);
             }
             catch ( ... )
             {
                 continue;
-            }
+            }*/
         }
     }
-    
-    void                TcpServer::routineRecieve ( TcpServer* tcpServerPtr ) noexcept
+
+    void                TcpServer::routineRecieve ( TcpServer* /*serverPtr*/ ) noexcept
     {
         while ( true )
-        {
-            for ( TcpSocket&& clientSocket : this->clientSockets )
+        {/*
+            for ( TcpSocket&& clientSocket : serverPtr->clientSockets )
             {
                 try
                 {
-                    //  No need to check if the tcpSocket has unread data since if it does not then
+                    //  No need to check if the serverSocket has unread data since if it does not then
                     //  an exception will be thrown and caught. This will save some machine time
-                    //  when the tcpSocket does have unread data.
+                    //  when the serverSocket does have unread data.
                     std::string recievedMessage = clientSocket.recieveMessage();
                     Unet::Datagram recievedDatagram(clientMesage,clientSocket.getPeerAddress());
-                    this->DispatchEvent(ServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                    serverPtr->DispatchEvent(ServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
                 }
                 catch ( ... )
                 {
                     continue;
                 }
-            }
+            }*/
         }
     }
-    
+
     void                TcpServer::configureSocket ( void )
     {
-        this->tcpSocket.open();
-        this->tcpSocket.setOption(SO_REUSEADDR,1);
-        this->tcpSocket.bind(*this->addressShrPtr.get());
-        this->tcpSocket.listen();
+        this->serverSocket.open();
+        this->serverSocket.setOption(SO_REUSEADDR,1);
+        this->serverSocket.bind(*this->addressShrPtr.get());
+        this->serverSocket.listen();
     }
 
     void                TcpServer::destructRoutine ( void ) noexcept
@@ -106,12 +106,12 @@ namespace Unet
             //  Extra sucurity
         }
     }
-    
+
     void                TcpServer::destructSocket ( void ) noexcept
     {
         try
         {
-            //  Will throw e. g. if the tcpSocket is not opened yet.
+            //  Will throw e. g. if the serverSocket is not opened yet.
             this->stop();
         }
         catch ( Unet::Exception )

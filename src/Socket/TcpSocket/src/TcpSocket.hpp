@@ -16,9 +16,10 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _TCP_SOCKET_HPP_
-#define _TCP_SOCKET_HPP_
+#ifndef _UNET_TCP_SOCKET_HPP_
+#define _UNET_TCP_SOCKET_HPP_
 
+#include <utility>              //  std::swap
 #include <netinet/in.h>         //  IPPROTO_TCP
 #include <Unet/Socket.hpp>      //  Unet::Socket
 
@@ -53,4 +54,4 @@ namespace Unet
     };
 }
 
-#endif  //  _TCP_SOCKET_HPP_
+#endif  //  _UNET_TCP_SOCKET_HPP_

@@ -41,13 +41,12 @@ namespace Unet
         return *this;
     }
 
-    void                TcpSocket::swap ( TcpSocket& /*tcpSocket*/ )
+    void                TcpSocket::swap ( TcpSocket& tcpSocket )
     {
-    /*
-        std::swap(this->getDescriptor(),tcpSocket.getDescriptor());
+        std::swap(this->descriptor,tcpSocket.descriptor);
         std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
         std::swap(this->connectionsLimit,tcpSocket.connectionsLimit);
-    */}
+    }
 
     unsigned char       TcpSocket::getMessageDelimiter ( void ) const
     {

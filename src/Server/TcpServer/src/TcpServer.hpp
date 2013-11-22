@@ -13,7 +13,7 @@ namespace Unet
 {
 
     typedef std::vector<TcpSocket>              TcpSocketsVec;
-    
+
     typedef TcpSocketsVec::const_iterator       TcpSocketsVecCitr;
 
     class TcpServer
@@ -24,22 +24,22 @@ namespace Unet
         public:
             virtual                 ~TcpServer ( void ) noexcept;
             unsigned char           getMessageDelimiter ( void ) const;
-            void                    setMessageDelimiter ( usigned char messageDelimiter );
+            void                    setMessageDelimiter ( unsigned char messageDelimiter );
             unsigned char           getConnectionsLimit ( void ) const;
-            void                    setConnectionsLimit ( unsigned char connectionsLimit ) const;
+            void                    setConnectionsLimit ( unsigned char connectionsLimit );
             void                    launch ( void ) override final;
             void                    stop ( void ) override final;
         protected:
-            static void             routineAccept ( TcpServer* tcpServerPtr ) noexcept;
-            static void             routineRecieve ( TcpServer* tcpServerPtr ) noexcept;
+            static void             routineAccept ( TcpServer* serverPtr ) noexcept;
+            static void             routineRecieve ( TcpServer* serverPtr ) noexcept;
 
 
-            
+
             void                    configureSocket ( void );
-            
-            
+
+
             AddressShrPtr           serverAddressShrPtr;
-            UdpSocket               serverSocket;
+            TcpSocket               serverSocket;
             std::recursive_mutex    serverMutex;
             TcpSocketsVec           clientSockets;
             std::thread             threadAccept;
@@ -50,15 +50,15 @@ namespace Unet
 
 
 
-            
-            
+
+
             void                    destructRoutine ( void ) noexcept;
             void                    destructSocket ( void ) noexcept;
         private:
-                                    UdpServer ( const UdpServer& udpServer );
-            UdpServer&              operator= ( const UdpServer& udpServer );
+                                    TcpServer ( const TcpServer& tcpServer );
+            TcpServer&              operator= ( const TcpServer& tcpServer );
     };
-    
+
 }
 
 #endif // _TCP_SERVER_HPP_

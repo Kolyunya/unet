@@ -21,16 +21,27 @@
 namespace Unet
 {
 
-                File::File ( int descriptor )
+
+                File::File ( void )
+                    :
+                        descriptor(-1)
     {
-        if ( descriptor < 0 )
-        {
-            descriptor = -1;
-        }
-        
+
+        //  Default constructor.
+        //  Constructs a file object which does not manage any files of the file system.
+        //  Use "File::setDescriptor" to assign object to a real file.
+
+    }
+
+                File::File ( unsigned int descriptor )
+    {
+        /***
+            @description    Constructor which creates a file object which manages file refered by "descriptor"
+        ***/
+
         this->setDescriptor(descriptor);
     }
-    
+
                 File::File ( File&& file )
     {
         this->swap(file);
@@ -41,12 +52,12 @@ namespace Unet
         this->swap(file);
         return *this;
     }
-    
+
     void        File::swap ( File& file )
     {
         std::swap(this->descriptor,file.descriptor);
     }
-    
+
     void        File::open ( void )
     {
 
