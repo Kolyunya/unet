@@ -7,9 +7,6 @@
                                                         {
                                                             'target_name'   :   '<(UNIT_NAME)',
                                                             'type'          :   'static_library',
-                                                            'dependencies'  :   [
-                                                                                    '<@(UNIT_DEPENDENCIES)',
-                                                                                ],
                                                         },
                                                     ],
                                 },
