@@ -11,7 +11,7 @@ namespace Unet
     {
         public:
             explicit                SocketServer ( void ) = default;
-            virtual                 ~SocketServer ( void ) noexcept = default;
+            virtual                 ~SocketServer ( void ) noexcept;
             virtual void            launch ( void ) = 0;
             virtual void            stop ( void ) = 0;
             Unet::AddressShrPtr     getAddress ( void ) const;

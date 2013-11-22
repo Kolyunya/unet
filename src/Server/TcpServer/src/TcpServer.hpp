@@ -23,7 +23,7 @@ namespace Unet
             public Util::EventDispatcher
     {
         public:
-            virtual                 ~TcpServer ( void ) noexcept;
+            virtual                 ~TcpServer ( void ) noexcept override;
             unsigned char           getMessageDelimiter ( void ) const;
             void                    setMessageDelimiter ( unsigned char messageDelimiter );
             unsigned char           getConnectionsLimit ( void ) const;

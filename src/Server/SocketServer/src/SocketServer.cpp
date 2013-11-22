@@ -3,6 +3,11 @@
 namespace Unet
 {
 
+							SocketServer::~SocketServer ( void ) noexcept
+	{
+
+	}
+
     Unet::AddressShrPtr     SocketServer::getAddress ( void ) const
     {
         return this->addressShrPtr;
@@ -12,5 +17,5 @@ namespace Unet
     {
         this->addressShrPtr = addressShrPtr;
     }
-        
+
 }

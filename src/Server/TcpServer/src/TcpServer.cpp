@@ -3,7 +3,7 @@
 namespace Unet
 {
 
-                        TcpServer::~TcpServer ( void )
+                        TcpServer::~TcpServer ( void ) noexcept
     {
         this->destructRoutine();
         this->destructSocket();
