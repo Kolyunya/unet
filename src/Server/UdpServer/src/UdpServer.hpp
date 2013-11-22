@@ -4,7 +4,7 @@
 #include <thread>
 #include <mutex>
 #include <Util/Event.hpp>
-#include <Util/SocketServer.hpp>
+#include <Unet/SocketServer.hpp>
 #include <Unet/SocketServerEvent.hpp>
 #include <Unet/UdpSocket.hpp>
 
@@ -13,10 +13,10 @@ namespace Unet
     class UdpServer
         :
             public SocketServer,
-            public Util::EventDispatcher,
+            public Util::EventDispatcher
     {
         public:
-            virtual                 ~UdpServer ( void ) override noexcept;
+            virtual                 ~UdpServer ( void ) noexcept override;
             void                    sendDatagram ( const Unet::Datagram& datagram );
             void                    launch ( void ) override final;
             void                    stop ( void ) override final;

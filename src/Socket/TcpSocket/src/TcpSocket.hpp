@@ -30,15 +30,15 @@ namespace Unet
     {
         public:
             explicit            TcpSocket ( int domain = AF_INET , int protocol = IPPROTO_TCP , int descriptor = -1 );
-            explicit            TcpSocket ( TcpSocket&& tcpSocket );
+                                TcpSocket ( TcpSocket&& tcpSocket );
             TcpSocket&          operator= ( TcpSocket&& tcpSocket );
             void                swap ( TcpSocket& tcpSocket );
             virtual             ~TcpSocket ( void ) noexcept override = default;
             unsigned char       getMessageDelimiter ( void ) const;
-            void                setMessageDelimiter ( usigned char messageDelimiter );
+            void                setMessageDelimiter ( unsigned char messageDelimiter );
             void                unsetMessageDelimiter ( void );
             unsigned char       getConnectionsLimit ( void ) const;
-            void                setConnectionsLimit ( usigned char connectionsLimit );
+            void                setConnectionsLimit ( unsigned char connectionsLimit );
             void                unsetConnectionsLimit ( void );
             void                listen ( void );
             TcpSocket           accept ( void );
@@ -47,9 +47,9 @@ namespace Unet
             std::string         recieveMessage ( size_t messageSize = 0 , int options = 0 );
             std::string         recieveMessage ( char messageTerminator , int options = 0 );
             void                sendMessage ( const std::string& message , int options = 0 );
-        protected
+        protected:
             char                messageDelimiter;
-            char                connectionsLimit;    
+            char                connectionsLimit;
     };
 }
 

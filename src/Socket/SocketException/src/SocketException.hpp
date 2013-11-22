@@ -45,6 +45,7 @@ namespace Unet
     static std::string ExcCouldNotRetrieveSocketPeerAddress = "ExcCouldNotRetrieveSocketPeerAddress";
     static std::string ExcMessageDelimiterIsNotDefined = "ExcMessageDelimiterIsNotDefined";
     static std::string ExcConnectionsLimitIsNotDefined = "ExcMessageDelimiterIsNotDefined";
+    static std::string ExcSocketCouldNotAcceptConnection = "ExcSocketCouldNotAcceptConnection";
 }
 
 #endif  //  _SOCKET_EXCEPTION_HPP_

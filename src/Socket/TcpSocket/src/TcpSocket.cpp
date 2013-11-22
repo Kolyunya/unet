@@ -23,29 +23,32 @@ namespace Unet
 
                         TcpSocket::TcpSocket ( int domain , int protocol , int descriptor )
                             :
-                                Socket(domain,SOCK_STREAM,protocol)
+                                Socket(domain,SOCK_STREAM,protocol,descriptor)
     {
 
     }
-    
+
                         TcpSocket::TcpSocket ( TcpSocket&& tcpSocket )
+                            :
+                                TcpSocket()
     {
         this->swap(tcpSocket);
     }
-    
-    TcpSocket&          operator= ( TcpSocket&& tcpSocket )
+
+    TcpSocket&          TcpSocket::operator= ( TcpSocket&& tcpSocket )
     {
         this->swap(tcpSocket);
         return *this;
     }
-    
-    void                swap ( TcpSocket& tcpSocket )
+
+    void                TcpSocket::swap ( TcpSocket& /*tcpSocket*/ )
     {
-        std::swap(this->descriptor,tcpSocket.descriptor);
+    /*
+        std::swap(this->getDescriptor(),tcpSocket.getDescriptor());
         std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
         std::swap(this->connectionsLimit,tcpSocket.connectionsLimit);
-    }
-    
+    */}
+
     unsigned char       TcpSocket::getMessageDelimiter ( void ) const
     {
         if ( this->messageDelimiter < 0 )
@@ -54,12 +57,12 @@ namespace Unet
         }
         return static_cast<unsigned int>(this->messageDelimiter);
     }
-    
-    void                TcpSocket::setMessageDelimiter ( usigned char messageDelimiter )
+
+    void                TcpSocket::setMessageDelimiter ( unsigned char messageDelimiter )
     {
         this->messageDelimiter = static_cast<int>(messageDelimiter);
     }
-    
+
     void                TcpSocket::unsetMessageDelimiter ( void )
     {
         this->messageDelimiter = -1;
@@ -73,8 +76,8 @@ namespace Unet
         }
         return static_cast<unsigned int>(this->connectionsLimit);
     }
-    
-    void                TcpSocket::setConnectionsLimit ( usigned char connectionsLimit )
+
+    void                TcpSocket::setConnectionsLimit ( unsigned char connectionsLimit )
     {
         this->connectionsLimit = static_cast<int>(connectionsLimit);
     }
@@ -83,13 +86,13 @@ namespace Unet
     {
         this->connectionsLimit = -1;
     }
-    
+
     void                TcpSocket::listen ( void )
     {
         //  @description    Marks  the  socket as a passive socket, that is,
         //                  as a socket that will be used to  accept  incoming  connection requests.
         //  @throws         ExcSocketCouldNotBeListened
-        
+
         int socketDescriptor = this->getDescriptor();
         int connectionsLimit = this->getConnectionsLimit();
         int socketListenResult = ::listen(socketDescriptor,connectionsLimit);
@@ -98,38 +101,35 @@ namespace Unet
             throw Exception(ExcSocketCouldNotBeListened,true);
         }
     }
-    
+
     TcpSocket           TcpSocket::accept ( void )
     {
         //  @description    Extracts the first connection request on the queue of pending connections for the listening socket.
-        //                  Creates a new connected socket, and returns a new file descriptor  referring  to that socket. 
-        //                  The newly created socket is not in the listening state. 
+        //                  Creates a new connected socket, and returns a new file descriptor  referring  to that socket.
+        //                  The newly created socket is not in the listening state.
         //                  The original socket  sockfd  is  unaffected  by  this call.
-        
+
         //  Try to accept client socket
         int acceptedSocketDescriptor = ::accept (
                                                     this->getDescriptor(),
                                                     nullptr,
                                                     nullptr
                                                 );
-                                                
+
         //  Check if the socket was accepted successfully
         if ( acceptedSocketDescriptor < 0 )
         {
             throw Exception(ExcSocketCouldNotAcceptConnection,true);
         }
-        
+
         //  Construct the socket which will manage accepted descriptor
-        TcpSocket acceptedTcpSocket (
-                                        this->domain,
-                                        this->type,
-                                        this->protocol,
-                                        acceptedSocketDescriptor
-                                    );
-        
-        reutrn acceptedTcpSocket;
+        return TcpSocket    (
+                                this->domain,
+                                this->protocol,
+                                acceptedSocketDescriptor
+                            );
     }
-    
+
     std::string         TcpSocket::peekMessage ( size_t messageSize , int options )
     {
 

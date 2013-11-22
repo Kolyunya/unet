@@ -90,7 +90,7 @@ namespace Unet
             //  by "UdpServer::recieveDatagramSafely". This will save some machine time
             //  when the socket does have unread data.
             Unet::Datagram recievedDatagram = this->socket.recieveDatagram();
-            this->DispatchEvent(ServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+            this->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
         }
         catch ( ... )
         {
