@@ -42,7 +42,7 @@ namespace Unet
         return *this;
     }
     
-    void        File::swap ( File&& file )
+    void        File::swap ( File& file )
     {
         std::swap(this->descriptor,file.descriptor);
     }

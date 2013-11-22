@@ -44,7 +44,7 @@ namespace Unet
             explicit        File ( int descriptor = -1 );
             explicit        File ( File&& file );
             File&           operator= ( File&& file );
-            void            swap ( File&& file );
+            void            swap ( File& file );
             virtual         ~File ( void ) noexcept = default;
             void            open ( void );
             void            close ( void );

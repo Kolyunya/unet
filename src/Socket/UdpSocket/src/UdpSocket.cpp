@@ -29,13 +29,15 @@ namespace Unet
     }
     
                     UdpSocket::UdpSocket ( UdpSocket&& udpSocket )
+                        :
+                            Socket(udpSocket.domain,SOCK_DGRAM,udpSocket.protocol)
     {
         this->swap(udpSocket);
     }
     
     UdpSocket&      UdpSocket::operator= ( UdpSocket&& udpSocket )
     {
-        this->swap(udpSocket);
+        this->File::swap(udpSocket);
         return *this;
     }
     
