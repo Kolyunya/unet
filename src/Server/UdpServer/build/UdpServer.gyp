@@ -12,6 +12,10 @@
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
                                                         './../../../Exception/Exception/build/Exception.gyp:Exception',
+                                                        './../../../Server/SocketServer/build/SocketServer.gyp:SocketServer',
+                                                        './../../../Socket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
+
+
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

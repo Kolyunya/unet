@@ -7,7 +7,7 @@
 #include <Unet/SocketServer.hpp>
 #include <Unet/SocketServerEvent.hpp>
 #include <Unet/UdpSocket.hpp>
-
+#include <iostream>
 namespace Unet
 {
     class UdpServer
@@ -16,6 +16,7 @@ namespace Unet
             public Util::EventDispatcher
     {
         public:
+            explicit                UdpServer ( void );
             virtual                 ~UdpServer ( void ) noexcept override;
             void                    sendDatagram ( const Unet::Datagram& datagram );
             void                    launch ( void ) override final;

@@ -47,6 +47,13 @@ namespace Unet
 
     }
 
+    const char*             Exception::what() const noexcept
+    {
+
+        return this->message.data();
+
+    }
+
     void                    Exception::makeMessage ( const std::string& message , bool systemError )
     {
 

@@ -8,9 +8,8 @@
                                                     '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                 ],
                         'UNIT_DEPENDENCIES' :   [
-                                                    './../../../src/Server/UdpServer/build/UdpServer.gyp:UdpServer',
-                                                    './../../../src/Socket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
                                                     './../../../src/Address/Ipv4Address/build/Ipv4Address.gyp:Ipv4Address',
+                                                    './../../../src/Server/UdpServer/build/UdpServer.gyp:UdpServer',
                                                 ],
                         'UNIT_CFLAGS'       :   [
                                                     '-pthread',

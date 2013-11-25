@@ -132,7 +132,7 @@ namespace Unet
         if ( descriptor < 0 )
         {
 
-            throw Exception(ExcFileDescriptorIsInvalid);
+            throw Exception({__PRETTY_FUNCTION__,ExcFileDescriptorIsInvalid});
 
         }
 

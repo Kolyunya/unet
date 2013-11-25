@@ -16,8 +16,8 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _EXCEPTION_HPP_
-#define _EXCEPTION_HPP_
+#ifndef _UNET_EXCEPTION_HPP_
+#define _UNET_EXCEPTION_HPP_
 
 #include <stdexcept>            //  std::exception
 #include <cerrno>               //  errno
@@ -37,6 +37,7 @@ namespace Unet
             explicit                Exception ( const std::initializer_list<std::string>& messages , bool systemError = false );
             virtual                 ~Exception ( void ) noexcept = default;
             const std::string&      getMessage ( void ) const noexcept;
+            virtual const char*     what() const noexcept override;
         protected:
             void                    makeMessage ( const std::string& message , bool systemError = false );
             void                    makeMessage ( const std::initializer_list<std::string>& messages , bool systemError = false );
@@ -45,4 +46,4 @@ namespace Unet
     };
 }
 
-#endif  //  _EXCEPTION_HPP_
+#endif  //  _UNET_EXCEPTION_HPP_

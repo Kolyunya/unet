@@ -3,6 +3,13 @@
 namespace Unet
 {
 
+            UdpServer::UdpServer ( void )
+    {
+
+        std::cout << "___1___"<< std::endl;
+
+    }
+
             UdpServer::~UdpServer ( void ) noexcept
     {
         this->destructRoutine();
@@ -33,7 +40,7 @@ namespace Unet
             udpServerPtr->recieveDatagram();
         }
     }
-    
+
     void    UdpServer::configureSocket ( void )
     {
         this->socket.open();
@@ -63,7 +70,7 @@ namespace Unet
             //  Extra security
         }
     }
-    
+
     void    UdpServer::destructSocket ( void ) noexcept
     {
         try
@@ -84,7 +91,7 @@ namespace Unet
         try
         {
             std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
-            
+
             //  No need to check if the socket has unread data since if it does not then
             //  an exception will be thrown by "UdpSocket::recieveDatagram" which will be caught
             //  by "UdpServer::recieveDatagramSafely". This will save some machine time

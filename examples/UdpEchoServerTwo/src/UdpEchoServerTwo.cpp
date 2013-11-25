@@ -20,28 +20,35 @@
 #include <Unet/UdpServer.hpp>
 #include <Unet/Ipv4Address.hpp>
 
-class UdpEchoServer
+namespace Unet
 {
-    public:
-        explicit            UdpEchoServer ( Unet::AddressShrPtr addressShrPtr )
-        {
-            this->udpServer.add_event_listener(Unet::ServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
-            this->udpServer.setAddress(addressShrPtr);
-            this->udpServer.launch();
-        }
-        void                datagramRecievedHandler ( Unet::Datagram* recievedDatagram )
-        {
-            std::cout << "MESSAGE" << std::endl;
-            this->udpServer.sendDatagram(*recievedDatagram);
-        }
-    protected:
-        explicit            UdpEchoServer ( const UdpEchoServer& udpServerUser );
-        UdpEchoServer&      operator= ( const UdpEchoServer& udpServerUser );
-        Unet::UdpServer     udpServer;
-};
+    class UdpEchoServer
+    {
+        public:
+            explicit            UdpEchoServer ( AddressShrPtr  )
+            {/*
+                std::cout << "___1___"<< std::endl;
+                this->udpServer.addEventListener(SocketServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
+                std::cout << "___2___"<< std::endl;
+                this->udpServer.setAddress(addressShrPtr);
+                this->udpServer.launch();
+            */}
+            void                datagramRecievedHandler ( Datagram*  )
+            {
+                  //  std::cout << "MESSAGE" << std::endl;
+               // this->udpServer.sendDatagram(*recievedDatagram);
+            }
+        protected:
+            explicit            UdpEchoServer ( const UdpEchoServer& udpServerUser );
+            UdpEchoServer&      operator= ( const UdpEchoServer& udpServerUser );
+            UdpServer           udpServer;
+    };
+}
 
 int main ( int argc , char** argv )
 {
+
+//    std::cout << __func__ << std::endl;
 
     //  Check if program parameters are provided
     if ( argc != 3 )
@@ -54,13 +61,26 @@ int main ( int argc , char** argv )
     {
         //  Create an UDP echo server
         Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
-        UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
+        std::cout << "___1___"<< std::endl;
+        Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
+        std::cout << "___2___"<< std::endl;
     }
     catch ( Unet::Exception exception )
     {
-        std::cout << exception.getMessage() << std::endl;
+        std::cout << "UNET EXCEPTION" << std::endl;
+//        std::cout << exception.what() << std::endl;
+//        std::cout << exception.getMessage() << std::endl;
+    }
+    catch ( std::exception )
+    {
+        std::cout << "STD EXCEPTION" << std::endl;
+    }
+    catch ( ... )
+    {
+        std::cout << "WTF EXCEPTION" << std::endl;
     }
 
+    std::cout << "DONE" << std::endl;
     //  Run forever
     while ( true )
     {
