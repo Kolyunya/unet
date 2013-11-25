@@ -33,6 +33,10 @@ namespace Unet
                     std::cout << "___4___\n";
 
             }
+            virtual             ~UdpEchoServer ( void )
+            {
+                std::cout << "~UdpEchoServer" << std::endl;
+            }
             void                datagramRecievedHandler ( Datagram* recievedDatagramPtr )
             {
                 std::cout << recievedDatagramPtr->message << std::endl;
@@ -55,38 +59,16 @@ int main ( int argc , char** argv )
         return -1;
     }
 
-    try
-    {
-        //  Create an UDP echo server
-        Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
-        Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
-            std::cout << "___5___\n";
-
-    }
-    catch ( Unet::Exception exception )
-    {
-        std::cout << "UNET EXCEPTION" << std::endl;
-        std::cout << exception.what() << std::endl;
-        std::cout << exception.getMessage() << std::endl;
-    }
-    catch ( std::exception )
-    {
-        std::cout << "STD EXCEPTION" << std::endl;
-    }
-    catch ( ... )
-    {
-        std::cout << "WTF EXCEPTION" << std::endl;
-    }
+    //  Create an UDP echo server
+    Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
+    Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
+    std::cout << "___5___\n";
 
     return -1;
+
     std::cout << "___6___\n";
 
     std::cout << "DONE" << std::endl;
-    //  Run forever
-    while ( false )
-    {
-
-    }
 
     return 0;
 
