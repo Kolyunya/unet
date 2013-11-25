@@ -16,10 +16,10 @@
                                 {
                                     'targets'   :   [
                                                         {
-                                                            'target_name'   :   '<(UNIT_NAME)_tests',
+                                                            'target_name'   :   '<(UNIT_NAME)Tests',
                                                             'type'          :   'executable',
-                                                            'ldflags'       :   [
-                                                                                    '<(GTEST_OBJECT_FILE)',
+                                                            'dependencies'  :   [
+                                                                                    '<(UNIT_NAME)',
                                                                                 ],
                                                             'sources'       :   [
                                                                                     '<(UNIT_TESTS_SOURCE_FILE)',
@@ -27,15 +27,9 @@
                                                             'include_dirs'  :   [
                                                                                     '$(GTEST_HOME)/include/',
                                                                                 ],
-                                                            'conditions'    :   [
-                                                                                    [
-                                                                                        'UNIT_NEEDS_BUILDING == "true"',
-                                                                                        {
-                                                                                            'dependencies'  :   [
-                                                                                                                    '<(UNIT_NAME)',
-                                                                                                                ],
-                                                                                        },
-                                                                                    ],
+                                                            'ldflags'       :   [
+                                                                                    '<(GTEST_OBJECT_FILE)',
+                                                                                    '-lpthread',                # Needed by gtest
                                                                                 ],
                                                         },
                                                     ],

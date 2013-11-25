@@ -19,7 +19,7 @@
                         'UNIT_TESTS_DIR'            :   '<(UNIT_ROOT_DIR)/tests',
                         'UNIT_TESTS_SOURCES_DIR'    :   '<(UNIT_TESTS_DIR)/src',
                         'UNIT_TESTS_DATA_DIR'       :   '<(UNIT_TESTS_DIR)/data',
-                        'UNIT_TESTS_SOURCE_FILE'    :   '<(UNIT_TESTS_SOURCES_DIR)/<(UNIT_NAME)_tests.cpp',
+                        'UNIT_TESTS_SOURCE_FILE'    :   '<(UNIT_TESTS_SOURCES_DIR)/<(UNIT_NAME)Tests.cpp',
                         'LIBRARY_SOURCES_DIR'       :   '$(UNET_HOME)/src',
                         'LIBRARY_SCRIPTS_DIR'       :   '$(UNET_HOME)/system/gyp/scripts',
                         'GTEST_OBJECT_FILE'         :   '$(GTEST_HOME)/build/gtest-all.o',
