@@ -25,18 +25,18 @@ namespace Unet
     class UdpEchoServer
     {
         public:
-            explicit            UdpEchoServer ( AddressShrPtr  )
-            {/*
-                std::cout << "___1___"<< std::endl;
+            explicit            UdpEchoServer ( AddressShrPtr addressShrPtr )
+            {
                 this->udpServer.addEventListener(SocketServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
-                std::cout << "___2___"<< std::endl;
                 this->udpServer.setAddress(addressShrPtr);
                 this->udpServer.launch();
-            */}
-            void                datagramRecievedHandler ( Datagram*  )
+                    std::cout << "___4___\n";
+
+            }
+            void                datagramRecievedHandler ( Datagram* recievedDatagramPtr )
             {
-                  //  std::cout << "MESSAGE" << std::endl;
-               // this->udpServer.sendDatagram(*recievedDatagram);
+                std::cout << recievedDatagramPtr->message << std::endl;
+                this->udpServer.sendDatagram(*recievedDatagramPtr);
             }
         protected:
             explicit            UdpEchoServer ( const UdpEchoServer& udpServerUser );
@@ -47,8 +47,6 @@ namespace Unet
 
 int main ( int argc , char** argv )
 {
-
-//    std::cout << __func__ << std::endl;
 
     //  Check if program parameters are provided
     if ( argc != 3 )
@@ -61,15 +59,15 @@ int main ( int argc , char** argv )
     {
         //  Create an UDP echo server
         Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
-        std::cout << "___1___"<< std::endl;
         Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
-        std::cout << "___2___"<< std::endl;
+            std::cout << "___5___\n";
+
     }
     catch ( Unet::Exception exception )
     {
         std::cout << "UNET EXCEPTION" << std::endl;
-//        std::cout << exception.what() << std::endl;
-//        std::cout << exception.getMessage() << std::endl;
+        std::cout << exception.what() << std::endl;
+        std::cout << exception.getMessage() << std::endl;
     }
     catch ( std::exception )
     {
@@ -80,9 +78,12 @@ int main ( int argc , char** argv )
         std::cout << "WTF EXCEPTION" << std::endl;
     }
 
+    return -1;
+    std::cout << "___6___\n";
+
     std::cout << "DONE" << std::endl;
     //  Run forever
-    while ( true )
+    while ( false )
     {
 
     }

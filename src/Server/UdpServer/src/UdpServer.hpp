@@ -28,7 +28,6 @@ namespace Unet
             void                    destructRoutine ( void ) noexcept;
             void                    destructSocket ( void ) noexcept;
             void                    recieveDatagram ( void ) noexcept;
-            AddressShrPtr           addressShrPtr;
             UdpSocket               socket;
             std::thread             thread;
             std::recursive_mutex    mutex;

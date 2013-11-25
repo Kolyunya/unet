@@ -41,8 +41,7 @@ namespace Unet
     class File
     {
         public:
-            explicit        File ( void ) noexcept;
-            explicit        File ( unsigned int descriptor ) noexcept;
+            explicit        File ( int descriptor = -1 ) noexcept;
                             File ( File&& file );
             File&           operator= ( File&& file );
             void            swap ( File& file );

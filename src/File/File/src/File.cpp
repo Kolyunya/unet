@@ -21,25 +21,18 @@
 namespace Unet
 {
 
-
-                File::File ( void ) noexcept
-                    :
-                        descriptor(-1)
-    {
-
-        //  Default constructor.
-        //  Constructs a file object which does not manage any files of the file system.
-        //  Use "File::setDescriptor" to assign object to a real file.
-
-    }
-
-                File::File ( unsigned int descriptor ) noexcept
+                File::File ( int descriptor ) noexcept
     {
         /***
             @description    Constructor which creates a file object which manages file refered by "descriptor"
         ***/
 
-        this->setDescriptor(descriptor);
+        if ( descriptor < -1 )
+        {
+            descriptor = -1;
+        }
+
+        this->descriptor = descriptor;
     }
 
                 File::File ( File&& file )

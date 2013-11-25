@@ -6,8 +6,6 @@ namespace Unet
             UdpServer::UdpServer ( void )
     {
 
-        std::cout << "___1___"<< std::endl;
-
     }
 
             UdpServer::~UdpServer ( void ) noexcept
@@ -26,6 +24,8 @@ namespace Unet
     {
         this->configureSocket();
         this->launchRoutine();
+            std::cout << "___3___\n";
+
     }
 
     void    UdpServer::stop ( void )
@@ -50,7 +50,9 @@ namespace Unet
 
     void    UdpServer::launchRoutine ( void )
     {
+    std::cout << "___1___\n";
         this->thread = std::move(std::thread(UdpServer::routine,this));
+    std::cout << "___2___\n";
     }
 
     void    UdpServer::destructRoutine ( void ) noexcept

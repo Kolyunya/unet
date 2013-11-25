@@ -1,0 +1,1 @@
+#include <gtest/gtest.h>#include <Unet/UdpServer.hpp>TEST ( UdpServerDefaultConstructor , DoesNotThrow ){    ASSERT_NO_THROW(Unet::UdpServer());}int main ( int argc , char** argv ){    ::testing::InitGoogleTest(&argc, argv);    return RUN_ALL_TESTS();}
