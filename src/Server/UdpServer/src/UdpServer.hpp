@@ -17,7 +17,7 @@ namespace Unet
     {
         public:
             explicit                        UdpServer ( void );
-            virtual                         ~UdpServer ( void ) override;
+            virtual                         ~UdpServer ( void ) noexcept override;
             void                            launch ( void ) override final;
             void                            stop ( void ) override final;
             void                            sendDatagram ( const Unet::Datagram& datagram );
@@ -32,7 +32,7 @@ namespace Unet
             static void                     routine ( UdpServer* udpServerPtr );
             UdpSocket                       socket;
             std::thread                     thread;
-            bool                            active;
+            bool                            launched;
             mutable std::mutex              masterMutex;
             mutable std::mutex              launchedMutex;
         private:
