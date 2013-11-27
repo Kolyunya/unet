@@ -27,7 +27,7 @@ int main ( int argc , char** argv )
     if ( argc != 3 )
     {
 		//	Show how the program is supposed to be launched
-        std::cout << "Usage: UdpEchoServerTwo $(SERVER_IP) $(SERVER_PORT)" << std::endl;
+        std::cout << "Usage: UdpEchoServer_002 $(SERVER_IP) $(SERVER_PORT)" << std::endl;
         return -1;
     }
 
