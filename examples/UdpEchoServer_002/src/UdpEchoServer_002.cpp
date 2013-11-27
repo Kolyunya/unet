@@ -23,23 +23,32 @@
 int main ( int argc , char** argv )
 {
 
-    //  Check if program parameters are provided
+    //  Check if server IP address and port command line parameters were provided
     if ( argc != 3 )
     {
+		//	Show how the program is supposed to be launched
         std::cout << "Usage: UdpEchoServerTwo $(SERVER_IP) $(SERVER_PORT)" << std::endl;
         return -1;
     }
 
-    //  Create an UDP echo server
+	//	Create an instance of IPv4 address on the heap wrapped by a smart pointer
     Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
+
+    //  Create an instance of UDP echo server
     Unet::UdpEchoServer udpEchoServer;
+
+	//	Set server address which it will listen to
     udpEchoServer.setAddress(udpEchoServerAddressShrPtr);
+
+	//	Launch the server
     udpEchoServer.launch();
 
+	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
+	//	to prevent the program from finishing it's execution
     while ( true )
-    {
-        // Run server forever
-    }
+	{
+
+	}
 
     return 0;
 

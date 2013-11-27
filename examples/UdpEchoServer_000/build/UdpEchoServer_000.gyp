@@ -3,7 +3,7 @@
                         './../../../system/gyp/includes/example_includes.gypi',
                     ],
     'variables' :   {
-                        'UNIT_NAME'         :   'UdpEchoServer',
+                        'UNIT_NAME'         :   'UdpEchoServer_000',
                         'UNIT_SOURCES'      :   [
                                                     '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                 ],

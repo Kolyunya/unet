@@ -23,9 +23,10 @@
 int main ( int argc , char** argv )
 {
 
-	//	Check if program parameters are provided
+    //  Check if server IP address and port command line parameters were provided
 	if ( argc != 3 )
 	{
+		//	Show how the program is supposed to be launched
 		std::cout << "Usage: UdpEchoServer $(SERVER_IP) $(SERVER_PORT)" << std::endl;
 		return -1;
 	}
@@ -62,18 +63,10 @@ int main ( int argc , char** argv )
 			}
 		}
 
-		//	Catch and print all exceptions
-		catch ( Unet::Exception exception )
-		{
-			std::cout << "Unet exception: " << exception.getMessage() << std::endl;
-		}
-		catch ( std::exception exception )
-		{
-			std::cout << "Standard exception: " << exception.what() << std::endl;
-		}
+		//	Ignore all exceptions
 		catch ( ... )
 		{
-			std::cout << "Unknown exception" << std::endl;
+
 		}
 	}
 }
