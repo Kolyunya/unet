@@ -1,0 +1,1 @@
+cmd_out/debug/obj.target/../../../File/File/build/libFile.a := rm -f out/debug/obj.target/../../../File/File/build/libFile.a && ar crsT out/debug/obj.target/../../../File/File/build/libFile.a out/debug/obj.target/File/../../../File/File/src/File.o

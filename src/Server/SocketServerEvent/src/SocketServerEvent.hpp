@@ -6,9 +6,10 @@ namespace Unet
     class SocketServerEvent
     {
         public:
+            static const int MESSAGE_SENT = 0;
             static const int MESSAGE_RECIEVED = 0;
             static const int COULD_NOT_TERMINATE_THREAD = 1;
-            
+
     };
 }
 

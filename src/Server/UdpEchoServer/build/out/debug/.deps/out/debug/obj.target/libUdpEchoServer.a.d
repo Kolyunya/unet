@@ -1,0 +1,1 @@
+cmd_out/debug/obj.target/libUdpEchoServer.a := rm -f out/debug/obj.target/libUdpEchoServer.a && ar crsT out/debug/obj.target/libUdpEchoServer.a out/debug/obj.target/UdpEchoServer/../src/UdpEchoServer.o

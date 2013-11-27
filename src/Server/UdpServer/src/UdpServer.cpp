@@ -45,6 +45,7 @@ namespace Unet
         std::lock_guard<std::recursive_mutex> masterLockGuard(this->masterMutex);
         this->checkIsLaunched();
         this->socket.sendDatagram(datagram);
+//        this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,static_cast<void*>(&datagram));
     }
 
     bool    UdpServer::getLaunched ( void ) const

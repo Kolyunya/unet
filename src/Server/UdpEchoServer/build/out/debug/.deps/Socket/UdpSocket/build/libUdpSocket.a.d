@@ -1,0 +1,1 @@
+cmd_out/debug/obj.target/../../../Socket/UdpSocket/build/libUdpSocket.a := rm -f out/debug/obj.target/../../../Socket/UdpSocket/build/libUdpSocket.a && ar crsT out/debug/obj.target/../../../Socket/UdpSocket/build/libUdpSocket.a out/debug/obj.target/UdpSocket/../../../Socket/UdpSocket/src/UdpSocket.o

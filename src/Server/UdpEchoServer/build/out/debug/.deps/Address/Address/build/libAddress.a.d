@@ -1,0 +1,1 @@
+cmd_out/debug/obj.target/../../../Address/Address/build/libAddress.a := rm -f out/debug/obj.target/../../../Address/Address/build/libAddress.a && ar crsT out/debug/obj.target/../../../Address/Address/build/libAddress.a out/debug/obj.target/Address/../../../Address/Address/src/Address.o

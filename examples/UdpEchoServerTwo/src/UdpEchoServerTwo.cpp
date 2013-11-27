@@ -17,32 +17,8 @@
 //  Author email: OleynikovNY@mail.ru
 
 #include <iostream>
-#include <Unet/UdpServer.hpp>
 #include <Unet/Ipv4Address.hpp>
-
-namespace Unet
-{
-    class UdpEchoServer
-    {
-        public:
-            explicit            UdpEchoServer ( AddressShrPtr addressShrPtr )
-            {
-                this->udpServer.addEventListener(SocketServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
-                this->udpServer.setAddress(addressShrPtr);
-                this->udpServer.launch();
-            }
-            virtual             ~UdpEchoServer ( void ) = default;
-            void                datagramRecievedHandler ( Datagram* recievedDatagramPtr )
-            {
-                std::cout << recievedDatagramPtr->message << std::endl;
-                this->udpServer.sendDatagram(*recievedDatagramPtr);
-            }
-        protected:
-            explicit            UdpEchoServer ( const UdpEchoServer& udpServerUser );
-            UdpEchoServer&      operator= ( const UdpEchoServer& udpServerUser );
-            UdpServer           udpServer;
-    };
-}
+#include <Unet/UdpEchoServer.hpp>
 
 int main ( int argc , char** argv )
 {
@@ -56,7 +32,9 @@ int main ( int argc , char** argv )
 
     //  Create an UDP echo server
     Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
-    Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
+    Unet::UdpEchoServer udpEchoServer;
+    udpEchoServer.setAddress(udpEchoServerAddressShrPtr);
+    udpEchoServer.launch();
 
     while ( true )
     {
