@@ -30,13 +30,8 @@ namespace Unet
                 this->udpServer.addEventListener(SocketServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
                 this->udpServer.setAddress(addressShrPtr);
                 this->udpServer.launch();
-                    std::cout << "___4___\n";
-
             }
-            virtual             ~UdpEchoServer ( void )
-            {
-                std::cout << "~UdpEchoServer" << std::endl;
-            }
+            virtual             ~UdpEchoServer ( void ) = default;
             void                datagramRecievedHandler ( Datagram* recievedDatagramPtr )
             {
                 std::cout << recievedDatagramPtr->message << std::endl;
@@ -62,13 +57,11 @@ int main ( int argc , char** argv )
     //  Create an UDP echo server
     Unet::AddressShrPtr udpEchoServerAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
     Unet::UdpEchoServer udpEchoServer(udpEchoServerAddressShrPtr);
-    std::cout << "___5___\n";
 
-    return -1;
-
-    std::cout << "___6___\n";
-
-    std::cout << "DONE" << std::endl;
+    while ( true )
+    {
+        // Run server forever
+    }
 
     return 0;
 

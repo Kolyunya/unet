@@ -26,7 +26,7 @@ namespace Unet
 
     void    UdpServer::launch ( void )
     {
-        std::lock_guard<std::mutex> masterLockGuard(this->masterMutex);
+        std::lock_guard<std::recursive_mutex> masterLockGuard(this->masterMutex);
         this->checkIsNotLaunched();
         this->launchSocket();
         this->launchRoutine();
@@ -34,7 +34,7 @@ namespace Unet
 
     void    UdpServer::stop ( void )
     {
-        std::lock_guard<std::mutex> masterLockGuard(this->masterMutex);
+        std::lock_guard<std::recursive_mutex> masterLockGuard(this->masterMutex);
         this->checkIsLaunched();
         this->stopRoutine();
         this->stopSocket();
@@ -42,14 +42,14 @@ namespace Unet
 
     void    UdpServer::sendDatagram ( const Unet::Datagram& datagram )
     {
-        std::lock_guard<std::mutex> masterLockGuard(this->masterMutex);
+        std::lock_guard<std::recursive_mutex> masterLockGuard(this->masterMutex);
         this->checkIsLaunched();
         this->socket.sendDatagram(datagram);
     }
 
     bool    UdpServer::getLaunched ( void ) const
     {
-        std::lock_guard<std::mutex> launchedLockGuard(this->launchedMutex);
+        std::lock_guard<std::recursive_mutex> launchedLockGuard(this->launchedMutex);
         return this->launched;
     }
 
@@ -62,7 +62,7 @@ namespace Unet
 
     void    UdpServer::launchRoutine ( void )
     {
-        std::lock_guard<std::mutex> launchedLockGuard(this->launchedMutex);
+        std::lock_guard<std::recursive_mutex> launchedLockGuard(this->launchedMutex);
         this->launched = true;
         this->thread = std::thread(UdpServer::routine,this);
     }
@@ -73,7 +73,7 @@ namespace Unet
         {
 
 			//	Lock "UdpServer::launched" leave an ability to unlock manually
-			std::unique_lock<std::mutex> launchedUniqueLock(this->launchedMutex);
+			std::unique_lock<std::recursive_mutex> launchedUniqueLock(this->launchedMutex);
 
             //  This flag will signal the child thread to stop
             this->launched = false;
@@ -105,7 +105,7 @@ namespace Unet
 
     void    UdpServer::checkIsLaunched ( void ) const
     {
-        std::lock_guard<std::mutex> launchedLockGuard(this->launchedMutex);
+        std::lock_guard<std::recursive_mutex> launchedLockGuard(this->launchedMutex);
         if ( this->launched == false )
         {
             throw -1;
@@ -114,7 +114,7 @@ namespace Unet
 
     void    UdpServer::checkIsNotLaunched ( void ) const
     {
-        std::lock_guard<std::mutex> launchedLockGuard(this->launchedMutex);
+        std::lock_guard<std::recursive_mutex> launchedLockGuard(this->launchedMutex);
         if ( this->launched == true )
         {
             throw -1;
@@ -127,33 +127,39 @@ namespace Unet
         {
 			try
 			{
-                //  Try to lock "launchedMutex"
-				std::unique_lock<std::mutex> launchedUniqueLock(udpServerPtr->launchedMutex,std::defer_lock);
-                if ( launchedUniqueLock.try_lock() )
                 {
-                    //  Check if the routine is supposed to terminate
-                    if  ( udpServerPtr->launched == false )
+                    //  Try to lock "launchedMutex"
+                    std::unique_lock<std::recursive_mutex> launchedUniqueLock(udpServerPtr->launchedMutex,std::defer_lock);
+                    if ( launchedUniqueLock.try_lock() )
                     {
-                        //  Terminate the child thread
-                        return;
+                        //  Check if the routine is supposed to terminate
+                        if  ( udpServerPtr->launched == false )
+                        {
+                            //  Terminate the child thread
+                            return;
+                        }
                     }
                 }
-
-                //  Try to lock "masterMutex"
-                std::unique_lock<std::mutex> masterUniqueLock(udpServerPtr->masterMutex,std::defer_lock);
-                if ( masterUniqueLock.try_lock() )
                 {
-                    //  Make sure the server is in launched state
-                    udpServerPtr->checkIsLaunched();
+                    //  Try to lock "masterMutex"
+                    std::unique_lock<std::recursive_mutex> masterUniqueLock(udpServerPtr->masterMutex,std::defer_lock);
+                    if ( masterUniqueLock.try_lock() )
+                    {
+                        //  Make sure the server is in launched state
+                        udpServerPtr->checkIsLaunched();
 
-                    //  No need to check if the socket has unread data since if it does not then
-                    //  an exception will be thrown by "UdpSocket::recieveDatagram" which will be caught
-                    //  by "UdpServer::recieveDatagramSafely". This will save some machine time
-                    //  when the socket does have unread data.
-                    Unet::Datagram recievedDatagram = udpServerPtr->socket.recieveDatagram();
-                    udpServerPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                        //  No need to check if the socket has unread data since if it does not then
+                        //  an exception will be thrown by "UdpSocket::recieveDatagram" which will be caught
+                        //  by "UdpServer::recieveDatagramSafely". This will save some machine time
+                        //  when the socket does have unread data.
+                        if ( udpServerPtr->socket.hasUnreadData() )
+                        {
+                            Unet::Datagram recievedDatagram = udpServerPtr->socket.recieveDatagram();
+                            udpServerPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                        }
+                    }
                 }
-			}
+            }
 			catch ( ... )
 			{
 				// Ignore errors
