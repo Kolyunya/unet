@@ -1,1 +1,0 @@
-cmd_out/debug/obj.target/../../SocketServer/build/libSocketServer.a := rm -f out/debug/obj.target/../../SocketServer/build/libSocketServer.a && ar crsT out/debug/obj.target/../../SocketServer/build/libSocketServer.a out/debug/obj.target/SocketServer/../../SocketServer/src/SocketServer.o

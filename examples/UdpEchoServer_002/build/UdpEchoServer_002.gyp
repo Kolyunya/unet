@@ -9,7 +9,7 @@
                                                 ],
                         'UNIT_DEPENDENCIES' :   [
                                                     './../../../src/Address/Ipv4Address/build/Ipv4Address.gyp:Ipv4Address',
-                                                    './../../../src/Server/UdpEchoServer/build/UdpEchoServer.gyp:UdpEchoServer',
+                                                    './../../../src/SocketServer/UdpServer/UdpEchoServer/build/UdpEchoServer.gyp:UdpEchoServer',
                                                 ],
                         'UNIT_CFLAGS'       :   [
                                                     '-pthread',

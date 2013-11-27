@@ -1,1 +1,0 @@
-cmd_out/debug/obj.target/../../UdpServer/build/libUdpServer.a := rm -f out/debug/obj.target/../../UdpServer/build/libUdpServer.a && ar crsT out/debug/obj.target/../../UdpServer/build/libUdpServer.a out/debug/obj.target/UdpServer/../../UdpServer/src/UdpServer.o
