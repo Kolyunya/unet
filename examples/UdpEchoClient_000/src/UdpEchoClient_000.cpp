@@ -23,9 +23,10 @@
 int main ( int argc , char** argv )
 {
 
-	//	Exactly four command line parameters are required
+    //  Check if server IP address and port command line parameters were provided
 	if ( argc != 5 )
 	{
+		//	Show how the program is supposed to be launched
 		std::cout << "Usage: UdpEchoClient_000 $(SERVER_IP) $(SERVER_PORT) $(CLIENT_IP) $(CLIENT_PORT)" << std::endl;
 		return -1;
 	}
@@ -54,6 +55,13 @@ int main ( int argc , char** argv )
 	{
 		try
 		{
+			//	Retrieve all pending datagrams
+			while ( udpSocket.hasUnreadData() )
+			{
+				incommingDatagram = udpSocket.recieveDatagram();
+				std::cout << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
+			}
+
 			//	Request a message from user
 			outgoingDatagram.message.clear();
 			std::cout << "Enter message: ";
@@ -62,27 +70,10 @@ int main ( int argc , char** argv )
 			//	Send the message to the server
 			udpSocket.sendDatagram(outgoingDatagram);
 			std::cout << "[ --> ] [" << outgoingDatagram.addressShrPtr->toString() << "] - \"" << outgoingDatagram.message << "\"" << std::endl;
-
-			//	Retrieve all pending datagrams
-			while ( udpSocket.hasUnreadData() )
-			{
-				incommingDatagram = udpSocket.recieveDatagram();
-				std::cout << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
-			}
-		}
-
-		//	Catch and print all exceptions
-		catch ( Unet::Exception exception )
-		{
-			std::cout << "Unet exception: " << exception.getMessage() << std::endl;
-		}
-		catch ( std::exception exception )
-		{
-			std::cout << "Standard exception: " << exception.what() << std::endl;
 		}
 		catch ( ... )
 		{
-			std::cout << "Unknown exception" << std::endl;
+			//	Ignore all errors
 		}
 	}
 }

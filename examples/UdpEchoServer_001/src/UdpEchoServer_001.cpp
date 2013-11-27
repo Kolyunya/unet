@@ -62,11 +62,9 @@ int main ( int argc , char** argv )
 				std::cout << "[ --> ] [" << datagram.addressShrPtr->toString() << "] - " << datagram.message << std::endl;
 			}
 		}
-
-		//	Ignore all exceptions
 		catch ( ... )
 		{
-
+			//	Ignore all errors
 		}
 	}
 }
