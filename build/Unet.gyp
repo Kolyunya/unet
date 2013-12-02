@@ -20,9 +20,9 @@
                                                         './../src/Socket/Socket/build/Socket.gyp:Socket',
                                                         './../src/Socket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
                                                         './../src/Socket/TcpSocket/build/TcpSocket.gyp:TcpSocket',
-                                                        './../src/Server/SocketServer/build/SocketServer.gyp:SocketServer',
-                                                        './../src/Server/TcpServer/build/TcpServer.gyp:TcpServer',
-                                                        './../src/Server/UdpServer/build/UdpServer.gyp:UdpServer',
+                                                        './../src/SocketServer/SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
+                                                        './../src/SocketServer/TcpServer/TcpServer/build/TcpServer.gyp:TcpServer',
+                                                        './../src/SocketServer/UdpServer/UdpServer/build/UdpServer.gyp:UdpServer',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

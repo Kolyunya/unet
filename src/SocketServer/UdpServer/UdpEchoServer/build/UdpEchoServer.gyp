@@ -12,6 +12,7 @@
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
                                                         './../../UdpServer/build/UdpServer.gyp:UdpServer',
+                                                        './../../UdpServerNew/build/UdpServerNew.gyp:UdpServerNew',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

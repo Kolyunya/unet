@@ -1,13 +1,13 @@
 #ifndef _UNET_UDP_ECHO_SERVER_HPP_
 #define _UNET_UDP_ECHO_SERVER_HPP_
 
-#include <Unet/UdpServer.hpp>
+#include <Unet/UdpServerNew.hpp>
 
 namespace Unet
 {
     class UdpEchoServer
         :
-            public UdpServer
+            public UdpServerNew
     {
         public:
             explicit            UdpEchoServer ( void );
