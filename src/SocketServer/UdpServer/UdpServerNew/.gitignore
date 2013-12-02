@@ -1,6 +1,3 @@
 *
-build/*
-!build/*.gyp
 !.gitignore
-!tests/
 !src/
