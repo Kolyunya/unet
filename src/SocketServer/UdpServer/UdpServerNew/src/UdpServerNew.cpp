@@ -5,7 +5,7 @@ namespace Unet
 
             UdpServerNew::UdpServerNew ( void )
                 :
-                    thread_ptr(nullptr)
+                    thread(&UdpServerNew::routine,this)
     {
 
     }
@@ -57,19 +57,12 @@ namespace Unet
 
     void    UdpServerNew::launchRoutine ( void )
     {
-        this->thread_ptr = new std::raii_thread<UdpServerNew>(this,&UdpServerNew::routine);
+        this->thread.launch();
     }
 
     void    UdpServerNew::stopRoutine ( void )
     {
-        try
-        {
-            delete this->thread_ptr;
-        }
-        catch ( ... )
-        {
-            this->dispatchEvent(SocketServerEvent::COULD_NOT_TERMINATE_THREAD,nullptr);
-        }
+        this->thread.stop();
     }
 
     void    UdpServerNew::stopSocket ( void )
@@ -86,19 +79,19 @@ namespace Unet
     }
 
     void    UdpServerNew::checkIsLaunched ( void ) const
-    {
+    {/*
         if ( this->thread_ptr == nullptr )
         {
             throw -1;
-        }
+        }*/
     }
 
     void    UdpServerNew::checkIsNotLaunched ( void ) const
-    {
+    {/*
         if ( this->thread_ptr != nullptr )
         {
             throw -1;
-        }
+        }*/
     }
 
     void    UdpServerNew::routine ( UdpServerNew* udpServerNewPtr )
