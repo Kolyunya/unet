@@ -11,7 +11,6 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../../../Exception/Exception/build/Exception.gyp:Exception',
                                                         './../../../../Socket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
 														'./../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
                                                     ],

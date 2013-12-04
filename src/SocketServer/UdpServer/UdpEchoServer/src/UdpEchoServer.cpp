@@ -6,7 +6,6 @@ namespace Unet
             UdpEchoServer::UdpEchoServer ( void )
     {
         this->addEventListener(SocketServerEvent::MESSAGE_RECIEVED,this,&UdpEchoServer::datagramRecievedHandler);
-
     }
 
             UdpEchoServer::~UdpEchoServer ( void ) noexcept
