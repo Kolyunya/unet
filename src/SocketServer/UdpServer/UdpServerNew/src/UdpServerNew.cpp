@@ -5,7 +5,7 @@ namespace Unet
 
             UdpServerNew::UdpServerNew ( void )
                 :
-                    thread(&UdpServerNew::routine,this)
+                    thread(std::bind(UdpServerNew::routine,this))
     {
 
     }
