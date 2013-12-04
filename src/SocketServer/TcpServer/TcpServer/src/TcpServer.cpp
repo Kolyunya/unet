@@ -3,89 +3,67 @@
 namespace Unet
 {
 
+                        TcpServer::TcpServer ( void )
+                            :
+                                threadAccept(std::bind(TcpServer::routineAccept,this)),
+                                threadRecieve(std::bind(TcpServer::routineRecieve,this))
+    {
+
+    }
+
                         TcpServer::~TcpServer ( void ) noexcept
     {
-        this->destructRoutine();
-        this->destructSocket();
+
+    }
+
+    bool                TcpServer::getLaunched ( void ) const
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        return this->threadAccept.isActive();
     }
 
     unsigned char       TcpServer::getMessageDelimiter ( void ) const
     {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         return this->serverSocket.getMessageDelimiter();
     }
 
     void                TcpServer::setMessageDelimiter ( unsigned char messageDelimiter )
     {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->serverSocket.setMessageDelimiter(messageDelimiter);
     }
 
     unsigned char       TcpServer::getConnectionsLimit ( void ) const
     {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         return this->serverSocket.getConnectionsLimit();
     }
 
     void                TcpServer::setConnectionsLimit ( unsigned char connectionsLimit )
     {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->serverSocket.setConnectionsLimit(connectionsLimit);
     }
 
     void                TcpServer::launch ( void )
     {
-        this->configureSocket();
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->launchSocket();
+        this->launchThreads();
         this->threadAccept = std::move(std::thread(TcpServer::routineAccept,this));
         this->threadRecieve = std::move(std::thread(TcpServer::routineRecieve,this));
     }
 
     void                TcpServer::stop ( void )
     {
-        this->serverSocket.close();
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->stopThreads();
+        this->stopSocket();
+
     }
 
-    void                TcpServer::routineAccept ( TcpServer* serverPtr ) noexcept
-    {
-        while ( true )
-        {
-            try
-            {
-                /*  Next line is equivalent to:
-
-                    TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
-                    TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
-                    serverPtr->clientSockets.push_back(std::move(acceptedTcpSocketRvalRef));
-                */
-                serverPtr->clientSockets.push_back(serverPtr->serverSocket.accept());
-            }
-            catch ( ... )
-            {
-                continue;
-            }
-        }
-    }
-
-    void                TcpServer::routineRecieve ( TcpServer* serverPtr ) noexcept
-    {
-        while ( true )
-        {
-            for ( TcpSocket& clientSocket : serverPtr->clientSockets )
-            {
-                try
-                {
-                    //  No need to check if the serverSocket has unread data since if it does not then
-                    //  an exception will be thrown and caught. This will save some machine time
-                    //  when the serverSocket does have unread data.
-                    std::string recievedMessage = clientSocket.recieveMessage();
-                    Unet::Datagram recievedDatagram(recievedMessage,clientSocket.getPeerAddress());
-                    serverPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
-                }
-                catch ( ... )
-                {
-                    continue;
-                }
-            }
-        }
-    }
-
-    void                TcpServer::configureSocket ( void )
+    void                TcpServer::launchSocket ( void )
     {
         this->serverSocket.open();
         this->serverSocket.setOption(SO_REUSEADDR,1);
@@ -93,33 +71,51 @@ namespace Unet
         this->serverSocket.listen();
     }
 
-    void                TcpServer::destructRoutine ( void ) noexcept
+    void                TcpServer::launchRoutines ( void )
     {
-        try
-        {
-            //  Will throw "std::system_error" is the thread is not in joinable state or if some error occurs.
-            //  http://en.cppreference.com/w/cpp/thread/thread/join
-            this->thread.join();
-        }
-        catch ( std::system_error )
-        {
-            this->dispatchEvent(SocketServerEvent::COULD_NOT_TERMINATE_THREAD,nullptr);
-        }
-        catch ( ... )
-        {
-            //  Extra sucurity
-        }
+        this->threadAccept.launch();
+        this->threadRecieve.launch();
     }
 
-    void                TcpServer::destructSocket ( void ) noexcept
+    void                TcpServer::stopRoutines ( void )
     {
-        try
+        this->threadAccept.stop();
+        this->threadRecieve.stop();
+    }
+
+    void                TcpServer::stopSocket ( void )
+    {
+        this->socket.close();
+    }
+
+    void                TcpServer::routineAccept ( TcpServer* serverPtr )
+    {
+        /*  Next line is equivalent to:
+
+            TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
+            TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
+            serverPtr->clientSockets.push_back(std::move(acceptedTcpSocketRvalRef));
+        */
+        serverPtr->clientSockets.push_back(serverPtr->serverSocket.accept());
+    }
+
+    void                TcpServer::routineRecieve ( TcpServer* serverPtr )
+    {
+        for ( TcpSocket& clientSocket : serverPtr->clientSockets )
         {
-            //  Will throw e. g. if the serverSocket is not opened yet.
-            this->stop();
-        }
-        catch ( Unet::Exception )
-        {
+            try
+            {
+                //  No need to check if the serverSocket has unread data since if it does not then
+                //  an exception will be thrown and caught. This will save some machine time
+                //  when the serverSocket does have unread data.
+                std::string recievedMessage = clientSocket.recieveMessage();
+                Unet::Datagram recievedDatagram(recievedMessage,clientSocket.getPeerAddress());
+                serverPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+            }
+            catch ( ... )
+            {
+                continue;
+            }
         }
     }
 

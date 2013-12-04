@@ -5,28 +5,25 @@ namespace Unet
 
             UdpServer::UdpServer ( void )
                 :
-                    thread(std::bind(UdpServer::routine,this))
+                    recieveThread(std::bind(UdpServer::routine,this))
     {
 
     }
 
             UdpServer::~UdpServer ( void ) noexcept
     {
-        try
-        {
-            //  May throw e. g. if the server is not in launched state
-            this->stop();
-        }
-        catch ( ... )
-        {
-            //  Destructor must never throw.
-            //  http://stackoverflow.com/questions/130117/throwing-exceptions-out-of-a-destructor
-        }
+
+    }
+
+    bool    UdpServer::getLaunched ( void ) const
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        return this->recieveThread.isActive();
     }
 
     void    UdpServer::launch ( void )
     {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsNotLaunched();
         this->launchSocket();
         this->launchRoutine();
@@ -34,7 +31,7 @@ namespace Unet
 
     void    UdpServer::stop ( void )
     {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
         this->stopRoutine();
         this->stopSocket();
@@ -42,16 +39,10 @@ namespace Unet
 
     void    UdpServer::sendDatagram ( const Unet::Datagram& datagram )
     {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
         this->socket.sendDatagram(datagram);
         //this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,static_cast<void*>(&datagram));
-    }
-
-    bool    UdpServer::getLaunched ( void ) const
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
-        return this->thread.isActive();
     }
 
     void    UdpServer::launchSocket ( void )
@@ -63,12 +54,12 @@ namespace Unet
 
     void    UdpServer::launchRoutine ( void )
     {
-        this->thread.launch();
+        this->recieveThread.launch();
     }
 
     void    UdpServer::stopRoutine ( void )
     {
-        this->thread.stop();
+        this->recieveThread.stop();
     }
 
     void    UdpServer::stopSocket ( void )
@@ -103,8 +94,8 @@ namespace Unet
     void    UdpServer::routine ( UdpServer* UdpServerPtr )
     {
 
-        //  Try to lock "mutex"
-        std::unique_lock<std::recursive_mutex> masterUniqueLock(UdpServerPtr->mutex,std::defer_lock);
+        //  Try to lock "serverMutex"
+        std::unique_lock<std::recursive_mutex> masterUniqueLock(UdpServerPtr->serverMutex,std::defer_lock);
         if ( masterUniqueLock.try_lock() )
         {
             //  Make sure the server is in launched state
@@ -113,9 +104,6 @@ namespace Unet
             //  If the socket has unread data
             if ( UdpServerPtr->socket.hasUnreadData() )
             {
-
-                std::cout << "DATA!\n";
-
                 //  Recieve the data
                 Unet::Datagram recievedDatagram = UdpServerPtr->socket.recieveDatagram();
 

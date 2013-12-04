@@ -6,7 +6,6 @@
 #include <Unet/SocketServer.hpp>
 #include <Unet/SocketServerEvent.hpp>
 #include <Unet/UdpSocket.hpp>
-#include <iostream>
 
 namespace Unet
 {
@@ -18,10 +17,10 @@ namespace Unet
         public:
             explicit                        UdpServer ( void );
             virtual                         ~UdpServer ( void ) noexcept override;
-            void                            launch ( void ) override final;
-            void                            stop ( void ) override final;
+            bool                            getLaunched ( void ) const override;
+            void                            launch ( void ) override;
+            void                            stop ( void ) override;
             void                            sendDatagram ( const Unet::Datagram& datagram );
-            bool                            getLaunched ( void ) const;
         protected:
             void                            launchSocket ( void );
             void                            launchRoutine ( void );
@@ -30,8 +29,7 @@ namespace Unet
             void                            checkIsLaunched ( void ) const;
             void                            checkIsNotLaunched ( void ) const;
             static void                     routine ( UdpServer* UdpServerPtr );
-            mutable std::recursive_mutex    mutex;
-            std::raii_thread_manual         thread;
+            std::raii_thread_manual         recieveThread;
             UdpSocket                       socket;
         private:
                                             UdpServer ( const UdpServer& UdpServer );

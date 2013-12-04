@@ -1,6 +1,6 @@
 {
     'includes'  :   [
-                        './../../../../system/gyp/includes/includes.gypi',
+                        './../../../../../system/gyp/includes/includes.gypi',
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'TcpServer',
@@ -11,7 +11,7 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../../Exception/Exception/build/Exception.gyp:Exception',
+                                                        './../../../../Exception/Exception/build/Exception.gyp:Exception',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

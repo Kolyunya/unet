@@ -10,19 +10,19 @@ namespace Unet
     class SocketServer
     {
         public:
-            explicit                SocketServer ( void ) = default;
-            virtual                 ~SocketServer ( void ) noexcept;
-            virtual void            launch ( void ) = 0;
-            virtual void            stop ( void ) = 0;
-            Unet::AddressShrPtr     getAddress ( void ) const;
-            void                    setAddress ( const Unet::AddressShrPtr addressShrPtr );
+            explicit                        SocketServer ( void ) = default;
+            virtual                         ~SocketServer ( void ) noexcept;
+            Unet::AddressShrPtr             getAddress ( void ) const;
+            void                            setAddress ( const Unet::AddressShrPtr addressShrPtr );
+            virtual bool                    getLaunched ( void ) const = 0;
+            virtual void                    launch ( void ) = 0;
+            virtual void                    stop ( void ) = 0;
         protected:
-            Unet::AddressShrPtr     addressShrPtr;
-            std::thread             thread;
-            std::recursive_mutex    mutex;
+            mutable std::recursive_mutex    serverMutex;
+            Unet::AddressShrPtr             addressShrPtr;
         private:
-            explicit                SocketServer ( const SocketServer& socketServer );
-            SocketServer&           operator= ( const SocketServer& socketServer );
+            explicit                        SocketServer ( const SocketServer& socketServer );
+            SocketServer&                   operator= ( const SocketServer& socketServer );
     };
 }
 
