@@ -45,7 +45,13 @@ namespace Unet
         std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
         this->checkIsLaunched();
         this->socket.sendDatagram(datagram);
-//        this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,static_cast<void*>(&datagram));
+        //this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,static_cast<void*>(&datagram));
+    }
+
+    bool    UdpServer::getLaunched ( void ) const
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->mutex);
+        return this->thread.isActive();
     }
 
     void    UdpServer::launchSocket ( void )
@@ -79,19 +85,19 @@ namespace Unet
     }
 
     void    UdpServer::checkIsLaunched ( void ) const
-    {/*
-        if ( this->thread_ptr == nullptr )
+    {
+        if ( this->getLaunched() == false )
         {
             throw -1;
-        }*/
+        }
     }
 
     void    UdpServer::checkIsNotLaunched ( void ) const
-    {/*
-        if ( this->thread_ptr != nullptr )
+    {
+        if ( this->getLaunched() == true )
         {
             throw -1;
-        }*/
+        }
     }
 
     void    UdpServer::routine ( UdpServer* UdpServerPtr )

@@ -16,25 +16,26 @@ namespace Unet
             public Util::EventDispatcher
     {
         public:
-            explicit                    UdpServer ( void );
-            virtual                     ~UdpServer ( void ) noexcept override;
-            void                        launch ( void ) override final;
-            void                        stop ( void ) override final;
-            void                        sendDatagram ( const Unet::Datagram& datagram );
+            explicit                        UdpServer ( void );
+            virtual                         ~UdpServer ( void ) noexcept override;
+            void                            launch ( void ) override final;
+            void                            stop ( void ) override final;
+            void                            sendDatagram ( const Unet::Datagram& datagram );
+            bool                            getLaunched ( void ) const;
         protected:
-            void                        launchSocket ( void );
-            void                        launchRoutine ( void );
-            void                        stopRoutine ( void );
-            void                        stopSocket ( void );
-            void                        checkIsLaunched ( void ) const;
-            void                        checkIsNotLaunched ( void ) const;
-            static void                 routine ( UdpServer* UdpServerPtr );
-            std::recursive_mutex        mutex;
-            std::raii_thread_manual     thread;
-            UdpSocket                   socket;
+            void                            launchSocket ( void );
+            void                            launchRoutine ( void );
+            void                            stopRoutine ( void );
+            void                            stopSocket ( void );
+            void                            checkIsLaunched ( void ) const;
+            void                            checkIsNotLaunched ( void ) const;
+            static void                     routine ( UdpServer* UdpServerPtr );
+            mutable std::recursive_mutex    mutex;
+            std::raii_thread_manual         thread;
+            UdpSocket                       socket;
         private:
-                                        UdpServer ( const UdpServer& UdpServer );
-            UdpServer&                  operator= ( const UdpServer& UdpServer );
+                                            UdpServer ( const UdpServer& UdpServer );
+            UdpServer&                      operator= ( const UdpServer& UdpServer );
     };
 }
 
