@@ -18,6 +18,8 @@ namespace Unet
             virtual void                    launch ( void ) = 0;
             virtual void                    stop ( void ) = 0;
         protected:
+            void                            checkIsLaunched ( void ) const;
+            void                            checkIsNotLaunched ( void ) const;
             mutable std::recursive_mutex    serverMutex;
             Unet::AddressShrPtr             addressShrPtr;
         private:

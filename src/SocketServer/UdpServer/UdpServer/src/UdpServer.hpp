@@ -26,8 +26,6 @@ namespace Unet
             void                            launchRoutine ( void );
             void                            stopRoutine ( void );
             void                            stopSocket ( void );
-            void                            checkIsLaunched ( void ) const;
-            void                            checkIsNotLaunched ( void ) const;
             static void                     routine ( UdpServer* UdpServerPtr );
             std::raii_thread_manual         recieveThread;
             UdpSocket                       socket;

@@ -12,6 +12,14 @@ namespace Unet
 
             UdpServer::~UdpServer ( void ) noexcept
     {
+        try
+        {
+            this->stop();
+        }
+        catch ( ... )
+        {
+            return;
+        }
 
     }
 
@@ -75,36 +83,17 @@ namespace Unet
         }
     }
 
-    void    UdpServer::checkIsLaunched ( void ) const
-    {
-        if ( this->getLaunched() == false )
-        {
-            throw -1;
-        }
-    }
-
-    void    UdpServer::checkIsNotLaunched ( void ) const
-    {
-        if ( this->getLaunched() == true )
-        {
-            throw -1;
-        }
-    }
-
     void    UdpServer::routine ( UdpServer* UdpServerPtr )
     {
 
         //  Try to lock "serverMutex"
-        std::unique_lock<std::recursive_mutex> masterUniqueLock(UdpServerPtr->serverMutex,std::defer_lock);
-        if ( masterUniqueLock.try_lock() )
+        std::unique_lock<std::recursive_mutex> serverUniqueLock(UdpServerPtr->serverMutex,std::defer_lock);
+        if ( serverUniqueLock.try_lock() )
         {
-            //  Make sure the server is in launched state
-            UdpServerPtr->checkIsLaunched();
-
             //  If the socket has unread data
             if ( UdpServerPtr->socket.hasUnreadData() )
             {
-                //  Recieve the data
+                //  Receive the data
                 Unet::Datagram recievedDatagram = UdpServerPtr->socket.recieveDatagram();
 
                 //  Emit respective event

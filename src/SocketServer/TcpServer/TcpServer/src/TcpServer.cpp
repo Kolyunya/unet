@@ -13,7 +13,14 @@ namespace Unet
 
                         TcpServer::~TcpServer ( void ) noexcept
     {
-
+        try
+        {
+            this->stop();
+        }
+        catch ( ... )
+        {
+            return;
+        }
     }
 
     bool                TcpServer::getLaunched ( void ) const
@@ -49,18 +56,17 @@ namespace Unet
     void                TcpServer::launch ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->checkIsNotLaunched();
         this->launchSocket();
-        this->launchThreads();
-        this->threadAccept = std::move(std::thread(TcpServer::routineAccept,this));
-        this->threadRecieve = std::move(std::thread(TcpServer::routineRecieve,this));
+        this->launchRoutines();
     }
 
     void                TcpServer::stop ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->stopThreads();
+        this->checkIsLaunched();
+        this->stopRoutines();
         this->stopSocket();
-
     }
 
     void                TcpServer::launchSocket ( void )
@@ -85,36 +91,39 @@ namespace Unet
 
     void                TcpServer::stopSocket ( void )
     {
-        this->socket.close();
+        this->serverSocket.close();
     }
 
-    void                TcpServer::routineAccept ( TcpServer* serverPtr )
+    void                TcpServer::routineAccept ( TcpServer* tcpServerPtr )
     {
-        /*  Next line is equivalent to:
-
-            TcpSocket acceptedTcpSocket = serverPtr->serverSocket.accept();
-            TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
-            serverPtr->clientSockets.push_back(std::move(acceptedTcpSocketRvalRef));
-        */
-        serverPtr->clientSockets.push_back(serverPtr->serverSocket.accept());
-    }
-
-    void                TcpServer::routineRecieve ( TcpServer* serverPtr )
-    {
-        for ( TcpSocket& clientSocket : serverPtr->clientSockets )
+        //  Try to lock "serverMutex"
+        std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
+        if ( serverUniqueLock.try_lock() )
         {
-            try
+            /*  Next line is equivalent to:
+
+                TcpSocket acceptedTcpSocket = tcpServerPtr->serverSocket.accept();
+                TcpSocket&& acceptedTcpSocketRvalRef = std::move(acceptedTcpSocket);
+                tcpServerPtr->clientSockets.push_back(std::move(acceptedTcpSocketRvalRef));
+            */
+            tcpServerPtr->clientSockets.push_back(tcpServerPtr->serverSocket.accept());
+        }
+    }
+
+    void                TcpServer::routineRecieve ( TcpServer* tcpServerPtr )
+    {
+        //  Try to lock "serverMutex"
+        std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
+        if ( serverUniqueLock.try_lock() )
+        {
+            for ( TcpSocket& clientSocket : tcpServerPtr->clientSockets )
             {
-                //  No need to check if the serverSocket has unread data since if it does not then
-                //  an exception will be thrown and caught. This will save some machine time
-                //  when the serverSocket does have unread data.
-                std::string recievedMessage = clientSocket.recieveMessage();
-                Unet::Datagram recievedDatagram(recievedMessage,clientSocket.getPeerAddress());
-                serverPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
-            }
-            catch ( ... )
-            {
-                continue;
+                if ( tcpServerPtr->serverSocket.hasUnreadData() )
+                {
+                    std::string recievedMessage = clientSocket.recieveMessage();
+                    Unet::Datagram recievedDatagram(recievedMessage,clientSocket.getPeerAddress());
+                    tcpServerPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                }
             }
         }
     }

@@ -36,8 +36,8 @@ namespace Unet
             void                        launchRoutines ( void );
             void                        stopRoutines ( void );
             void                        stopSocket ( void );
-            static void                 routineAccept ( TcpServer* serverPtr );
-            static void                 routineRecieve ( TcpServer* serverPtr );
+            static void                 routineAccept ( TcpServer* tcpServerPtr );
+            static void                 routineRecieve ( TcpServer* tcpServerPtr );
             TcpSocket                   serverSocket;
             TcpSocketsVec               clientSockets;
             std::raii_thread_manual     threadAccept;

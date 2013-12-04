@@ -5,14 +5,7 @@ namespace Unet
 
 							SocketServer::~SocketServer ( void ) noexcept
 	{
-        try
-        {
-            this->stop();
-        }
-        catch ( ... )
-        {
-            return;
-        }
+
 	}
 
     Unet::AddressShrPtr     SocketServer::getAddress ( void ) const
@@ -25,6 +18,22 @@ namespace Unet
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->addressShrPtr = addressShrPtr;
+    }
+
+    void                    SocketServer::checkIsLaunched ( void ) const
+    {
+        if ( this->getLaunched() == false )
+        {
+            throw -1;
+        }
+    }
+
+    void                    SocketServer::checkIsNotLaunched ( void ) const
+    {
+        if ( this->getLaunched() == true )
+        {
+            throw -1;
+        }
     }
 
 }
