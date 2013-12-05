@@ -17,8 +17,20 @@
 //	Author email: OleynikovNY@mail.ru
 
 #include <iostream>
+#include <thread.hpp>
 #include <Unet/UdpSocket.hpp>
 #include <Unet/Ipv4Address.hpp>
+
+void recieveDatagrams ( Unet::UdpSocket* udpSocketPtr )
+{
+    Unet::Datagram incommingDatagram;
+    //	Retrieve all pending datagrams
+    while ( udpSocketPtr->hasUnreadData() )
+    {
+        incommingDatagram = udpSocketPtr->recieveDatagram();
+        std::cout << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
+    }
+}
 
 int main ( int argc , char** argv )
 {
@@ -47,21 +59,17 @@ int main ( int argc , char** argv )
 	//	Construct server address
 	Unet::AddressShrPtr serverAddressShrPtr(new Unet::Ipv4Address(argv[1],argv[2]));
 
-	//	Datagram which will be recieved and sent back
+	//	Datagram which will be received and sent back
 	Unet::Datagram outgoingDatagram("",serverAddressShrPtr);
 	Unet::Datagram incommingDatagram;
+
+    //  Launch thread receiving datagrams
+    std::raii_thread recievingThread(std::bind(recieveDatagrams,&udpSocket));
 
 	while ( true )
 	{
 		try
 		{
-			//	Retrieve all pending datagrams
-			while ( udpSocket.hasUnreadData() )
-			{
-				incommingDatagram = udpSocket.recieveDatagram();
-				std::cout << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
-			}
-
 			//	Request a message from user
 			outgoingDatagram.message.clear();
 			std::cout << "Enter message: ";

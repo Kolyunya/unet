@@ -12,8 +12,10 @@
                                                     './../../../src/Address/Ipv4Address/build/Ipv4Address.gyp:Ipv4Address',
                                                 ],
                         'UNIT_CFLAGS'       :   [
+                                                    '-pthread',
                                                 ],
                         'UNIT_LDFLAGS'      :   [
+                                                    '-pthread',
                                                 ],
                     },
 }
