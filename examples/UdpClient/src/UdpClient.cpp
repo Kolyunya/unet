@@ -28,7 +28,7 @@ void recieveDatagrams ( Unet::UdpSocket* udpSocketPtr )
     while ( udpSocketPtr->hasUnreadData() )
     {
         incommingDatagram = udpSocketPtr->recieveDatagram();
-        std::cout << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
+        std::coutmt << "[ <-- ] ["  << incommingDatagram.addressShrPtr->toString() << "] - \"" << incommingDatagram.message << "\"" << std::endl;
     }
 }
 
@@ -76,7 +76,7 @@ int main ( int argc , char** argv )
 
 			//	Send the message to the server
 			udpSocket.sendDatagram(outgoingDatagram);
-			std::cout << "[ --> ] [" << outgoingDatagram.addressShrPtr->toString() << "] - \"" << outgoingDatagram.message << "\"" << std::endl;
+			std::coutmt << "[ --> ] [" << outgoingDatagram.addressShrPtr->toString() << "] - \"" << outgoingDatagram.message << "\"" << std::endl;
 		}
 		catch ( ... )
 		{
