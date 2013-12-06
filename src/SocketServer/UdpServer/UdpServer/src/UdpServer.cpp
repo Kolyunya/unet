@@ -45,12 +45,12 @@ namespace Unet
         this->stopSocket();
     }
 
-    void    UdpServer::sendDatagram ( const Unet::Datagram& datagram )
+    void    UdpServer::sendDatagram ( Unet::Datagram& datagram )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
         this->socket.sendDatagram(datagram);
-        //this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,static_cast<void*>(&datagram));
+        this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,&datagram);
     }
 
     void    UdpServer::launchSocket ( void )

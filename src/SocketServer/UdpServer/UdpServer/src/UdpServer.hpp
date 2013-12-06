@@ -20,7 +20,7 @@ namespace Unet
             bool                            getLaunched ( void ) const override;
             void                            launch ( void ) override;
             void                            stop ( void ) override;
-            void                            sendDatagram ( const Unet::Datagram& datagram );
+            void                            sendDatagram ( Unet::Datagram& datagram );
         protected:
             void                            launchSocket ( void );
             void                            launchRoutine ( void );
