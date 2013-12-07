@@ -44,20 +44,17 @@ namespace Unet
     Datagram        UdpSocket::recieveDatagram ( int options )
     {
 
-        // If socket is in blocking mode it will wait for datagram to arrive, otherwise an exception will be thrown.
+        //  If socket is in blocking mode it will wait for datagram to arrive, otherwise an exception will be thrown.
         this->waitForUnreadData();
 
-        // Get pending datagram size
+        //  Get pending datagram size
         size_t pendingDatagramMessageSize = this->getUnreadDataSize();
 
-        // Create a datagram object
-        Datagram pendingDatagram;
-
-        // Allocate enough space to store pending datagram
-        pendingDatagram.message.resize(pendingDatagramMessageSize);
+        //  Construct a string which will hold the datagram message
+        std::string pendingDatagramMessage(pendingDatagramMessageSize,0);
 
         // Get a pointer to datagram message
-        char* pendingDatagramMessagePtr = &pendingDatagram.message[0];
+        char* pendingDatagramMessagePtr = &(pendingDatagramMessage[0]);
 
         // Prepare address factory to make an address
         AddressFactory addressFactory;
@@ -79,28 +76,20 @@ namespace Unet
         // Checking for receive error
         if ( pendingDatagramBytesRecieved < 0 )
         {
-
             throw Exception(ExcIncommingDataCouldNotBeRetrieved,true);
-
         }
 
-        // Address factory is now ready to make an address object
-        addressFactory.makeProduct();
-
-        // Save address object into the datagram
-        pendingDatagram.addressShrPtr = addressFactory.getProductByShrPtr();
-
-        // Return resulting datagram object
-        return pendingDatagram;
+        //  Construct and return received datagram object
+        return Datagram(pendingDatagramMessage,addressFactory.getProduct());
 
     }
 
     void            UdpSocket::sendDatagram ( const Datagram& datagram , int options )
     {
 
-        // Define reciever address
-        const sockaddr* recieverAddressPtr = datagram.addressShrPtr->isNotEmpty() ? datagram.addressShrPtr->getDataPtr() : nullptr;
-        socklen_t recieverAddressSize = datagram.addressShrPtr->isNotEmpty() ? datagram.addressShrPtr->getSizeRef() : 0;
+        // Define receiver address
+        const sockaddr* recieverAddressPtr = datagram.addressUniPtr->isNotEmpty() ? datagram.addressUniPtr->getDataPtr() : nullptr;
+        socklen_t recieverAddressSize = datagram.addressUniPtr->isNotEmpty() ? datagram.addressUniPtr->getSizeRef() : 0;
 
         // Send datagram
         ssize_t datagramMessageBytesSent = sendto   (

@@ -215,7 +215,7 @@ namespace Unet
 
     }
 
-    AddressShrPtr       Socket::getLocalAddress ( void ) const
+    AddressUniPtr       Socket::getLocalAddress ( void ) const
     {
 
         // Address will construct an address object from raw data
@@ -238,20 +238,14 @@ namespace Unet
         // Check operation success
         if ( getLocalAddressSuccess != 0 )
         {
-
             throw Exception(ExcCouldNotRetrieveSocketLocalAddress,true);
-
         }
 
-        // Make an address object on the factory
-        addressFactory.makeProduct();
-
-        // Return an address object made before
-        return addressFactory.getProductByShrPtr();
+        return addressFactory.getProduct();
 
     }
 
-    AddressShrPtr       Socket::getPeerAddress ( void ) const
+    AddressUniPtr       Socket::getPeerAddress ( void ) const
     {
 
         // Address will construct an address object from raw data
@@ -279,11 +273,7 @@ namespace Unet
 
         }
 
-        // Make an address object on the factory
-        addressFactory.makeProduct();
-
-        // Return an address object made before
-        return addressFactory.getProductByShrPtr();
+        return addressFactory.getProduct();
 
     }
 

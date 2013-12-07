@@ -47,8 +47,8 @@ namespace Unet
             bool                hasUnreadData ( size_t unreadDataSizeRequired = 0 ) const;
             bool                hasNoUnreadData ( size_t unreadDataSizeRequired = 0 ) const;
             void                waitForUnreadData ( size_t unreadDataSizeRequired = 0 ) const;
-            AddressShrPtr       getLocalAddress ( void ) const;
-            AddressShrPtr       getPeerAddress ( void ) const;
+            AddressUniPtr       getLocalAddress ( void ) const;
+            AddressUniPtr       getPeerAddress ( void ) const;
             size_t              getUnreadDataSize ( void ) const;
                                 template <typename OptionType>
             void                setOption ( int optionName , const OptionType& optionValue , int protocolLevel = SOL_SOCKET );

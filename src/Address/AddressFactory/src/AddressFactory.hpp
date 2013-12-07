@@ -32,21 +32,14 @@ namespace Unet
             virtual                     ~AddressFactory ( void ) noexcept = default;
             sockaddr*                   getDataPtr ( void ) const;
             socklen_t*                  getSizePtr ( void ) const;
-            bool                        hasProduct ( void ) const;
+            AddressUniPtr               getProduct ( void );
             void                        reset ( void );
-            void                        makeProduct ( void );
-            AddressUniPtr               getProductByUniPtr ( void );
-            AddressShrPtr               getProductByShrPtr ( void );
         protected:
-            void                        checkHasProduct ( void ) const;
-            void                        resetAddressUniPtr ( void );
             void                        resetAddressData ( void );
             void                        resetAddressSize ( void );
-            void                        copyAddress ( Address* addressPtr ) const;
-            void                        copyAddressData ( Address* addressPtr ) const;
-            void                        copyAddressSize ( Address* addressPtr ) const;
-            AddressUniPtr               getAddressCopy ( void ) const;
-            AddressUniPtr               addressUniPtr;
+            void                        copyAddress ( const AddressUniPtr& addressUniPtr ) const;
+            void                        copyAddressData ( const AddressUniPtr& addressUniPtr ) const;
+            void                        copyAddressSize ( const AddressUniPtr& addressUniPtr ) const;
             mutable sockaddr_storage    addressData;
             mutable socklen_t           addressSize;
     };

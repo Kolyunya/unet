@@ -16,8 +16,8 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _DATAGRAM_HPP_
-#define _DATAGRAM_HPP_
+#ifndef _UNET_DATAGRAM_HPP_
+#define _UNET_DATAGRAM_HPP_
 
 #include <string>               //  std::string
 #include <memory>               //  std::shared_ptr
@@ -26,14 +26,13 @@
 
 namespace Unet
 {
-
     class Datagram
     {
         public:
                                 Datagram ( void ) = default;
                                 Datagram ( const Datagram& datagram );
                                 Datagram ( Datagram&& datagram );
-            explicit            Datagram ( const std::string& message , const AddressShrPtr& addressShrPtr = nullptr );
+            explicit            Datagram ( const std::string& message , AddressUniPtr&& addressUniPtr );
             virtual             ~Datagram ( void ) noexcept = default;
             Datagram&           operator= ( Datagram datagram );
             void                swap ( Datagram& datagram );
@@ -41,13 +40,12 @@ namespace Unet
             bool                hasAddress ( void ) const;
             void                clear ( void );
             std::string         message;
-            AddressShrPtr       addressShrPtr;
+            AddressUniPtr       addressUniPtr;
         protected:
             void                deepCopy ( const Datagram& datagram );
             void                deepCopyMessage ( const Datagram& datagram );
             void                deepCopyAddress ( const Datagram& datagram );
     };
-
 }
 
-#endif  //  _DATAGRAM_HPP_
+#endif  //  _UNET_DATAGRAM_HPP_

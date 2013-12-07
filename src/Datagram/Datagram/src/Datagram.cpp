@@ -20,102 +20,75 @@
 
 namespace Unet
 {
-
                     Datagram::Datagram ( const Datagram& datagram )
     {
-
         this->deepCopy(datagram);
-
     }
 
                     Datagram::Datagram ( Datagram&& datagram )
     {
-
         this->swap(datagram);
-
     }
 
-                    Datagram::Datagram ( const std::string& message , const AddressShrPtr& addressShrPtr )
+                    Datagram::Datagram ( const std::string& message , AddressUniPtr&& addressUniPtr )
                         :
                             message(message),
-                            addressShrPtr(addressShrPtr)
+                            addressUniPtr(std::move(addressUniPtr))
     {
-
     }
 
     Datagram&       Datagram::operator= ( Datagram datagram )
     {
-
         // Copy-and-swap idiom
         this->swap(datagram);
         return *this;
-
     }
 
     void            Datagram::swap ( Datagram& datagram )
     {
-
         this->message.swap(datagram.message);
-        std::swap(this->addressShrPtr,datagram.addressShrPtr);
-
+        std::swap(this->addressUniPtr,datagram.addressUniPtr);
     }
 
     bool            Datagram::operator== ( const Datagram& datagram ) const
     {
-
         return  (
                     this->message == datagram.message
                         &&
-                    *(this->addressShrPtr) == *(datagram.addressShrPtr)
+                    *(this->addressUniPtr) == *(datagram.addressUniPtr)
                 );
-
     }
 
     bool            Datagram::hasAddress ( void ) const
     {
-
-        if ( this->addressShrPtr == nullptr )
+        if ( this->addressUniPtr == nullptr )
         {
-
             return false;
-
         }
 
-        return this->addressShrPtr->isEmpty();
-
+        return this->addressUniPtr->isEmpty();
     }
 
     void            Datagram::clear ( void )
     {
-
         this->message.clear();
-        this->addressShrPtr.reset();
-
+        this->addressUniPtr.reset();
     }
 
     void            Datagram::deepCopy ( const Datagram& datagram )
     {
-
         this->deepCopyMessage(datagram);
         this->deepCopyAddress(datagram);
-
     }
 
     void            Datagram::deepCopyMessage ( const Datagram& datagram )
     {
-
         this->message = datagram.message;
-
     }
 
     void            Datagram::deepCopyAddress ( const Datagram& datagram )
     {
-
         // No need to preliminary reset the shared pointer.
-        // template< class Y > shared_ptr& operator=( const shared_ptr<Y>& r );
-        // Equivalent to shared_ptr<T> p(r).swap(*this).
-        this->addressShrPtr = datagram.addressShrPtr->getCopyByShrPtr();
-
+        this->addressUniPtr = datagram.addressUniPtr->getCopyByUniPtr();
     }
-
 }

@@ -23,9 +23,7 @@ namespace Unet
 
                         AddressFactory::AddressFactory ( void )
     {
-
         this->reset();
-
     }
 
     sockaddr*           AddressFactory::getDataPtr ( void ) const
@@ -42,73 +40,43 @@ namespace Unet
 
     }
 
-    bool                AddressFactory::hasProduct ( void ) const
+    AddressUniPtr       AddressFactory::getProduct ( void )
     {
+        //  Extract address family from raw data
+        sa_family_t addressFamily = this->addressData.ss_family;
 
-        return this->addressUniPtr.get();
+        //  A unique pointer to an Address object
+        AddressUniPtr addressUniPtr;
+
+        // Concrete address type depends on it's family
+        switch ( addressFamily )
+        {
+            case AF_INET:
+            {
+                addressUniPtr.reset(new Ipv4Address());
+            }
+            case AF_INET6:
+            {
+                addressUniPtr.reset(new Ipv6Address());
+            }
+            default:
+            {
+                //  Invalid address family
+                throw -1;
+            }
+        }
+
+        //  Copy data to the new Address object
+        this->copyAddress(addressUniPtr);
+
+        return addressUniPtr;
 
     }
 
     void                AddressFactory::reset ( void )
     {
-
-        this->resetAddressUniPtr();
         this->resetAddressData();
         this->resetAddressSize();
-
-    }
-
-    void                AddressFactory::makeProduct ( void )
-    {
-
-        // Extract address family from raw data
-        sa_family_t addressFamily = this->addressData.ss_family;
-
-        // Concrete address type depends on it's faamily
-        switch ( addressFamily )
-        {
-            case AF_INET:
-            {
-                this->addressUniPtr.reset(new Ipv4Address());
-                break;
-            }
-            case AF_INET6:
-            {
-                this->addressUniPtr.reset(new Ipv6Address());
-                break;
-            }
-        }
-
-        // Copy data to the address object which has just been created
-        this->copyAddress(this->addressUniPtr.get());
-
-    }
-
-    AddressUniPtr       AddressFactory::getProductByUniPtr ( void )
-    {
-        this->checkHasProduct();
-        return this->getAddressCopy();
-    }
-
-    AddressShrPtr       AddressFactory::getProductByShrPtr ( void )
-    {
-        return this->getProductByUniPtr();
-    }
-
-    void                AddressFactory::checkHasProduct ( void ) const
-    {
-        if ( false == this->hasProduct() )
-        {
-            //!!!
-            throw -1;
-        }
-    }
-
-    void                AddressFactory::resetAddressUniPtr ( void )
-    {
-
-        this->addressUniPtr.reset();
-
     }
 
     void                AddressFactory::resetAddressData ( void )
@@ -125,31 +93,20 @@ namespace Unet
 
     }
 
-    void                AddressFactory::copyAddress ( Address* addressPtr ) const
+    void                AddressFactory::copyAddress ( const AddressUniPtr& addressUniPtr ) const
     {
-
-        this->copyAddressData(addressPtr);
-        this->copyAddressSize(addressPtr);
-
+        this->copyAddressData(addressUniPtr);
+        this->copyAddressSize(addressUniPtr);
     }
 
-    void                AddressFactory::copyAddressData ( Address* addressPtr ) const
+    void                AddressFactory::copyAddressData ( const AddressUniPtr& addressUniPtr ) const
     {
-
-        memcpy(addressPtr->getDataPtr(),&this->addressData,sizeof(this->addressData));
-
+        memcpy(addressUniPtr->getDataPtr(),&this->addressData,sizeof(this->addressData));
     }
 
-    void                AddressFactory::copyAddressSize ( Address* addressPtr ) const
+    void                AddressFactory::copyAddressSize ( const AddressUniPtr& addressUniPtr ) const
     {
-
-        addressPtr->getSizeRef() = this->addressSize;
-
-    }
-
-    AddressUniPtr       AddressFactory::getAddressCopy ( void ) const
-    {
-        return this->addressUniPtr->getCopyByUniPtr();
+        addressUniPtr->getSizeRef() = this->addressSize;
     }
 
 }
