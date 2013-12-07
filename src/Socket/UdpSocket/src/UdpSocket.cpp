@@ -27,20 +27,20 @@ namespace Unet
     {
 
     }
-    
+
                     UdpSocket::UdpSocket ( UdpSocket&& udpSocket )
                         :
                             Socket(udpSocket.domain,SOCK_DGRAM,udpSocket.protocol)
     {
         this->swap(udpSocket);
     }
-    
+
     UdpSocket&      UdpSocket::operator= ( UdpSocket&& udpSocket )
     {
         this->File::swap(udpSocket);
         return *this;
     }
-    
+
     Datagram        UdpSocket::recieveDatagram ( int options )
     {
 
@@ -64,7 +64,7 @@ namespace Unet
         sockaddr* pendingDatagramSenderAddressDataPtr = addressFactory.getDataPtr();
         socklen_t* pendingDatagramSenderAddressSizePtr = addressFactory.getSizePtr();
 
-        // Recieving datagram from socket
+        // Receiving datagram from socket
         // Datagram message will be written directly in the "Datagram.message"
         // Datagram address will be written into the address factory which will make an address object a bit later
         ssize_t pendingDatagramBytesRecieved = recvfrom (
@@ -76,7 +76,7 @@ namespace Unet
                                                             pendingDatagramSenderAddressSizePtr
                                                         );
 
-        // Checking for recieve error
+        // Checking for receive error
         if ( pendingDatagramBytesRecieved < 0 )
         {
 

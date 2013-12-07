@@ -25,7 +25,6 @@
 
 namespace Unet
 {
-
     class AddressFactory
     {
         public:
@@ -34,10 +33,10 @@ namespace Unet
             sockaddr*                   getDataPtr ( void ) const;
             socklen_t*                  getSizePtr ( void ) const;
             bool                        hasProduct ( void ) const;
+            void                        reset ( void );
             void                        makeProduct ( void );
             AddressUniPtr               getProductByUniPtr ( void );
             AddressShrPtr               getProductByShrPtr ( void );
-            void                        reset ( void );
         protected:
             void                        checkHasProduct ( void ) const;
             void                        resetAddressUniPtr ( void );
@@ -51,7 +50,6 @@ namespace Unet
             mutable sockaddr_storage    addressData;
             mutable socklen_t           addressSize;
     };
-
 }
 
 #endif  //  _UNET_ADDRESS_FACTORY_HPP_

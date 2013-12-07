@@ -49,6 +49,15 @@ namespace Unet
 
     }
 
+    void                AddressFactory::reset ( void )
+    {
+
+        this->resetAddressUniPtr();
+        this->resetAddressData();
+        this->resetAddressSize();
+
+    }
+
     void                AddressFactory::makeProduct ( void )
     {
 
@@ -84,15 +93,6 @@ namespace Unet
     AddressShrPtr       AddressFactory::getProductByShrPtr ( void )
     {
         return this->getProductByUniPtr();
-    }
-
-    void                AddressFactory::reset ( void )
-    {
-
-        this->resetAddressUniPtr();
-        this->resetAddressData();
-        this->resetAddressSize();
-
     }
 
     void                AddressFactory::checkHasProduct ( void ) const
