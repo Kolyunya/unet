@@ -12,8 +12,8 @@ namespace Unet
         public:
             explicit                        SocketServer ( void ) = default;
             virtual                         ~SocketServer ( void ) noexcept;
-            Unet::AddressShrPtr             getAddress ( void ) const;
-            void                            setAddress ( const Unet::AddressShrPtr addressShrPtr );
+            Unet::AddressUniPtr             getAddress ( void ) const;
+            void                            setAddress ( Unet::AddressUniPtr addressUniPtr );
             virtual bool                    getLaunched ( void ) const = 0;
             virtual void                    launch ( void ) = 0;
             virtual void                    stop ( void ) = 0;
@@ -21,7 +21,7 @@ namespace Unet
             void                            checkIsLaunched ( void ) const;
             void                            checkIsNotLaunched ( void ) const;
             mutable std::recursive_mutex    serverMutex;
-            Unet::AddressShrPtr             addressShrPtr;
+            Unet::AddressUniPtr             addressUniPtr;
         private:
             explicit                        SocketServer ( const SocketServer& socketServer );
             SocketServer&                   operator= ( const SocketServer& socketServer );

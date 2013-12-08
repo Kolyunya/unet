@@ -8,16 +8,17 @@ namespace Unet
 
 	}
 
-    Unet::AddressShrPtr     SocketServer::getAddress ( void ) const
+    Unet::AddressUniPtr     SocketServer::getAddress ( void ) const
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        return this->addressShrPtr;
+        //return std::move(this->addressUniPtr);
+        return nullptr;
     }
 
-    void                    SocketServer::setAddress ( const Unet::AddressShrPtr addressShrPtr )
+    void                    SocketServer::setAddress ( Unet::AddressUniPtr addressUniPtr )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->addressShrPtr = addressShrPtr;
+        this->addressUniPtr = std::move(addressUniPtr);
     }
 
     void                    SocketServer::checkIsLaunched ( void ) const

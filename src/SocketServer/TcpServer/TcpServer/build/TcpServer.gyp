@@ -11,7 +11,9 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../../../Exception/Exception/build/Exception.gyp:Exception',
+														'./../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
+                                                        './../../../../Socket/TcpSocket/build/TcpSocket.gyp:TcpSocket',
+                                                        './../../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

@@ -23,7 +23,7 @@
 #include <memory>               //  std::shared_ptr
 #include <utility>              //  std::swap
 #include <Unet/Address.hpp>     //  Unet::Address
-
+#include <iostream>
 namespace Unet
 {
     class Datagram
@@ -32,7 +32,7 @@ namespace Unet
                                 Datagram ( void ) = default;
                                 Datagram ( const Datagram& datagram );
                                 Datagram ( Datagram&& datagram );
-            explicit            Datagram ( const std::string& message , AddressUniPtr&& addressUniPtr );
+            explicit            Datagram ( const std::string& message , AddressUniPtr addressUniPtr );
             virtual             ~Datagram ( void ) noexcept = default;
             Datagram&           operator= ( Datagram datagram );
             void                swap ( Datagram& datagram );

@@ -54,10 +54,12 @@ namespace Unet
             case AF_INET:
             {
                 addressUniPtr.reset(new Ipv4Address());
+                break;
             }
             case AF_INET6:
             {
                 addressUniPtr.reset(new Ipv6Address());
+                break;
             }
             default:
             {

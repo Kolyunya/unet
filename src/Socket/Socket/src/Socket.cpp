@@ -248,15 +248,20 @@ namespace Unet
     AddressUniPtr       Socket::getPeerAddress ( void ) const
     {
 
+    std::cout << "getpeeraddress" << std::endl;
+
         // Address will construct an address object from raw data
         AddressFactory addressFactory;
+    std::cout << "1111111111111" << std::endl;
 
         // Get pointers to raw data from address factory
         sockaddr* addressDataPtr = addressFactory.getDataPtr();
         socklen_t* addressSizePtr = addressFactory.getSizePtr();
+    std::cout << "2222222222222222222222" << std::endl;
 
         // "addressSizePtr" must point to the size of buffer pointed by "addressDataPtr"
         *addressSizePtr = Address::getSizeLimit();
+    std::cout << "333333333333333333333" << std::endl;
 
         // Get local socket address
         int getPeerAddressSuccess = getpeername     (
@@ -264,15 +269,18 @@ namespace Unet
                                                         addressDataPtr,
                                                         addressSizePtr
                                                     );
+    std::cout << "444444444444444444444444444444" << std::endl;
 
         // Check operation success
         if ( getPeerAddressSuccess != 0 )
         {
-
+std::cout << "EXCEPTION!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
             throw Exception(ExcCouldNotRetrieveSocketPeerAddress,true);
 
         }
 
+//std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << addressFactory.getProduct()->toString() << std::endl;
+std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"  << std::endl;
         return addressFactory.getProduct();
 
     }

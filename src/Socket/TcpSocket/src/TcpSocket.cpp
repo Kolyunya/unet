@@ -30,7 +30,7 @@ namespace Unet
 
                         TcpSocket::TcpSocket ( TcpSocket&& tcpSocket )
                             :
-                                TcpSocket()
+                                TcpSocket(AF_INET)
     {
         this->swap(tcpSocket);
     }
@@ -139,13 +139,13 @@ namespace Unet
 
     }
 
-    std::string         TcpSocket::peekMessage ( char messageTerminator , int options )
+    std::string         TcpSocket::peekMessageByDelimiter ( char messageDelimiter , int options )
     {
 
         //  Add "MSG_PEEK" to "recieve_flags". Otherwise data will be removed from socket input buffer
         options |= MSG_PEEK;
 
-        return this->recieveMessage(messageTerminator,options);
+        return this->recieveMessage(messageDelimiter,options);
 
     }
 
@@ -188,21 +188,22 @@ namespace Unet
 
     }
 
-    std::string         TcpSocket::recieveMessage ( char messageTerminator , int options )
+    std::string         TcpSocket::recieveMessageByDelimiter ( char messageDelimiter , int options )
     {
-
         std::string messageAvailable;
         size_t messageTerminatorPosition;
 
         while ( true )
         {
-
             messageAvailable = this->peekMessage();
-            messageTerminatorPosition = messageAvailable.find_first_of(messageTerminator);
+
+            messageTerminatorPosition = messageAvailable.find_first_of(messageDelimiter);
+
+            std::coutmt << "Delim position: " << messageTerminatorPosition << std::endl;
 
             if ( messageTerminatorPosition != std::string::npos )
             {
-
+std::coutmt << "ok: " << std::endl;
                 //  "messageTerminatorPosition" found in the "messageAvailable"
                 return this->recieveMessage(++messageTerminatorPosition,options);
 
@@ -211,10 +212,11 @@ namespace Unet
             if ( this->isNonBlocking() )
             {
 
+std::coutmt << "exc: " << std::endl;
+
                 throw Exception(ExcMessageHasNotBeenDelieveredYet);
 
             }
-
         }
 
         return messageAvailable;

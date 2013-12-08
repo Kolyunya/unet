@@ -13,7 +13,9 @@
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
                                                         './../../../Exception/Exception/build/Exception.gyp:Exception',
+                                                        './../../../Address/AddressFactory/build/AddressFactory.gyp:AddressFactory',
                                                         './../../../Address/Address/build/Address.gyp:Address',
+                                                        './../../../Address/NullAddress/build/NullAddress.gyp:NullAddress',
                                                         './../../../File/File/build/File.gyp:File',
                                                     ],
                         'UNIT_CFLAGS'           :   [

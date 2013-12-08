@@ -9,6 +9,11 @@
 #include <Unet/TcpSocket.hpp>
 #include <Unet/Datagram.hpp>
 
+
+
+#include <iostream.hpp>
+
+
 namespace Unet
 {
 
@@ -31,6 +36,7 @@ namespace Unet
             void                        setConnectionsLimit ( unsigned char connectionsLimit );
             void                        launch ( void ) override;
             void                        stop ( void ) override;
+            void                        sendDatagram ( Unet::Datagram& datagram );
         protected:
             void                        launchSocket ( void );
             void                        launchRoutines ( void );

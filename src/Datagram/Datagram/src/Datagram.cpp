@@ -30,11 +30,13 @@ namespace Unet
         this->swap(datagram);
     }
 
-                    Datagram::Datagram ( const std::string& message , AddressUniPtr&& addressUniPtr )
+                    Datagram::Datagram ( const std::string& message , AddressUniPtr addressUniPtr )
                         :
                             message(message),
                             addressUniPtr(std::move(addressUniPtr))
     {
+
+std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" <<std::endl;
     }
 
     Datagram&       Datagram::operator= ( Datagram datagram )

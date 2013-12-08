@@ -28,7 +28,7 @@
 #include <Unet/SocketException.hpp>     //  Unet::Exception
                                         //  Unet::Address
 #include <Unet/NullAddress.hpp>         //  Unet::NullAddress
-
+#include <iostream>
 namespace Unet
 {
     class Socket
