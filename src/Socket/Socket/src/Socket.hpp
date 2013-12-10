@@ -28,7 +28,7 @@
 #include <Unet/SocketException.hpp>     //  Unet::Exception
                                         //  Unet::Address
 #include <Unet/NullAddress.hpp>         //  Unet::NullAddress
-#include <iostream>
+
 namespace Unet
 {
     class Socket
@@ -52,6 +52,8 @@ namespace Unet
             size_t              getUnreadDataSize ( void ) const;
                                 template <typename OptionType>
             void                setOption ( int optionName , const OptionType& optionValue , int protocolLevel = SOL_SOCKET );
+            void                setBlocking ( void );
+            void                setNonBlocking ( void );
         protected:
             virtual int         allocate ( void ) override;
             int                 domain;

@@ -22,7 +22,7 @@
 #include <utility>              //  std::swap
 #include <netinet/in.h>         //  IPPROTO_TCP
 #include <Unet/Socket.hpp>      //  Unet::Socket
-#include <iostream.hpp>
+
 namespace Unet
 {
     class TcpSocket
@@ -47,7 +47,7 @@ namespace Unet
             std::string         peekMessageByDelimiter ( char messageDelimiter , int options = 0 );
             std::string         recieveMessage ( size_t messageSize = 0 , int options = 0 );
             std::string         recieveMessageByDelimiter ( char messageDelimiter = 0 , int options = 0 );
-            void                sendMessage ( const std::string& message , int options = 0 );
+            void                sendMessage ( const std::string& message , int options = 0 ) const;
         protected:
             char                messageDelimiter;
             char                connectionsLimit;

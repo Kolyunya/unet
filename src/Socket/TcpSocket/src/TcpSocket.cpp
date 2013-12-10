@@ -197,25 +197,22 @@ namespace Unet
         {
             messageAvailable = this->peekMessage();
 
-            messageTerminatorPosition = messageAvailable.find_first_of(messageDelimiter);
+            if ( messageAvailable[0] == '\0' )
+            {
+                return "";
+            }
 
-            std::coutmt << "Delim position: " << messageTerminatorPosition << std::endl;
+            messageTerminatorPosition = messageAvailable.find_first_of(messageDelimiter);
 
             if ( messageTerminatorPosition != std::string::npos )
             {
-std::coutmt << "ok: " << std::endl;
                 //  "messageTerminatorPosition" found in the "messageAvailable"
                 return this->recieveMessage(++messageTerminatorPosition,options);
-
             }
 
             if ( this->isNonBlocking() )
             {
-
-std::coutmt << "exc: " << std::endl;
-
                 throw Exception(ExcMessageHasNotBeenDelieveredYet);
-
             }
         }
 
@@ -223,7 +220,7 @@ std::coutmt << "exc: " << std::endl;
 
     }
 
-    void                TcpSocket::sendMessage ( const std::string& message , int options )
+    void                TcpSocket::sendMessage ( const std::string& message , int options ) const
     {
 
         //  @no_throw_guarantee        Strong no-throw guarantee
