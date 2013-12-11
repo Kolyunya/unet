@@ -1,5 +1,5 @@
-#ifndef _TCP_SERVER_EVENTS_HPP_
-#define _TCP_SERVER_EVENTS_HPP_
+#ifndef _UNET_TCP_SERVER_EVENTS_HPP_
+#define _UNET_TCP_SERVER_EVENTS_HPP_
 
 #include <event.hpp>
 
@@ -38,4 +38,4 @@ namespace Unet
 
 }
 
-#endif  //  _TCP_SERVER_EVENTS_HPP_
+#endif  //  _UNET_TCP_SERVER_EVENTS_HPP_
