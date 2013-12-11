@@ -6,7 +6,7 @@ namespace Unet
                         TcpServer::TcpServer ( void )
                             :
                                 threadAccept(std::bind(TcpServer::routineAccept,this)),
-                                threadRecieve(std::bind(TcpServer::routineRecieve,this))
+                                threadReceive(std::bind(TcpServer::routineReceive,this))
     {
 
     }
@@ -29,31 +29,43 @@ namespace Unet
         return this->threadAccept.isActive();
     }
 
-    unsigned char       TcpServer::getMessageDelimiter ( void ) const
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        return this->serverSocket.getMessageDelimiter();
-    }
-
-    void                TcpServer::setMessageDelimiter ( unsigned char messageDelimiter )
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->serverSocket.setMessageDelimiter(messageDelimiter);
-    }
-
-    unsigned char       TcpServer::getConnectionsLimit ( void ) const
+    int                 TcpServer::getConnectionsLimit ( void ) const
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         return this->serverSocket.getConnectionsLimit();
     }
 
-    void                TcpServer::setConnectionsLimit ( unsigned char connectionsLimit )
+    void                TcpServer::setConnectionsLimit ( int connectionsLimit )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->serverSocket.setConnectionsLimit(connectionsLimit);
     }
 
-    void                TcpServer::launch ( void )
+    size_t              TcpServer::getMessageSize ( void ) const
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        return this->serverSocket.getMessageSize();
+    }
+
+    void                TcpServer::setMessageSize ( size_t messageSize )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        return this->serverSocket.setMessageSize(messageSize);
+    }
+
+    std::string         TcpServer::getMessageDelimiter ( void ) const
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        return this->serverSocket.getMessageDelimiter();
+    }
+
+    void                TcpServer::setMessageDelimiter ( const std::string& messageDelimiter )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->serverSocket.setMessageDelimiter(messageDelimiter);
+    }
+
+    void                TcpServer::start ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsNotLaunched();
@@ -77,6 +89,14 @@ namespace Unet
         this->messageSentEvent.dispatch(tcpSocket,message);
     }
 
+    void                TcpServer::sendMessageWithDelimiter ( const TcpSocket& tcpSocket , const std::string& message )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->checkIsLaunched();
+        tcpSocket.sendMessageWithDelimiter(message);
+        this->messageSentEvent.dispatch(tcpSocket,message);
+    }
+
     void                TcpServer::launchSocket ( void )
     {
         this->serverSocket.open();
@@ -89,13 +109,13 @@ namespace Unet
     void                TcpServer::launchRoutines ( void )
     {
         this->threadAccept.launch();
-        this->threadRecieve.launch();
+        this->threadReceive.launch();
     }
 
     void                TcpServer::stopRoutines ( void )
     {
         this->threadAccept.stop();
-        this->threadRecieve.stop();
+        this->threadReceive.stop();
     }
 
     void                TcpServer::stopSocket ( void )
@@ -105,19 +125,23 @@ namespace Unet
 
     void                TcpServer::routineAccept ( TcpServer* tcpServerPtr )
     {
+
         //  Try to lock "serverMutex"
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
             tcpSocket.setNonBlocking();
+            //tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
+            //cpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
         }
     }
 
-    void                TcpServer::routineRecieve ( TcpServer* tcpServerPtr )
+    void                TcpServer::routineReceive ( TcpServer* tcpServerPtr )
     {
+
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
@@ -131,13 +155,13 @@ namespace Unet
                     {
                         try
                         {
-                            std::string recievedMessage = clientSocket.recieveMessageByDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
-                            if ( recievedMessage == "" )
-                            {
-                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                                return true;
-                            }
-                            tcpServerPtr->messageReceivedEvent.dispatch(clientSocket,recievedMessage);
+                            std::string receivedMessage = clientSocket.receiveMessageByDelimiter();
+//                            if ( receivedMessage == "" )
+//                            {
+//                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+//                                return true;
+//                            }
+                            tcpServerPtr->messageReceivedEvent.dispatch(clientSocket,receivedMessage);
                             return false;
                         }
                         catch ( ... )

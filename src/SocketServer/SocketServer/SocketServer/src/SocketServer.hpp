@@ -15,8 +15,9 @@ namespace Unet
             Unet::AddressUniPtr             getAddress ( void ) const;
             void                            setAddress ( Unet::AddressUniPtr addressUniPtr );
             virtual bool                    getLaunched ( void ) const = 0;
-            virtual void                    launch ( void ) = 0;
+            virtual void                    start ( void ) = 0;
             virtual void                    stop ( void ) = 0;
+            void                            restart ( void );
         protected:
             void                            checkIsLaunched ( void ) const;
             void                            checkIsNotLaunched ( void ) const;

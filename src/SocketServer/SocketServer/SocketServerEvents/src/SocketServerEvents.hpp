@@ -1,0 +1,9 @@
+#ifndef _UNET_SOCKET_SERVER_EVENTS_HPP_
+#define _UNET_SOCKET_SERVER_EVENTS_HPP_
+
+namespace Unet
+{
+
+}
+
+#endif // _UNET_SOCKET_SERVER_EVENTS_HPP_

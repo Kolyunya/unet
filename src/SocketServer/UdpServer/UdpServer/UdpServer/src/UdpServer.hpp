@@ -18,7 +18,7 @@ namespace Unet
             explicit                        UdpServer ( void );
             virtual                         ~UdpServer ( void ) noexcept override;
             bool                            getLaunched ( void ) const override;
-            void                            launch ( void ) override;
+            void                            start ( void ) override;
             void                            stop ( void ) override;
             void                            sendDatagram ( Unet::Datagram& datagram );
         protected:

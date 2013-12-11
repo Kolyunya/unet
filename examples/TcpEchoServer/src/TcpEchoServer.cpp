@@ -36,17 +36,13 @@ int main ( int argc , char** argv )
     Unet::TcpEchoServer tcpEchoServer;
 
 	//	Define the address which the server will listen to
-    //tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
-    tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::NullAddress()));
+    tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
 
     //  Set message delimiter
-    tcpEchoServer.setMessageDelimiter(*argv[3]);
-
-    //  Set connections limit
-    tcpEchoServer.setConnectionsLimit(10);
+    tcpEchoServer.setMessageDelimiter("$");
 
 	//	Launch the server
-    tcpEchoServer.launch();
+    tcpEchoServer.start();
 
 	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
 	//	to prevent the program from finishing it's execution

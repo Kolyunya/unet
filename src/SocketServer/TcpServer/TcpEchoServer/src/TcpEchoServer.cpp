@@ -36,7 +36,7 @@ namespace Unet
         messageReceievedEventMessage += " -> ";
         messageReceievedEventMessage += message;
         this->log(messageReceievedEventMessage);
-        this->sendMessage(tcpSocket,message);
+        this->sendMessageWithDelimiter(tcpSocket,message);
     }
 
     void    TcpEchoServer::messageSentEventHandler ( const TcpSocket& tcpSocket , const std::string& message )

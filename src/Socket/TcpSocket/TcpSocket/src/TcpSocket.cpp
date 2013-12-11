@@ -23,7 +23,10 @@ namespace Unet
 
                         TcpSocket::TcpSocket ( int domain , int protocol , int descriptor )
                             :
-                                Socket(domain,SOCK_STREAM,protocol,descriptor)
+                                Socket(domain,SOCK_STREAM,protocol,descriptor),
+                                connectionsLimit(128),
+                                messageSize(0),
+                                messageDelimiter("\0")
     {
 
     }
@@ -32,6 +35,7 @@ namespace Unet
                             :
                                 TcpSocket(AF_INET)
     {
+
         this->swap(tcpSocket);
     }
 
@@ -48,42 +52,44 @@ namespace Unet
         std::swap(this->connectionsLimit,tcpSocket.connectionsLimit);
     }
 
-    unsigned char       TcpSocket::getMessageDelimiter ( void ) const
+    int                 TcpSocket::getConnectionsLimit ( void ) const
     {
-        if ( this->messageDelimiter < 0 )
+        return this->connectionsLimit;
+    }
+
+    void                TcpSocket::setConnectionsLimit ( int connectionsLimit )
+    {
+        if ( connectionsLimit < 0 )
         {
-            throw EXCEPTION(MessageDelimiterIsNotDefined);
+            throw EXCEPTION(InvalidConnectionsLimitNumber);
         }
-        return static_cast<unsigned int>(this->messageDelimiter);
+        this->connectionsLimit = connectionsLimit;
     }
 
-    void                TcpSocket::setMessageDelimiter ( unsigned char messageDelimiter )
+    size_t              TcpSocket::getMessageSize ( void ) const
     {
-        this->messageDelimiter = static_cast<int>(messageDelimiter);
+        return this->messageSize;
     }
 
-    void                TcpSocket::unsetMessageDelimiter ( void )
+    void                TcpSocket::setMessageSize ( size_t messageSize )
     {
-        this->messageDelimiter = -1;
-    }
-
-    unsigned char       TcpSocket::getConnectionsLimit ( void ) const
-    {
-        if ( this->connectionsLimit < 0 )
+        if ( messageSize == 0 )
         {
-            throw EXCEPTION(ConnectionsLimitIsNotDefined);
+            throw EXCEPTION(InvalidMessageSize);
         }
-        return static_cast<unsigned int>(this->connectionsLimit);
+        this->messageSize = messageSize;
     }
 
-    void                TcpSocket::setConnectionsLimit ( unsigned char connectionsLimit )
+    std::string         TcpSocket::getMessageDelimiter ( void ) const
     {
-        this->connectionsLimit = static_cast<int>(connectionsLimit);
+        return this->messageDelimiter;
     }
 
-    void                TcpSocket::unsetConnectionsLimit ( void )
+    void                TcpSocket::setMessageDelimiter ( const std::string& messageDelimiter )
     {
-        this->connectionsLimit = -1;
+
+        this->messageDelimiter = messageDelimiter;
+
     }
 
     void                TcpSocket::listen ( void )
@@ -129,98 +135,126 @@ namespace Unet
                             );
     }
 
-    std::string         TcpSocket::peekMessage ( size_t messageSize , int options )
+    std::string         TcpSocket::receiveDataBySize ( size_t dataSize , int receiveOptions )
     {
 
-        //  Add "MSG_PEEK" to "recieve_flags". Otherwise data will be removed from socket input buffer
-        options |= MSG_PEEK;
+        std::string receivedData;
+        size_t unreadDataSize = this->getUnreadDataSize();
 
-        return this->recieveMessage(messageSize,options);
-
-    }
-
-    std::string         TcpSocket::peekMessageByDelimiter ( char messageDelimiter , int options )
-    {
-
-        //  Add "MSG_PEEK" to "recieve_flags". Otherwise data will be removed from socket input buffer
-        options |= MSG_PEEK;
-
-        return this->recieveMessage(messageDelimiter,options);
-
-    }
-
-    std::string         TcpSocket::recieveMessage ( size_t messageSize , int options )
-    {
-
-        this->waitForUnreadData(messageSize);
-
-        std::string messageData;
-
-        if ( messageSize == 0 )
+        //  If requested to read all unread data
+        if ( dataSize == 0 )
         {
 
-            messageData.resize(this->getUnreadDataSize(),'\0');
+            //  And there is no unread data
+            if ( unreadDataSize == 0 )
+            {
+
+                //  return empty string
+                return "";
+
+            }
+
+            //  Resize the buffer to hold all unread data
+            receivedData.resize(unreadDataSize);
+
+        }
+
+        //  If requested to read a specific amount of data
+        //  And that amount didn't arrive yet
+        else if ( unreadDataSize < dataSize )
+        {
+
+            receivedData.resize(dataSize);
+            this->waitForUnreadData(dataSize);
 
         }
 
         else
         {
 
-            messageData.resize(messageSize,'\0');
+            receivedData.resize(dataSize);
 
         }
 
-        ssize_t messageBytesRead = recv (
-                                            this->getDescriptor(),
-                                            &messageData[0],
-                                            messageData.size(),
-                                            options
-                                        );
+        ssize_t receivedDataBytesRead = recv    (
+                                                    this->getDescriptor(),
+                                                    &receivedData[0],
+                                                    receivedData.size(),
+                                                    receiveOptions
+                                                );
 
-        if ( messageBytesRead < 0 )
+        if ( receivedDataBytesRead < 0 )
         {
-
             throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
-
         }
 
-        return messageData;
+        //  Check if peer disconnected
+        TcpSocket::checkReceiveMessageForDisconnect(receivedData);
+
+        return receivedData;
 
     }
 
-    std::string         TcpSocket::recieveMessageByDelimiter ( char messageDelimiter , int options )
+    std::string         TcpSocket::receiveMessageBySize ( int receiveOptions )
     {
-        std::string messageAvailable;
-        size_t messageTerminatorPosition;
+        return this->receiveDataBySize(this->messageSize,receiveOptions);
+    }
+
+    std::string         TcpSocket::receiveMessageByDelimiter ( int receiveOptions )
+    {
+
+        std::string unreadData;
+        size_t messageTerminatorPosition=0;
 
         while ( true )
         {
-            messageAvailable = this->peekMessage();
 
-            if ( messageAvailable[0] == '\0' )
-            {
-                return "";
-            }
+            //  Peek all unread data
+            unreadData = this->peekDataBySize();
 
-            messageTerminatorPosition = messageAvailable.find_first_of(messageDelimiter);
+            //  Check if peer disconnected
+            TcpSocket::checkReceiveMessageForDisconnect(unreadData);
+
+            messageTerminatorPosition = unreadData.find_first_of(this->getMessageDelimiter());
 
             if ( messageTerminatorPosition != std::string::npos )
             {
-                //  "messageTerminatorPosition" found in the "messageAvailable"
-                return this->recieveMessage(++messageTerminatorPosition,options);
+                //  "messageDelimiter" found in the "unreadData"
+                std::string messageReceived = this->receiveDataBySize(messageTerminatorPosition,receiveOptions);
+                this->receiveDataBySize(this->getMessageDelimiter().size(),receiveOptions);
+                return messageReceived;
             }
 
             if ( this->isNonBlocking() )
             {
                 throw EXCEPTION(MessageHasNotBeenDelieveredYet);
             }
+
         }
-
-        return messageAvailable;
-
     }
 
-    void                TcpSocket::sendMessage ( const std::string& message , int options ) const
+    std::string         TcpSocket::peekDataBySize ( size_t dataSize , int peekOptions )
+    {
+        //  Add "MSG_PEEK" to "peekOptions". Otherwise data will be removed from socket input buffer
+        peekOptions |= MSG_PEEK;
+        return this->receiveDataBySize(dataSize,peekOptions);
+    }
+
+    std::string         TcpSocket::peekMessageBySize ( int peekOptions )
+    {
+        //  Add "MSG_PEEK" to "peekOptions". Otherwise data will be removed from socket input buffer
+        peekOptions |= MSG_PEEK;
+        return this->receiveMessageBySize(peekOptions);
+    }
+
+    std::string         TcpSocket::peekMessageByDelimiter ( int peekOptions )
+    {
+        //  Add "MSG_PEEK" to "peekOptions". Otherwise data will be removed from socket input buffer
+        peekOptions |= MSG_PEEK;
+        return this->receiveMessageByDelimiter(peekOptions);
+    }
+
+    void                TcpSocket::sendMessage ( const std::string& message , int sendOptions ) const
     {
 
         //  @no_throw_guarantee        Strong no-throw guarantee
@@ -233,14 +267,12 @@ namespace Unet
                                                 this->getDescriptor(),
                                                 message.data(),
                                                 messageSize,
-                                                options
+                                                sendOptions
                                             );
 
         if ( messageBytesSent < 0 )
         {
-
             throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
-
         }
 
         //  "sendMessage" may actually sendMessage less bytes than "data" contains. It's also an exceptional situation, thus must be checked for.
@@ -248,9 +280,22 @@ namespace Unet
         //  "messageBytesSent" is guaranteed to be non-negative at this point, thus it can be correctly cast to "size_t".
         else if ( static_cast<size_t>(messageBytesSent) < messageSize )
         {
-
             throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
+        }
 
+    }
+
+    void                TcpSocket::sendMessageWithDelimiter ( const std::string& message , int sendOptions ) const
+    {
+        std::string messageWithDelimiter = message + std::string(this->messageDelimiter);
+        this->sendMessage(messageWithDelimiter,sendOptions);
+    }
+
+    void                TcpSocket::checkReceiveMessageForDisconnect ( const std::string& receivedMessage )
+    {
+        if ( receivedMessage[0] == '\0' )
+        {
+            throw EXCEPTION(PeerDisconnected);
         }
 
     }

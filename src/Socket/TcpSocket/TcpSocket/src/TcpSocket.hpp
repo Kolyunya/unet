@@ -36,22 +36,27 @@ namespace Unet
             TcpSocket&          operator= ( TcpSocket&& tcpSocket );
             void                swap ( TcpSocket& tcpSocket );
             virtual             ~TcpSocket ( void ) noexcept override = default;
-            unsigned char       getMessageDelimiter ( void ) const;
-            void                setMessageDelimiter ( unsigned char messageDelimiter );
-            void                unsetMessageDelimiter ( void );
-            unsigned char       getConnectionsLimit ( void ) const;
-            void                setConnectionsLimit ( unsigned char connectionsLimit );
-            void                unsetConnectionsLimit ( void );
+            int                 getConnectionsLimit ( void ) const;
+            void                setConnectionsLimit ( int connectionsLimit );
+            size_t              getMessageSize ( void ) const;
+            void                setMessageSize ( size_t messageSize );
+            std::string         getMessageDelimiter ( void ) const;
+            void                setMessageDelimiter ( const std::string& messageDelimiter );
             void                listen ( void );
             TcpSocket           accept ( void );
-            std::string         peekMessage ( size_t messageSize = 0 , int options = 0 );
-            std::string         peekMessageByDelimiter ( char messageDelimiter , int options = 0 );
-            std::string         recieveMessage ( size_t messageSize = 0 , int options = 0 );
-            std::string         recieveMessageByDelimiter ( char messageDelimiter = 0 , int options = 0 );
-            void                sendMessage ( const std::string& message , int options = 0 ) const;
+            std::string         receiveDataBySize ( size_t dataSize = 0 , int receiveOptions = 0 );
+            std::string         receiveMessageBySize ( int receiveOptions = 0 );
+            std::string         receiveMessageByDelimiter ( int receiveOptions = 0 );
+            std::string         peekDataBySize ( size_t dataSize = 0 , int peekOptions = 0 );
+            std::string         peekMessageBySize ( int peekOptions = 0 );
+            std::string         peekMessageByDelimiter ( int peekOptions = 0 );
+            void                sendMessage ( const std::string& message , int sendOptions = 0 ) const;
+            void                sendMessageWithDelimiter ( const std::string& message , int sendOptions = 0 ) const;
         protected:
-            char                messageDelimiter;
-            char                connectionsLimit;
+            static void         checkReceiveMessageForDisconnect ( const std::string& receivedMessage );
+            int                 connectionsLimit;
+            size_t              messageSize;
+            std::string         messageDelimiter;
     };
 }
 

@@ -21,6 +21,12 @@ namespace Unet
         this->addressUniPtr = std::move(addressUniPtr);
     }
 
+    void                    SocketServer::restart ( void )
+    {
+        this->stop();
+        this->start();
+    }
+
     void                    SocketServer::checkIsLaunched ( void ) const
     {
         if ( this->getLaunched() == false )

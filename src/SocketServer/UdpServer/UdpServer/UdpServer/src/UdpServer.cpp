@@ -29,7 +29,7 @@ namespace Unet
         return this->recieveThread.isActive();
     }
 
-    void    UdpServer::launch ( void )
+    void    UdpServer::start ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsNotLaunched();
