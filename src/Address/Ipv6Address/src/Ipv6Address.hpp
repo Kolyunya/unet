@@ -23,7 +23,6 @@
 #include <arpa/inet.h>                  //  inet_pton
 #include <string.hpp>                   //  std::string_to_int
                                         //  std::number_to_string
-#include <Unet/SocketException.hpp>     //  Unet::Exception
 #include <Unet/Address.hpp>             //  Unet::PosixAddress
 
 namespace Unet

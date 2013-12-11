@@ -21,16 +21,14 @@
 namespace Unet
 {
 
-                            Exception::Exception ( void )
+                            Exception::Exception ( bool systemError )
     {
-
+        this->makeMessage({},systemError);
     }
 
                             Exception::Exception ( const std::string& message , bool systemError )
     {
-
         this->makeMessage(message,systemError);
-
     }
 
                             Exception::Exception ( const std::initializer_list<std::string>& messages , bool systemError )
@@ -61,10 +59,15 @@ namespace Unet
 
     void                    Exception::makeMessage ( const std::initializer_list<std::string>& messages , bool systemError )
     {
+        size_t messageId = 0;
         for ( auto message : messages )
         {
+            messageId++;
             this->message += message;
-            this->message += "\n";
+            if ( messageId != messages.size() )
+            {
+                this->message += "\n";
+            }
         }
 
         this->appendSystemErrorMessage(systemError);
@@ -74,6 +77,7 @@ namespace Unet
     {
         if ( systemError )
         {
+            this->message += "\n";
             this->message += "System error #";
             this->message += std::number_to_string(errno);
             this->message += " - ";

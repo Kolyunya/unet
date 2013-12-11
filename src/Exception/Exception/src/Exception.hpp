@@ -33,7 +33,7 @@ namespace Unet
             public std::exception
     {
         public:
-            explicit                Exception ( void );
+            explicit                Exception ( bool systemError = false );
             explicit                Exception ( const std::string& message , bool systemError = false );
             explicit                Exception ( const std::initializer_list<std::string>& messages , bool systemError = false );
             virtual                 ~Exception ( void ) noexcept = default;
@@ -46,5 +46,9 @@ namespace Unet
             std::string             message;
     };
 }
+
+#define EXCEPTION(message) Exception({__PRETTY_FUNCTION__,message})
+
+#define SYSTEM_EXCEPTION(message) Exception({__PRETTY_FUNCTION__,message},true)
 
 #endif  //  _UNET_EXCEPTION_HPP_

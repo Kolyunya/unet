@@ -21,35 +21,35 @@
 namespace Unet
 {
 
-                    Ipv4Address::Ipv4Address ( const Address& address )
-                        :
-                            Address(address)
+                        Ipv4Address::Ipv4Address ( const Address& address )
+                            :
+                                Address(address)
     {
 
     }
 
-                    Ipv4Address::Ipv4Address ( const sockaddr_in& ipv4Address )
+                        Ipv4Address::Ipv4Address ( const sockaddr_in& ipv4Address )
     {
 
         this->copyAddress(ipv4Address);
 
     }
 
-                    Ipv4Address::Ipv4Address ( const std::string& ipv4 , const std::string& port )
+                        Ipv4Address::Ipv4Address ( const std::string& ipv4 , const std::string& port )
     {
 
         this->copyAddress(Ipv4Address::stringToIpv4Address(ipv4,port));
 
     }
 
-                    Ipv4Address::Ipv4Address ( const std::string& ipv4 , unsigned short int port )
+                        Ipv4Address::Ipv4Address ( const std::string& ipv4 , unsigned short int port )
     {
 
         this->copyAddress(Ipv4Address::stringToIpv4Address(ipv4,port));
 
     }
 
-    Ipv4Address&    Ipv4Address::operator= ( const sockaddr_in& ipv4Address )
+    Ipv4Address&        Ipv4Address::operator= ( const sockaddr_in& ipv4Address )
     {
 
         this->copyAddress(ipv4Address);
@@ -57,21 +57,21 @@ namespace Unet
 
     }
 
-    AddressUniPtr   Ipv4Address::getCopyByUniPtr ( void ) const
+    AddressUniPtr       Ipv4Address::getCopyByUniPtr ( void ) const
     {
 
         return AddressUniPtr(new Ipv4Address(*this));
 
     }
 
-    AddressShrPtr   Ipv4Address::getCopyByShrPtr ( void ) const
+    AddressShrPtr       Ipv4Address::getCopyByShrPtr ( void ) const
     {
 
         return AddressShrPtr(new Ipv4Address(*this));
 
     }
 
-    std::string     Ipv4Address::toString ( void ) const
+    std::string         Ipv4Address::toString ( void ) const
     {
 
         const sockaddr_in* addressPtr = reinterpret_cast <const sockaddr_in*> (this->getDataPtr());
@@ -79,7 +79,7 @@ namespace Unet
 
     }
 
-    in_addr         Ipv4Address::stringToIpv4Address ( const std::string& ipv4 )
+    in_addr             Ipv4Address::stringToIpv4Address ( const std::string& ipv4 )
     {
 
         in_addr ipv4Address;
@@ -87,37 +87,28 @@ namespace Unet
 
         int ipv4AddressConversionResult = inet_pton(AF_INET,ipv4.data(),&ipv4Address);
 
+        if ( ipv4AddressConversionResult == -1 )
+        {
+            throw SYSTEM_EXCEPTION(InvalidNetworkAddressFamily);
+        }
+
         if ( ipv4AddressConversionResult == 0 )
         {
-
-            throw Exception(ExcStringDoesNotRepresentValidNetworkAddress);
-
-        }
-        else if ( ipv4AddressConversionResult == -1 )
-        {
-
-            throw Exception(ExcStringCouldNotBeConvertedToNetworkAddress,true);
-
-        }
-        else if ( ipv4AddressConversionResult != 1 )
-        {
-
-            throw Exception(ExcStringCouldNotBeConvertedToNetworkAddress);
-
+            throw EXCEPTION(StringDoesNotRepresentValidNetworkAddress);
         }
 
         return ipv4Address;
 
     }
 
-    sockaddr_in     Ipv4Address::stringToIpv4Address ( const std::string& ipv4 , const std::string& port )
+    sockaddr_in         Ipv4Address::stringToIpv4Address ( const std::string& ipv4 , const std::string& port )
     {
 
         return stringToIpv4Address(ipv4,std::string_to_int(port));
 
     }
 
-    sockaddr_in     Ipv4Address::stringToIpv4Address ( const std::string& ipv4 , unsigned short int port )
+    sockaddr_in         Ipv4Address::stringToIpv4Address ( const std::string& ipv4 , unsigned short int port )
     {
 
         sockaddr_in ipv4Address;
@@ -131,7 +122,7 @@ namespace Unet
 
     }
 
-    std::string     Ipv4Address::ipv4AddressToString ( const in_addr& ipv4Address )
+    std::string         Ipv4Address::ipv4AddressToString ( const in_addr& ipv4Address )
     {
 
         char ipv4AddressBuffer[INET_ADDRSTRLEN];
@@ -145,16 +136,14 @@ namespace Unet
 
         if ( ipv4AddressString == nullptr )
         {
-
-            throw Exception(ExcNetworkAddressCouldNotBeconvertedToString,true);
-
+            throw SYSTEM_EXCEPTION(NetworkAddressCouldNotBeconvertedToString);
         }
 
         return ipv4AddressString;
 
     }
 
-    std::string     Ipv4Address::ipv4AddressToString ( const sockaddr_in& ipv4Address )
+    std::string         Ipv4Address::ipv4AddressToString ( const sockaddr_in& ipv4Address )
     {
 
         std::string ipv4AddressIp = Ipv4Address::ipv4AddressToString(ipv4Address.sin_addr);

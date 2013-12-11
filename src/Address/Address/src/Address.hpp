@@ -19,15 +19,15 @@
 #ifndef _ADDRESS_HPP_
 #define _ADDRESS_HPP_
 
-#include <sys/socket.h>             //  socklen_t
-                                    //  sa_family_t
-                                    //  sockaddr_storage
-#include <cstring>                  //  memset
-                                    //  memcpy
-                                    //  memcmp
-#include <string>                   //  std::string
-#include <memory>                   //  std::shared_ptr
-#include <Unet/Exception.hpp>       //  Unet::Exception
+#include <sys/socket.h>                     //  socklen_t
+                                            //  sa_family_t
+                                            //  sockaddr_storage
+#include <cstring>                          //  memset
+                                            //  memcpy
+                                            //  memcmp
+#include <string>                           //  std::string
+#include <memory>                           //  std::shared_ptr
+#include <Unet/AddressExceptions.hpp>       //  Unet::Exception
 
 namespace Unet
 {

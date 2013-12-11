@@ -5,7 +5,7 @@
     'variables' :   {
                         'UNIT_NAME'             :   'Ipv4Address',
                         'UNIT_NEEDS_BUILDING'   :   'true',
-                        'UNIT_NEEDS_TESTSING'   :   'false',
+                        'UNIT_NEEDS_TESTSING'   :   'true',
                         'UNIT_SOURCES'          :   [
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).hpp',
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',

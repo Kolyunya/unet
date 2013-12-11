@@ -16,15 +16,14 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _IPV4_ADDRESS_HPP_
-#define _IPV4_ADDRESS_HPP_
+#ifndef _UNET_IPV4_ADDRESS_HPP_
+#define _UNET_IPV4_ADDRESS_HPP_
 
 #include <netinet/in.h>                 //  sockaddr_in
 #include <arpa/inet.h>                  //  inet_pton
 #include <string.hpp>                   //  std::string_to_int
                                         //  std::number_to_string
 #include <Unet/Address.hpp>             //  Unet::Address
-#include <Unet/SocketException.hpp>     //  Unet::Exception
 
 namespace Unet
 {
@@ -52,4 +51,4 @@ namespace Unet
     };
 }
 
-#endif  //  _IPV4_ADDRESS_HPP_
+#endif  //  _UNET_IPV4_ADDRESS_HPP_

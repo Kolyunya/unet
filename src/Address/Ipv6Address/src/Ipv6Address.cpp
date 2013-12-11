@@ -89,23 +89,14 @@ namespace Unet
 
         int ipv6AddressConversionResult = inet_pton(AF_INET6,ipv6.data(),&ipv6Address);
 
-        if ( ipv6AddressConversionResult == 0 )
+        if ( ipv6AddressConversionResult == -1 )
         {
-
-            throw Exception(ExcStringDoesNotRepresentValidNetworkAddress);
-
+            throw SYSTEM_EXCEPTION(InvalidNetworkAddressFamily);
         }
-        else if ( ipv6AddressConversionResult == -1 )
+
+        else if ( ipv6AddressConversionResult == 0 )
         {
-
-            throw Exception(ExcStringCouldNotBeConvertedToNetworkAddress,true);
-
-        }
-        else if ( ipv6AddressConversionResult != 1 )
-        {
-
-            throw Exception(ExcStringCouldNotBeConvertedToNetworkAddress);
-
+            throw EXCEPTION(StringDoesNotRepresentValidNetworkAddress);
         }
 
         return ipv6Address;
@@ -150,9 +141,7 @@ namespace Unet
 
         if ( ipv6AddressString == nullptr )
         {
-
-            throw Exception(ExcNetworkAddressCouldNotBeconvertedToString,true);
-
+            throw SYSTEM_EXCEPTION(NetworkAddressCouldNotBeconvertedToString);
         }
 
         return ipv6AddressString;
