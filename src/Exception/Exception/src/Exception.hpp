@@ -22,7 +22,8 @@
 #include <stdexcept>            //  std::exception
 #include <cerrno>               //  errno
 #include <cstring>              //  strrerror
-#include <string>               //  std::string
+#include <string.hpp>           //  std::string
+                                //  std::number_to_string
 #include <initializer_list>     //  std::initializer_list
 
 namespace Unet

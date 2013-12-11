@@ -36,7 +36,8 @@ int main ( int argc , char** argv )
     Unet::TcpEchoServer tcpEchoServer;
 
 	//	Define the address which the server will listen to
-    tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
+    //tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
+    tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::NullAddress()));
 
     //  Set message delimiter
     tcpEchoServer.setMessageDelimiter(*argv[3]);

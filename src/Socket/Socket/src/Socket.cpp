@@ -41,9 +41,7 @@ namespace Unet
         int socketBindResult = ::bind(socketDescriptor,addressDataPtr,addressSize);
         if ( socketBindResult != 0 )
         {
-
-            throw Exception(ExcSocketCouldNotBeBound,true);
-
+            throw Exception({__PRETTY_FUNCTION__,ExcSocketCouldNotBeBound},true);
         }
 
     }

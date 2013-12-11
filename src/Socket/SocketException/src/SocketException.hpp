@@ -30,7 +30,7 @@ namespace Unet
     static std::string ExcNetworkAddressFamilyIsNotSupported = "ExcNetworkAddressFamilyIsNotSupported";
     static std::string ExcNetworkAddressIsInvalid = "ExcNetworkAddressIsInvalid";
     static std::string ExcSocketOptionCouldNotBeSet = "ExcSocketOptionCouldNotBeSet";
-    static std::string ExcSocketCouldNotBeBound = "ExcSocketCouldNotBeBound";
+    static std::string ExcSocketCouldNotBeBound = "Socket could not be bound to the specified address";
     static std::string ExcSocketCouldNotBeListened = "ExcSocketCouldNotBeListened";
     static std::string ExcSocketCouldNotBeConnected = "ExcSocketCouldNotBeConnected";
     static std::string ExcSocketCouldNotBeShutdown = "ExcSocketCouldNotBeShutdown";
