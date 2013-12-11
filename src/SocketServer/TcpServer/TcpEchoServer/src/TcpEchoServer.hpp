@@ -1,14 +1,15 @@
 #ifndef _UNET_TCP_ECHO_SERVER_HPP_
 #define _UNET_TCP_ECHO_SERVER_HPP_
 
-#include <iostream.hpp>
+#include <log.hpp>
 #include <Unet/TcpServer.hpp>
 
 namespace Unet
 {
     class TcpEchoServer
         :
-            public TcpServer
+            public TcpServer,
+            public std::console_logger
     {
         public:
             explicit            TcpEchoServer ( void );
