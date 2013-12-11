@@ -57,7 +57,7 @@ namespace Unet
         if ( this->descriptor >= 0 )
         {
 
-            throw Exception(ExcFileDescriptorIsAlreadyOpened);
+            throw EXCEPTION(FileDescriptorIsAlreadyOpened);
 
         }
 
@@ -72,7 +72,7 @@ namespace Unet
         catch ( ... )
         {
 
-            throw Exception(ExcFileDescriptorCouldNotBeOpened);
+            throw EXCEPTION(FileDescriptorCouldNotBeOpened);
 
         }
 
@@ -84,7 +84,7 @@ namespace Unet
         if ( this->descriptor < 0 )
         {
 
-            throw Exception(ExcFileDescriptorIsAlreadyClosed);
+            throw EXCEPTION(FileDescriptorIsAlreadyClosed);
 
         }
 
@@ -99,7 +99,7 @@ namespace Unet
         catch ( ... )
         {
 
-            throw Exception(ExcFileDescriptorCouldNotBeClosed);
+            throw EXCEPTION(FileDescriptorCouldNotBeClosed);
 
         }
 
@@ -111,7 +111,7 @@ namespace Unet
         if ( this->descriptor < 0 )
         {
 
-            throw Exception(ExcFileDescriptorIsEmpty);
+            throw EXCEPTION(FileDescriptorIsEmpty);
 
         }
 
@@ -125,14 +125,14 @@ namespace Unet
         if ( descriptor < 0 )
         {
 
-            throw Exception({__PRETTY_FUNCTION__,ExcFileDescriptorIsInvalid});
+            throw EXCEPTION(FileDescriptorIsInvalid);
 
         }
 
         if ( this->descriptor >= 0 )
         {
 
-            throw Exception(ExcFileDescriptorIsAlreadyOpened);
+            throw EXCEPTION(FileDescriptorIsAlreadyOpened);
 
         }
 
@@ -147,7 +147,7 @@ namespace Unet
         if ( readyFor == 0 )
         {
 
-            throw Exception(ExcFileDescriptorOptionsListIsEmpty);
+            throw EXCEPTION(FileDescriptorOptionsListIsEmpty);
 
         }
 
@@ -197,7 +197,7 @@ namespace Unet
         if ( select_result < 0 )
         {
 
-            throw Exception(ExcFileDescriptorStatusCouldNotBeRetrieved,true);
+            throw SYSTEM_EXCEPTION(FileDescriptorStatusCouldNotBeRetrieved);
 
         }
 
@@ -262,7 +262,7 @@ namespace Unet
         if ( optionsActual == -1 )
         {
 
-            throw Exception(ExcFileDescriptorOptionsCouldNotBeRetrieved,true);
+            throw SYSTEM_EXCEPTION(FileDescriptorOptionsCouldNotBeRetrieved);
 
         }
 
@@ -278,7 +278,7 @@ namespace Unet
         if ( overrideOptionsResult == -1 )
         {
 
-            throw Exception(ExcFileDescriptorOptionsCouldNotBeSet,true);
+            throw SYSTEM_EXCEPTION(FileDescriptorOptionsCouldNotBeSet);
 
         }
 
@@ -310,7 +310,7 @@ namespace Unet
         if ( closeSuccess == -1 )
         {
 
-            throw Exception(ExcFileDescriptorCouldNotBeClosed,true);
+            throw SYSTEM_EXCEPTION(FileDescriptorCouldNotBeClosed);
 
         }
 

@@ -30,7 +30,7 @@
                                         //  F_GETFL
                                         //  F_SETFL
 #include <utility>                      //  std::swap
-#include <Unet/FileException.hpp>       //  Unet::Exception
+#include <Unet/FileExceptions.hpp>      //  Unet::Exception
 
 #define FD_IS_READY_FOR_READ 1          //  0 0 1   check if file descritop is ready for read
 #define FD_IS_READY_FOR_WRITE 2         //  0 1 0   check if file descritop is ready for write

@@ -24,7 +24,6 @@
 #include <string.hpp>                   //  std::string_to_int
                                         //  std::number_to_string
 #include <Unet/Address.hpp>             //  Unet::Address
-#include <Unet/SocketException.hpp>     //  Unet::Exception
 
 namespace Unet
 {

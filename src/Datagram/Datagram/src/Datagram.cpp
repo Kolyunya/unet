@@ -36,7 +36,6 @@ namespace Unet
                             addressUniPtr(std::move(addressUniPtr))
     {
 
-std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" <<std::endl;
     }
 
     Datagram&       Datagram::operator= ( Datagram datagram )

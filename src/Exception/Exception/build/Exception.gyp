@@ -4,11 +4,11 @@
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'Exception',
-                        'UNIT_NEEDS_BUILDING'   :   'true',
-                        'UNIT_NEEDS_TESTSING'   :   'true',
+                        'UNIT_NEEDS_BUILDING'   :   'false',
+                        'UNIT_NEEDS_TESTSING'   :   'false',
                         'UNIT_SOURCES'          :   [
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).hpp',
-                                                        '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
+                                                        '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).tpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
                                                     ],

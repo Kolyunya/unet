@@ -24,31 +24,29 @@
 #include <cstring>              //  strrerror
 #include <string.hpp>           //  std::string
                                 //  std::number_to_string
-#include <initializer_list>     //  std::initializer_list
 
 namespace Unet
 {
+    template <typename ExceptionType>
     class Exception
         :
             public std::exception
     {
         public:
-            explicit                Exception ( bool systemError = false );
-            explicit                Exception ( const std::string& message , bool systemError = false );
-            explicit                Exception ( const std::initializer_list<std::string>& messages , bool systemError = false );
+            explicit                Exception ( const std::string& thrownFrom , bool systemError = false );
             virtual                 ~Exception ( void ) noexcept = default;
             const std::string&      getMessage ( void ) const noexcept;
             virtual const char*     what() const noexcept override;
         protected:
-            void                    makeMessage ( const std::string& message , bool systemError = false );
-            void                    makeMessage ( const std::initializer_list<std::string>& messages , bool systemError = false );
-            void                    appendSystemErrorMessage ( bool systemError = false );
+            void                    makeMessage ( const std::string& thrownFrom , bool systemError = false );
             std::string             message;
     };
 }
 
-#define EXCEPTION(message) Exception({__PRETTY_FUNCTION__,message})
+#include "Exception.tpp"
 
-#define SYSTEM_EXCEPTION(message) Exception({__PRETTY_FUNCTION__,message},true)
+#define EXCEPTION(ExceptionType) Exception<ExceptionType>(__PRETTY_FUNCTION__)
+
+#define SYSTEM_EXCEPTION(ExceptionType) Exception<ExceptionType>(__PRETTY_FUNCTION__,true)
 
 #endif  //  _UNET_EXCEPTION_HPP_

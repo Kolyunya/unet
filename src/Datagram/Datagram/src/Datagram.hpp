@@ -23,7 +23,7 @@
 #include <memory>               //  std::shared_ptr
 #include <utility>              //  std::swap
 #include <Unet/Address.hpp>     //  Unet::Address
-#include <iostream>
+
 namespace Unet
 {
     class Datagram
