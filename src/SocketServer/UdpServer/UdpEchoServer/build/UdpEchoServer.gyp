@@ -11,7 +11,7 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../UdpServer/build/UdpServer.gyp:UdpServer',
+                                                        './../../UdpServer/UdpServer/build/UdpServer.gyp:UdpServer',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

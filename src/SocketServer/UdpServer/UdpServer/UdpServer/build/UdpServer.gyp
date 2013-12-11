@@ -1,6 +1,6 @@
 {
     'includes'  :   [
-                        './../../../../../system/gyp/includes/includes.gypi',
+                        './../../../../../../system/gyp/includes/includes.gypi',
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'UdpServer',
@@ -11,8 +11,8 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-														'./../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
-                                                        './../../../../Socket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
+														'./../../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
+                                                        './../../../../../Socket/UdpSocket/UdpSocket/build/UdpSocket.gyp:UdpSocket',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],
