@@ -11,7 +11,7 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../TcpServer/build/TcpServer.gyp:TcpServer',
+                                                        './../../TcpServer/TcpServer/build/TcpServer.gyp:TcpServer',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

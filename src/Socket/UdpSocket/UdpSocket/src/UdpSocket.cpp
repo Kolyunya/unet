@@ -76,7 +76,7 @@ namespace Unet
         // Checking for receive error
         if ( pendingDatagramBytesRecieved < 0 )
         {
-            throw Exception(ExcIncommingDataCouldNotBeRetrieved,true);
+            throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
         }
 
         //  Construct and return received datagram object
@@ -105,7 +105,7 @@ namespace Unet
         if ( datagramMessageBytesSent < 0 )
         {
 
-            throw Exception(ExcOutgoingDataCouldNotBeSent,true);
+            throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
 
         }
 

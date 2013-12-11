@@ -16,14 +16,14 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _UDP_SOCKET_HPP_
-#define _UDP_SOCKET_HPP_
+#ifndef _UENT_UDP_SOCKET_HPP_
+#define _UENT_UDP_SOCKET_HPP_
 
-#include <netinet/in.h>                 //  IPPROTO_UDP
-#include <Unet/SocketException.hpp>     //  Unet::Exception
-#include <Unet/Socket.hpp>              //  Unet::Socket
-#include <Unet/Datagram.hpp>            //  Unet::Datagram
-#include <Unet/AddressFactory.hpp>      //  Unet::AddressFactory
+#include <netinet/in.h>                     //  IPPROTO_UDP
+#include <Unet/Socket.hpp>                  //  Unet::Socket
+#include <Unet/Datagram.hpp>                //  Unet::Datagram
+#include <Unet/AddressFactory.hpp>          //  Unet::AddressFactory
+#include <Unet/UdpSocketExceptions.hpp>     //  Unet::Exception
 
 namespace Unet
 {
@@ -41,4 +41,4 @@ namespace Unet
     };
 }
 
-#endif  //  _UDP_SOCKET_HPP_
+#endif  //  _UENT_UDP_SOCKET_HPP_

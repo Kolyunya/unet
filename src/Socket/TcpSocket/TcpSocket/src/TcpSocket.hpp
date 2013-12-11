@@ -19,9 +19,10 @@
 #ifndef _UNET_TCP_SOCKET_HPP_
 #define _UNET_TCP_SOCKET_HPP_
 
-#include <utility>              //  std::swap
-#include <netinet/in.h>         //  IPPROTO_TCP
-#include <Unet/Socket.hpp>      //  Unet::Socket
+#include <utility>                          //  std::swap
+#include <netinet/in.h>                     //  IPPROTO_TCP
+#include <Unet/Socket.hpp>                  //  Unet::Socket
+#include <Unet/TcpSocketExceptions.hpp>
 
 namespace Unet
 {

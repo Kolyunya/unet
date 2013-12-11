@@ -1,6 +1,6 @@
 {
     'includes'  :   [
-                        './../../../../system/gyp/includes/includes.gypi',
+                        './../../../../../system/gyp/includes/includes.gypi',
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'UdpSocket',
@@ -11,10 +11,10 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../Socket/Socket/build/Socket.gyp:Socket',
-                                                        './../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
-                                                        './../../../Address/NullAddress/build/NullAddress.gyp:NullAddress',
-                                                        './../../../Address/Address/AddressFactory/build/AddressFactory.gyp:AddressFactory',
+                                                        './../../../Socket/Socket/build/Socket.gyp:Socket',
+                                                        './../../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
+                                                        './../../../../Address/NullAddress/build/NullAddress.gyp:NullAddress',
+                                                        './../../../../Address/Address/AddressFactory/build/AddressFactory.gyp:AddressFactory',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

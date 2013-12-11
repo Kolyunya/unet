@@ -16,8 +16,8 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _SOCKET_EXCEPTION_HPP_
-#define _SOCKET_EXCEPTION_HPP_
+#ifndef _UNET_SOCKET_EXCEPTIONS_HPP_
+#define _UNET_SOCKET_EXCEPTIONS_HPP_
 
 #include <Unet/Exception.hpp>
 
@@ -32,24 +32,6 @@ namespace Unet
     struct CouldNotRetrieveSocketLocalAddress { constexpr static char const * const message = "ExcCouldNotRetrieveSocketLocalAddress"; };
     struct CouldNotRetrieveSocketPeerAddress { constexpr static char const * const message = "ExcCouldNotRetrieveSocketPeerAddress"; };
     struct IncommingDataSizeCouldNotBeRetrieved { constexpr static char const * const message = "ExcIncommingDataSizeCouldNotBeRetrieved"; };
-
-/*
-    static std::string ExcStringDoesNotRepresentValidNetworkAddress = "ExcStringDoesNotRepresentValidNetworkAddress";
-    static std::string ExcStringCouldNotBeConvertedToNetworkAddress = "ExcStringCouldNotBeConvertedToNetworkAddress";
-    static std::string ExcNetworkAddressCouldNotBeconvertedToString = "ExcNetworkAddressCouldNotBeconvertedToString";
-    static std::string ExcNetworkAddressTypeIsNotSupported = "ExcNetworkAddressTypeIsNotSupported";
-    static std::string ExcNetworkAddressFamilyIsNotSupported = "ExcNetworkAddressFamilyIsNotSupported";
-    static std::string ExcNetworkAddressIsInvalid = "ExcNetworkAddressIsInvalid";
-    static std::string ExcSocketCouldNotBeListened = "ExcSocketCouldNotBeListened";
-    static std::string ExcSocketHasNoIncommingData = "ExcSocketHasNoIncommingData";
-    static std::string ExcIncommingDataCouldNotBeRetrieved = "ExcIncommingDataCouldNotBeRetrieved";
-    static std::string ExcOutgoingDataCouldNotBeSent= "ExcOutgoingDataCouldNotBeSent";
-    static std::string ExcOutgoingDataCouldNotBeSentCompletely= "ExcOutgoingDataCouldNotBeSentCompletely";
-    static std::string ExcMessageHasNotBeenDelieveredYet = "ExcMessageHasNotBeenDelieveredYet";
-    static std::string ExcMessageDelimiterIsNotDefined = "ExcMessageDelimiterIsNotDefined";
-    static std::string ExcConnectionsLimitIsNotDefined = "ExcMessageDelimiterIsNotDefined";
-    static std::string ExcSocketCouldNotAcceptConnection = "ExcSocketCouldNotAcceptConnection";
-    */
 }
 
-#endif  //  _SOCKET_EXCEPTION_HPP_
+#endif  //  _UNET_SOCKET_EXCEPTIONS_HPP_

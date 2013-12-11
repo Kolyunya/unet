@@ -1,6 +1,6 @@
 {
     'includes'  :   [
-                        './../../../../system/gyp/includes/includes.gypi',
+                        './../../../../../system/gyp/includes/includes.gypi',
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'TcpSocket',
@@ -11,7 +11,7 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-                                                        './../../Socket/Socket/build/Socket.gyp:Socket',
+                                                        './../../../Socket/Socket/build/Socket.gyp:Socket',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

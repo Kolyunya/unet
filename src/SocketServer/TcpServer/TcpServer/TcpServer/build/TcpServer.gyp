@@ -1,6 +1,6 @@
 {
     'includes'  :   [
-                        './../../../../../system/gyp/includes/includes.gypi',
+                        './../../../../../../system/gyp/includes/includes.gypi',
                     ],
     'variables' :   {
                         'UNIT_NAME'             :   'TcpServer',
@@ -11,9 +11,9 @@
                                                         '<(UNIT_SOURCES_DIR)/<(UNIT_NAME).cpp',
                                                     ],
                         'UNIT_DEPENDENCIES'     :   [
-														'./../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
-                                                        './../../../../Socket/TcpSocket/build/TcpSocket.gyp:TcpSocket',
-                                                        './../../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
+														'./../../../../SocketServer/SocketServer/build/SocketServer.gyp:SocketServer',
+                                                        './../../../../../Socket/TcpSocket/TcpSocket/build/TcpSocket.gyp:TcpSocket',
+                                                        './../../../../../Datagram/Datagram/build/Datagram.gyp:Datagram',
                                                     ],
                         'UNIT_CFLAGS'           :   [
                                                     ],

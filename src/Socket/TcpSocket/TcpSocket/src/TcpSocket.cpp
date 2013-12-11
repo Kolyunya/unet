@@ -52,7 +52,7 @@ namespace Unet
     {
         if ( this->messageDelimiter < 0 )
         {
-            throw Exception(ExcMessageDelimiterIsNotDefined);
+            throw EXCEPTION(MessageDelimiterIsNotDefined);
         }
         return static_cast<unsigned int>(this->messageDelimiter);
     }
@@ -71,7 +71,7 @@ namespace Unet
     {
         if ( this->connectionsLimit < 0 )
         {
-            throw Exception(ExcConnectionsLimitIsNotDefined);
+            throw EXCEPTION(ConnectionsLimitIsNotDefined);
         }
         return static_cast<unsigned int>(this->connectionsLimit);
     }
@@ -97,7 +97,7 @@ namespace Unet
         int socketListenResult = ::listen(socketDescriptor,connectionsLimit);
         if ( socketListenResult != 0 )
         {
-            throw Exception(ExcSocketCouldNotBeListened,true);
+            throw SYSTEM_EXCEPTION(SocketCouldNotBeListened);
         }
     }
 
@@ -118,7 +118,7 @@ namespace Unet
         //  Check if the socket was accepted successfully
         if ( acceptedSocketDescriptor < 0 )
         {
-            throw Exception(ExcSocketCouldNotAcceptConnection,true);
+            throw SYSTEM_EXCEPTION(SocketCouldNotAcceptConnection);
         }
 
         //  Construct the socket which will manage accepted descriptor
@@ -180,7 +180,7 @@ namespace Unet
         if ( messageBytesRead < 0 )
         {
 
-            throw Exception(ExcIncommingDataCouldNotBeRetrieved,true);
+            throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
 
         }
 
@@ -212,7 +212,7 @@ namespace Unet
 
             if ( this->isNonBlocking() )
             {
-                throw Exception(ExcMessageHasNotBeenDelieveredYet);
+                throw EXCEPTION(MessageHasNotBeenDelieveredYet);
             }
         }
 
@@ -239,7 +239,7 @@ namespace Unet
         if ( messageBytesSent < 0 )
         {
 
-            throw Exception(ExcOutgoingDataCouldNotBeSent,true);
+            throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
 
         }
 
@@ -249,7 +249,7 @@ namespace Unet
         else if ( static_cast<size_t>(messageBytesSent) < messageSize )
         {
 
-            throw Exception(ExcOutgoingDataCouldNotBeSentCompletely);
+            throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
 
         }
 
