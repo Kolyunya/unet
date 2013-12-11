@@ -1,6 +1,9 @@
-*
-build/*
-!build/*.gyp
+/*
+/*/
 !.gitignore
-!tests/
-!src/
+!build/
+build/*
+build/*/
+!build/*.gyp
+!tests
+!src
