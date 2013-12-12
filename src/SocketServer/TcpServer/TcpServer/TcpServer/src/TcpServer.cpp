@@ -132,8 +132,8 @@ namespace Unet
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
             tcpSocket.setNonBlocking();
-            //tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
-            //cpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
+            tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
+            tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
         }
