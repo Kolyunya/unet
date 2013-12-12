@@ -278,13 +278,6 @@ namespace Unet
 
 
 
-      //  if ( this->hasUnreadData() == false )
-    //    {
-//
-  //          throw EXCEPTION(SocketHasNoIncommingData);
-//
-//        }
-
         int unread_data_size;
 
         int get_unread_data_size_success = ioctl(this->getDescriptor(),FIONREAD,&unread_data_size);

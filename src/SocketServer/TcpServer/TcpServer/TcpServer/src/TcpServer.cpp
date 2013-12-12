@@ -6,7 +6,9 @@ namespace Unet
                         TcpServer::TcpServer ( void )
                             :
                                 threadAccept(std::bind(TcpServer::routineAccept,this)),
-                                threadReceive(std::bind(TcpServer::routineReceive,this))
+                                threadReceive(std::bind(TcpServer::routineReceive,this)),
+                                threadPing(std::bind(TcpServer::routinePing,this)),
+                                receiveMode(TCP_RECEIVE_MODE_DEFAULT)
     {
 
     }
@@ -50,7 +52,7 @@ namespace Unet
     void                TcpServer::setMessageSize ( size_t messageSize )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        return this->serverSocket.setMessageSize(messageSize);
+        this->serverSocket.setMessageSize(messageSize);
     }
 
     std::string         TcpServer::getMessageDelimiter ( void ) const
@@ -63,6 +65,16 @@ namespace Unet
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->serverSocket.setMessageDelimiter(messageDelimiter);
+    }
+
+    TcpReceiveMode      TcpServer::getReceiveMode ( void ) const
+    {
+        return this->receiveMode;
+    }
+
+    void                TcpServer::setReceiveMode ( TcpReceiveMode receiveMode )
+    {
+        this->receiveMode = receiveMode;
     }
 
     void                TcpServer::start ( void )
@@ -110,12 +122,14 @@ namespace Unet
     {
         this->threadAccept.launch();
         this->threadReceive.launch();
+        this->threadPing.launch();
     }
 
     void                TcpServer::stopRoutines ( void )
     {
         this->threadAccept.stop();
         this->threadReceive.stop();
+        this->threadPing.stop();
     }
 
     void                TcpServer::stopSocket ( void )
@@ -134,6 +148,7 @@ namespace Unet
             tcpSocket.setNonBlocking();
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
+
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
         }
@@ -141,38 +156,76 @@ namespace Unet
 
     void                TcpServer::routineReceive ( TcpServer* tcpServerPtr )
     {
-
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
+            for ( TcpSocket& clientSocket : tcpServerPtr->clientSockets )
+            {
+                try
+                {
+                    //  Receive message
+                    std::string receivedMessage;
+                    switch ( tcpServerPtr->receiveMode )
+                    {
+                        case TCP_RECEIVE_MODE_DEFAULT: receivedMessage = clientSocket.receiveDataBySize(); break;
+                        case TCP_RECEIVE_MODE_BY_SIZE: receivedMessage = clientSocket.receiveMessageBySize(); break;
+                        case TCP_RECEIVE_MODE_BY_DELIMITER: receivedMessage = clientSocket.receiveMessageByDelimiter(); break;
+                    };
+                    tcpServerPtr->messageReceivedEvent.dispatch(clientSocket,receivedMessage);
+                }
+                catch ( ... )
+                {
+                    continue;
+                }
+            }
+        }
+    }
+
+    void                TcpServer::routinePing ( TcpServer* tcpServerPtr )
+    {
+
+        //  http://blog.stephencleary.com/2009/05/detection-of-half-open-dropped.html
+        //  Ping clients to check for half-opened connections
+
+        std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
+
+        if ( serverUniqueLock.try_lock() )
+        {
+
             tcpServerPtr->clientSockets.erase
             (
                 std::remove_if
                 (
                     tcpServerPtr->clientSockets.begin(),
                     tcpServerPtr->clientSockets.end(),
-                    [tcpServerPtr](TcpSocket& clientSocket)
+                    [
+                        tcpServerPtr
+                    ]
+                    (
+                        TcpSocket& clientSocket
+                    )
                     {
                         try
                         {
-                            std::string receivedMessage = clientSocket.receiveMessageByDelimiter();
-//                            if ( receivedMessage == "" )
-//                            {
-//                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-//                                return true;
-//                            }
-                            tcpServerPtr->messageReceivedEvent.dispatch(clientSocket,receivedMessage);
-                            return false;
+                            clientSocket.sendMessage("#",MSG_NOSIGNAL);
                         }
-                        catch ( ... )
+                        catch ( Exception<OutgoingDataCouldNotBeSent> )
                         {
-                            return false;
+                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+                            return true;
                         }
+                        return false;
                     }
                 ),
                 tcpServerPtr->clientSockets.end()
             );
+
+            serverUniqueLock.unlock();
+
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+
         }
+
     }
 
 }

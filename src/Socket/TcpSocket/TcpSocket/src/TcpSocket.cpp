@@ -50,6 +50,8 @@ namespace Unet
         std::swap(this->descriptor,tcpSocket.descriptor);
         std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
         std::swap(this->connectionsLimit,tcpSocket.connectionsLimit);
+        std::swap(this->messageSize,tcpSocket.messageSize);
+        std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
     }
 
     int                 TcpSocket::getConnectionsLimit ( void ) const
@@ -135,6 +137,19 @@ namespace Unet
                             );
     }
 
+    void                TcpSocket::checkDisconnect ( void ) const
+    {
+        if
+        (
+            this->isReadyForRead() == true
+                &&
+            this->getUnreadDataSize() == 0
+        )
+        {
+            throw EXCEPTION(PeerDisconnected);
+        }
+    }
+
     std::string         TcpSocket::receiveDataBySize ( size_t dataSize , int receiveOptions )
     {
 
@@ -150,7 +165,7 @@ namespace Unet
             {
 
                 //  return empty string
-                return "";
+                throw EXCEPTION(IncommingDataIsNotAvailableNow);
 
             }
 
@@ -161,7 +176,7 @@ namespace Unet
 
         //  If requested to read a specific amount of data
         //  And that amount didn't arrive yet
-        else if ( unreadDataSize < dataSize )
+        else if ( dataSize > unreadDataSize )
         {
 
             receivedData.resize(dataSize);
@@ -188,9 +203,6 @@ namespace Unet
             throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
         }
 
-        //  Check if peer disconnected
-        TcpSocket::checkReceiveMessageForDisconnect(receivedData);
-
         return receivedData;
 
     }
@@ -211,9 +223,6 @@ namespace Unet
 
             //  Peek all unread data
             unreadData = this->peekDataBySize();
-
-            //  Check if peer disconnected
-            TcpSocket::checkReceiveMessageForDisconnect(unreadData);
 
             messageTerminatorPosition = unreadData.find_first_of(this->getMessageDelimiter());
 
@@ -259,8 +268,6 @@ namespace Unet
 
         //  @no_throw_guarantee        Strong no-throw guarantee
 
-
-
         size_t messageSize = message.size();
 
         ssize_t messageBytesSent = ::send   (
@@ -291,13 +298,5 @@ namespace Unet
         this->sendMessage(messageWithDelimiter,sendOptions);
     }
 
-    void                TcpSocket::checkReceiveMessageForDisconnect ( const std::string& receivedMessage )
-    {
-        if ( receivedMessage[0] == '\0' )
-        {
-            throw EXCEPTION(PeerDisconnected);
-        }
-
-    }
 
 }

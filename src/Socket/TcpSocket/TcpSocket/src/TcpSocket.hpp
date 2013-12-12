@@ -23,7 +23,7 @@
 #include <netinet/in.h>                     //  IPPROTO_TCP
 #include <Unet/Socket.hpp>                  //  Unet::Socket
 #include <Unet/TcpSocketExceptions.hpp>
-
+#include <iostream>
 namespace Unet
 {
     class TcpSocket
@@ -44,6 +44,7 @@ namespace Unet
             void                setMessageDelimiter ( const std::string& messageDelimiter );
             void                listen ( void );
             TcpSocket           accept ( void );
+            void                checkDisconnect ( void ) const;
             std::string         receiveDataBySize ( size_t dataSize = 0 , int receiveOptions = 0 );
             std::string         receiveMessageBySize ( int receiveOptions = 0 );
             std::string         receiveMessageByDelimiter ( int receiveOptions = 0 );
@@ -53,7 +54,6 @@ namespace Unet
             void                sendMessage ( const std::string& message , int sendOptions = 0 ) const;
             void                sendMessageWithDelimiter ( const std::string& message , int sendOptions = 0 ) const;
         protected:
-            static void         checkReceiveMessageForDisconnect ( const std::string& receivedMessage );
             int                 connectionsLimit;
             size_t              messageSize;
             std::string         messageDelimiter;

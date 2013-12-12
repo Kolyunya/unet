@@ -23,10 +23,9 @@ namespace Unet
         this->log(clientConnectedEventMessage);
     }
 
-    void    TcpEchoServer::clientDisconnectedEventHandler ( const TcpSocket& tcpSocket )
+    void    TcpEchoServer::clientDisconnectedEventHandler ( const TcpSocket& )
     {
-        std::string clientDisconnectedEventMessage = tcpSocket.getPeerAddress()->toString();
-        clientDisconnectedEventMessage += " - disconnected";
+        std::string clientDisconnectedEventMessage = "client disconnected";
         this->log(clientDisconnectedEventMessage);
     }
 

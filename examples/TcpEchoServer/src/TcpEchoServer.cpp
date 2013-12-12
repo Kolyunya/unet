@@ -25,10 +25,10 @@ int main ( int argc , char** argv )
 {
 
     //  Check if server IP address and port command line parameters were provided
-    if ( argc != 4 )
+    if ( argc != 3 )
     {
 		//	Show how the program is supposed to be launched
-        std::cout << "Usage: TcpEchoServer $(SERVER_IP) $(SERVER_PORT) $(MESSAGE_DELIMITER)" << std::endl;
+        std::cout << "Usage: TcpEchoServer $(SERVER_IP) $(SERVER_PORT)" << std::endl;
         return -1;
     }
 
@@ -38,8 +38,17 @@ int main ( int argc , char** argv )
 	//	Define the address which the server will listen to
     tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
 
+/*    //  Receive messages delimited by a "$" sign
+    tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_DELIMITER);
+
     //  Set message delimiter
-    tcpEchoServer.setMessageDelimiter("$");
+    tcpEchoServer.setMessageDelimiter(std::string(argv[3]));
+
+    //  Receive messages delimited by a "$" sign
+    tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_SIZE);
+
+    //  Set message delimiter
+    tcpEchoServer.setMessageSize(4);*/
 
 	//	Launch the server
     tcpEchoServer.start();
