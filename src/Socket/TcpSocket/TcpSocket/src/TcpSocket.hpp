@@ -45,6 +45,9 @@ namespace Unet
             void                setMessageSize ( size_t messageSize );
             std::string         getMessageDelimiter ( void ) const;
             void                setMessageDelimiter ( const std::string& messageDelimiter );
+            bool                getKeepAliveEnabled ( void ) const;
+            void                setKeepAliveEnabled ( bool keepAliveEnabled );
+            int                 getKeepAliveParameter ( int parameter );
             void                setKeepAliveParameters ( unsigned int time = 0 , unsigned int interval = 0 , unsigned int probes = 0 );
             void                listen ( void );
             TcpSocket           accept ( void );

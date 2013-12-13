@@ -9,7 +9,7 @@ namespace Unet
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
                                 threadPing(std::bind(TcpServer::routinePing,this)),
                                 receiveMode(TCP_RECEIVE_MODE_DEFAULT),
-                                clientsPingTimeout(5000)
+                                clientsPingTimeout(500)
     {
 
     }
@@ -159,9 +159,15 @@ namespace Unet
         if ( serverUniqueLock.try_lock() )
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
-            tcpSocket.setNonBlocking();
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
+            tcpSocket.setNonBlocking();
+            //tcpSocket.setKeepAliveEnabled(1);
+            //tcpSocket.setKeepAliveParameters(1,1,1);
+
+            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPIDLE) << std::endl;
+            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPINTVL) << std::endl;
+            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPCNT) << std::endl;
 
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
@@ -225,12 +231,12 @@ namespace Unet
                     {
                         try
                         {
-                            clientSocket.sendMessage("#",MSG_NOSIGNAL);
+                            clientSocket.sendMessage("$");
                         }
-                        catch ( Exception<OutgoingDataCouldNotBeSent> )
+                        catch ( ... )
                         {
-                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                            return true;
+//                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+//                            return true;
                         }
                         return false;
                     }

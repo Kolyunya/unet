@@ -52,6 +52,8 @@ namespace Unet
             size_t              getUnreadDataSize ( void ) const;
                                 template <typename OptionType>
             void                setOption ( int optionName , const OptionType& optionValue , int protocolLevel = SOL_SOCKET );
+                                template <typename OptionType>
+            OptionType          getOptionValue ( int optionName , int protocolLevel = SOL_SOCKET ) const;
             void                setBlocking ( void );
             void                setNonBlocking ( void );
         protected:

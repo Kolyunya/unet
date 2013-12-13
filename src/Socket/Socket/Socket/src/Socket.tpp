@@ -38,4 +38,29 @@ namespace Unet
 
     }
 
+                    template <typename OptionType>
+    OptionType      Socket::getOptionValue ( int optionName , int protocolLevel ) const
+    {
+
+        OptionType optionValue;
+        socklen_t optionValueLength = sizeof(optionValue);
+
+        int getOptionResult = getsockopt    (
+                                                this->descriptor,
+                                                protocolLevel,
+                                                optionName,
+                                                &optionValue,
+                                                &optionValueLength
+                                            );
+
+        if ( getOptionResult != 0 )
+        {
+            throw SYSTEM_EXCEPTION(SocketOptionValueCouldNotBeRetrieved);
+        }
+
+        return optionValue;
+
+    }
+
+
 }

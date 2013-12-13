@@ -24,6 +24,7 @@
 namespace Unet
 {
     struct SocketOptionCouldNotBeSet { constexpr static char const * const message = "ExcSocketOptionCouldNotBeSet"; };
+    struct SocketOptionValueCouldNotBeRetrieved { constexpr static char const * const message = "SocketOptionValueCouldNotBeRetrieved"; };
     struct SocketCouldNotBeOpened { constexpr static char const * const message = "ExcSocketCouldNotBeOpened"; };
     struct SocketCouldNotBeBound { constexpr static char const * const message = "ExcSocketCouldNotBeBound"; };
     struct SocketCouldNotBeConnected { constexpr static char const * const message = "ExcSocketCouldNotBeConnected"; };

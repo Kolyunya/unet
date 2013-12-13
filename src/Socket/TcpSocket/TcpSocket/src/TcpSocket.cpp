@@ -109,22 +109,42 @@ namespace Unet
         }
     }
 
+    bool                TcpSocket::getKeepAliveEnabled ( void ) const
+    {
+        return this->getOptionValue<int>(SO_KEEPALIVE);
+    }
+
+    void                TcpSocket::setKeepAliveEnabled ( bool keepAliveEnabled )
+    {
+
+        //  "setsockopt" expects an instance of "int"
+        int keepAliveEnabledInt = static_cast<int>(keepAliveEnabled);
+
+        this->setOption(SO_KEEPALIVE,keepAliveEnabledInt);
+
+    }
+
+    int                 TcpSocket::getKeepAliveParameter ( int parameter )
+    {
+        return this->getOptionValue<int>(parameter,SOL_TCP);
+    }
+
     void                TcpSocket::setKeepAliveParameters ( unsigned int time , unsigned int interval , unsigned int probes )
     {
 
         if ( time > 0 )
         {
-            this->setOption(TCP_KEEPIDLE,time,SOL_SOCKET);
+            this->setOption(TCP_KEEPIDLE,time,SOL_TCP);
         }
 
         if ( interval > 0 )
         {
-            this->setOption(TCP_KEEPINTVL,interval,SOL_SOCKET);
+            this->setOption(TCP_KEEPINTVL,interval,SOL_TCP);
         }
 
         if ( probes > 0 )
         {
-            this->setOption(TCP_KEEPCNT,probes,SOL_SOCKET);
+            this->setOption(TCP_KEEPCNT,probes,SOL_TCP);
         }
 
     }
