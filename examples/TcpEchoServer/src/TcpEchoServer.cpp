@@ -38,17 +38,17 @@ int main ( int argc , char** argv )
 	//	Define the address which the server will listen to
     tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
 
-/*    //  Receive messages delimited by a "$" sign
-    tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_DELIMITER);
+    //  Receive messages delimited by a "$" sign
+    //tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_DELIMITER);
 
     //  Set message delimiter
-    tcpEchoServer.setMessageDelimiter(std::string(argv[3]));
+    //tcpEchoServer.setMessageDelimiter(std::string(argv[3]));
 
     //  Receive messages delimited by a "$" sign
     tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_SIZE);
 
     //  Set message delimiter
-    tcpEchoServer.setMessageSize(4);*/
+    tcpEchoServer.setMessageSize(4);
 
 	//	Launch the server
     tcpEchoServer.start();

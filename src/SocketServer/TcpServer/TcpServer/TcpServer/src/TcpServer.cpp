@@ -8,7 +8,8 @@ namespace Unet
                                 threadAccept(std::bind(TcpServer::routineAccept,this)),
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
                                 threadPing(std::bind(TcpServer::routinePing,this)),
-                                receiveMode(TCP_RECEIVE_MODE_DEFAULT)
+                                receiveMode(TCP_RECEIVE_MODE_DEFAULT),
+                                clientsPingTimeout(5000)
     {
 
     }
@@ -43,6 +44,26 @@ namespace Unet
         this->serverSocket.setConnectionsLimit(connectionsLimit);
     }
 
+    TcpReceiveMode      TcpServer::getReceiveMode ( void ) const
+    {
+        return this->receiveMode;
+    }
+
+    void                TcpServer::setReceiveMode ( TcpReceiveMode receiveMode )
+    {
+        this->receiveMode = receiveMode;
+    }
+
+    unsigned int        TcpServer::getClientsPingTimeout ( void ) const
+    {
+        return this->clientsPingTimeout;
+    }
+
+    void                TcpServer::setClientsPingTimeout ( unsigned int clientsPingTimeout )
+    {
+        this->clientsPingTimeout = clientsPingTimeout;
+    }
+
     size_t              TcpServer::getMessageSize ( void ) const
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
@@ -65,16 +86,6 @@ namespace Unet
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->serverSocket.setMessageDelimiter(messageDelimiter);
-    }
-
-    TcpReceiveMode      TcpServer::getReceiveMode ( void ) const
-    {
-        return this->receiveMode;
-    }
-
-    void                TcpServer::setReceiveMode ( TcpReceiveMode receiveMode )
-    {
-        this->receiveMode = receiveMode;
     }
 
     void                TcpServer::start ( void )
@@ -184,6 +195,9 @@ namespace Unet
     void                TcpServer::routinePing ( TcpServer* tcpServerPtr )
     {
 
+        //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
+        //  http://www.codeproject.com/Articles/37490/Detection-of-Half-Open-Dropped-TCP-IP-Socket-Conne
+        //  http://mindprod.com/jgloss/socket.html#DISCONNECT
         //  http://blog.stephencleary.com/2009/05/detection-of-half-open-dropped.html
         //  Ping clients to check for half-opened connections
 
@@ -222,7 +236,7 @@ namespace Unet
 
             serverUniqueLock.unlock();
 
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(tcpServerPtr->clientsPingTimeout));
 
         }
 

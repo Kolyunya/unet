@@ -35,12 +35,14 @@ namespace Unet
             bool                                getLaunched ( void ) const override;
             int                                 getConnectionsLimit ( void ) const;
             void                                setConnectionsLimit ( int connectionsLimit );
+            TcpReceiveMode                      getReceiveMode ( void ) const;
+            void                                setReceiveMode ( TcpReceiveMode receiveMode );
+            unsigned int                        getClientsPingTimeout ( void ) const;
+            void                                setClientsPingTimeout ( unsigned int clientsPingTimeout );
             size_t                              getMessageSize ( void ) const;
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
             void                                setMessageDelimiter ( const std::string& messageDelimiter );
-            TcpReceiveMode                      getReceiveMode ( void ) const;
-            void                                setReceiveMode ( TcpReceiveMode receiveMode );
             void                                start ( void ) override;
             void                                stop ( void ) override;
             void                                sendMessage ( const TcpSocket& tcpSocket , const std::string& message );
@@ -59,6 +61,7 @@ namespace Unet
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadPing;
             TcpReceiveMode                      receiveMode;
+            unsigned int                        clientsPingTimeout;
             TcpServerEventClientConnected       clientConnectedEvent;
             TcpServerEventClientDisconnected    clientDisconnectedEvent;
             TcpServerEventMessageReceived       messageReceivedEvent;
