@@ -109,6 +109,26 @@ namespace Unet
         }
     }
 
+    void                TcpSocket::setKeepAliveParameters ( unsigned int time , unsigned int interval = 0 , unsigned int probes = 0 )
+    {
+
+        if ( time > 0 )
+        {
+            this->setOption(TCP_KEEPIDLE,time,SOL_SOCKET);
+        }
+
+        if ( interval > 0 )
+        {
+            this->setOption(TCP_KEEPIDLE,interval,SOL_SOCKET);
+        }
+
+        if ( probes > 0 )
+        {
+            this->setOption(TCP_KEEPIDLE,probes,SOL_SOCKET);
+        }
+
+    }
+
     TcpSocket           TcpSocket::accept ( void )
     {
         //  @description    Extracts the first connection request on the queue of pending connections for the listening socket.
