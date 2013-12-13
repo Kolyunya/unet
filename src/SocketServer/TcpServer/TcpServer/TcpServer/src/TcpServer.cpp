@@ -108,7 +108,10 @@ namespace Unet
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
-        tcpSocket.sendMessage(message);
+
+        //  TCP server must use "MSG_NOSIGNAL" otherwise it will be terminated after writing to a dead socket
+        tcpSocket.sendMessage(message,MSG_NOSIGNAL);
+
         this->messageSentEvent.dispatch(tcpSocket,message);
     }
 
@@ -195,6 +198,7 @@ namespace Unet
     void                TcpServer::routinePing ( TcpServer* tcpServerPtr )
     {
 
+        //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/usingkeepalive.html
         //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
         //  http://www.codeproject.com/Articles/37490/Detection-of-Half-Open-Dropped-TCP-IP-Socket-Conne
         //  http://mindprod.com/jgloss/socket.html#DISCONNECT
