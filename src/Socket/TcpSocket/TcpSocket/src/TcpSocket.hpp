@@ -21,9 +21,12 @@
 
 #include <utility>                          //  std::swap
 #include <netinet/in.h>                     //  IPPROTO_TCP
+#include <netinet/tcp.h>                    //  TCP_KEEPIDLE
+                                            //  TCP_KEEPINTVL
+                                            //  TCP_KEEPCNT
 #include <Unet/Socket.hpp>                  //  Unet::Socket
 #include <Unet/TcpSocketExceptions.hpp>
-#include <iostream>
+
 namespace Unet
 {
     class TcpSocket

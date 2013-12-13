@@ -119,12 +119,12 @@ namespace Unet
 
         if ( interval > 0 )
         {
-            this->setOption(TCP_KEEPIDLE,interval,SOL_SOCKET);
+            this->setOption(TCP_KEEPINTVL,interval,SOL_SOCKET);
         }
 
         if ( probes > 0 )
         {
-            this->setOption(TCP_KEEPIDLE,probes,SOL_SOCKET);
+            this->setOption(TCP_KEEPCNT,probes,SOL_SOCKET);
         }
 
     }
