@@ -231,10 +231,33 @@ namespace Unet
                     {
                         try
                         {
-                            clientSocket.sendMessage("$");
+                        std::string message = "$";
+        size_t messageSize = message.size();
+
+        ssize_t messageBytesSent = ::send   (
+                                                clientSocket.getDescriptor(),
+                                                message.data(),
+                                                messageSize,
+                                                0
+                                            );
+
+        if ( messageBytesSent < 0 )
+        {
+            throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
+        }
+
+        //  "sendMessage" may actually sendMessage less bytes than "data" contains. It's also an exceptional situation, thus must be checked for.
+        //  "messageBytesSent" and "messageSize" are signed and unsigned types respectively. Explicit conversion is required to compare them.
+        //  "messageBytesSent" is guaranteed to be non-negative at this point, thus it can be correctly cast to "size_t".
+        else if ( static_cast<size_t>(messageBytesSent) < messageSize )
+        {
+            throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
+        }
+        std::cout << message << std::endl;
                         }
-                        catch ( ... )
+                        catch ( std::exception& e )
                         {
+                            std::cout << e.what() << std::endl;
 //                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
 //                            return true;
                         }

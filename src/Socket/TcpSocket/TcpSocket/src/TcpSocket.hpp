@@ -26,7 +26,7 @@
                                             //  TCP_KEEPCNT
 #include <Unet/Socket.hpp>                  //  Unet::Socket
 #include <Unet/TcpSocketExceptions.hpp>
-
+#include <iostream>
 namespace Unet
 {
     class TcpSocket

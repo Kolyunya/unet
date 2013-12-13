@@ -330,6 +330,8 @@ namespace Unet
             throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
         }
 
+        std::cout << "Write " << message << std::endl;
+
     }
 
     void                TcpSocket::sendMessageWithDelimiter ( const std::string& message , int sendOptions ) const
