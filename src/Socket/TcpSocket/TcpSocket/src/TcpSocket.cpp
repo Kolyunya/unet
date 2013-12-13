@@ -109,7 +109,7 @@ namespace Unet
         }
     }
 
-    void                TcpSocket::setKeepAliveParameters ( unsigned int time , unsigned int interval = 0 , unsigned int probes = 0 )
+    void                TcpSocket::setKeepAliveParameters ( unsigned int time , unsigned int interval , unsigned int probes )
     {
 
         if ( time > 0 )
