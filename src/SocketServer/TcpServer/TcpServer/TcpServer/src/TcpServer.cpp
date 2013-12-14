@@ -170,12 +170,10 @@ namespace Unet
         if ( serverUniqueLock.try_lock() )
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
-
             tcpSocket.setNonBlocking();
             tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout);
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
-
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
         }
@@ -238,7 +236,7 @@ namespace Unet
                     {
                         try
                         {
-                            clientSocket.sendMessage("@",MSG_NOSIGNAL);
+                            clientSocket.sendMessage("@",MSG_NOSIGNAL | MSG_OOB);
                         }
                         catch ( std::exception& exception )
                         {
