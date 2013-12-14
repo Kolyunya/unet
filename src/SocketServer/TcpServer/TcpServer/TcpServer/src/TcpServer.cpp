@@ -240,7 +240,7 @@ namespace Unet
                         }
                         catch ( std::exception& exception )
                         {
-                            std::cout << exception.what() << std::endl;
+                            //std::cout << exception.what() << std::endl;
                             tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
                             return true;
                         }

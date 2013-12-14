@@ -32,28 +32,16 @@ int main ( int argc , char** argv )
         return -1;
     }
 
+    //  Construct server address object
+    Unet::AddressUniPtr tcpEchoServerAddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2]));
+
     //  Create an instance of TCP echo server
     Unet::TcpEchoServer tcpEchoServer;
 
 	//	Define the address which the server will listen to
-    tcpEchoServer.setAddress(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
+    tcpEchoServer.setAddress(std::move(tcpEchoServerAddressUniPtr));
 
-    //tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_DEFAULT);
-
-    //  Receive messages delimited by a "$" sign
-    //tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_DELIMITER);
-
-    //  Set message delimiter
-    //tcpEchoServer.setMessageDelimiter(std::string(argv[3]));
-    //tcpEchoServer.setMessageDelimiter("\r\n");
-
-    //  Receive messages delimited by a "$" sign
-    //tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_SIZE);
-
-    //  Set message delimiter
-    //tcpEchoServer.setMessageSize(4);
-
-	//	Launch the server
+	//	Start the server
     tcpEchoServer.start();
 
 	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
