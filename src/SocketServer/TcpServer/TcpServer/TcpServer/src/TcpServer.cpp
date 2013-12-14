@@ -10,7 +10,7 @@ namespace Unet
                                 threadKeepAlive(std::bind(TcpServer::routineKeepAlive,this)),
                                 receiveMode(TCP_RECEIVE_MODE_DEFAULT),
                                 keepAliveTimeout(1000),
-                                disconnectTimeout(1000)
+                                disconnectTimeout(10000)
     {
 
     }
@@ -208,14 +208,6 @@ namespace Unet
 
     void                TcpServer::routineKeepAlive ( TcpServer* tcpServerPtr )
     {
-
-        //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/usingkeepalive.html
-        //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
-        //  http://www.codeproject.com/Articles/37490/Detection-of-Half-Open-Dropped-TCP-IP-Socket-Conne
-        //  http://mindprod.com/jgloss/socket.html#DISCONNECT
-        //  http://blog.stephencleary.com/2009/05/detection-of-half-open-dropped.html
-        //  Ping clients to check for half-opened connections
-
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
 
         if ( serverUniqueLock.try_lock() )
@@ -238,11 +230,18 @@ namespace Unet
                         {
                             clientSocket.sendMessage("@",MSG_NOSIGNAL | MSG_OOB);
                         }
-                        catch ( std::exception& exception )
+                        catch ( Exception<OutgoingDataCouldNotBeSent>& exception )
                         {
-                            //std::cout << exception.what() << std::endl;
-                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                            return true;
+                            if
+                            (
+                                errno == 110    //  Connection timed out
+                                    ||
+                                errno == 32     //  Broken pipe
+                            )
+                            {
+                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+                                return true;
+                            }
                         }
                         return false;
                     }
