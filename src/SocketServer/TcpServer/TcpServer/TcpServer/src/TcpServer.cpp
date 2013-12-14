@@ -7,9 +7,10 @@ namespace Unet
                             :
                                 threadAccept(std::bind(TcpServer::routineAccept,this)),
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
-                                threadPing(std::bind(TcpServer::routinePing,this)),
+                                threadKeepAlive(std::bind(TcpServer::routineKeepAlive,this)),
                                 receiveMode(TCP_RECEIVE_MODE_DEFAULT),
-                                clientsPingTimeout(500)
+                                keepAliveTimeout(1000),
+                                disconnectTimeout(1000)
     {
 
     }
@@ -54,14 +55,24 @@ namespace Unet
         this->receiveMode = receiveMode;
     }
 
-    unsigned int        TcpServer::getClientsPingTimeout ( void ) const
+    unsigned int        TcpServer::getKeepAliveTimeout ( void ) const
     {
-        return this->clientsPingTimeout;
+        return this->keepAliveTimeout;
     }
 
-    void                TcpServer::setClientsPingTimeout ( unsigned int clientsPingTimeout )
+    void                TcpServer::setKeepAliveTimeout ( unsigned int keepAliveTimeout )
     {
-        this->clientsPingTimeout = clientsPingTimeout;
+        this->keepAliveTimeout = keepAliveTimeout;
+    }
+
+    unsigned int        TcpServer::getDisconnectTimeout ( void ) const
+    {
+        return this->disconnectTimeout;
+    }
+
+    void                TcpServer::setDisconnectTimeout ( unsigned int disconnectTimeout )
+    {
+        this->disconnectTimeout = disconnectTimeout;
     }
 
     size_t              TcpServer::getMessageSize ( void ) const
@@ -136,14 +147,14 @@ namespace Unet
     {
         this->threadAccept.launch();
         this->threadReceive.launch();
-        this->threadPing.launch();
+        this->threadKeepAlive.launch();
     }
 
     void                TcpServer::stopRoutines ( void )
     {
         this->threadAccept.stop();
         this->threadReceive.stop();
-        this->threadPing.stop();
+        this->threadKeepAlive.stop();
     }
 
     void                TcpServer::stopSocket ( void )
@@ -159,15 +170,11 @@ namespace Unet
         if ( serverUniqueLock.try_lock() )
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
+
+            tcpSocket.setNonBlocking();
+            tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout);
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
-            tcpSocket.setNonBlocking();
-            //tcpSocket.setKeepAliveEnabled(1);
-            //tcpSocket.setKeepAliveParameters(1,1,1);
-
-            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPIDLE) << std::endl;
-            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPINTVL) << std::endl;
-            std::cout << tcpSocket.getKeepAliveParameter(TCP_KEEPCNT) << std::endl;
 
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
@@ -201,7 +208,7 @@ namespace Unet
         }
     }
 
-    void                TcpServer::routinePing ( TcpServer* tcpServerPtr )
+    void                TcpServer::routineKeepAlive ( TcpServer* tcpServerPtr )
     {
 
         //  http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/usingkeepalive.html
@@ -231,35 +238,13 @@ namespace Unet
                     {
                         try
                         {
-                        std::string message = "$";
-        size_t messageSize = message.size();
-
-        ssize_t messageBytesSent = ::send   (
-                                                clientSocket.getDescriptor(),
-                                                message.data(),
-                                                messageSize,
-                                                0
-                                            );
-
-        if ( messageBytesSent < 0 )
-        {
-            throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
-        }
-
-        //  "sendMessage" may actually sendMessage less bytes than "data" contains. It's also an exceptional situation, thus must be checked for.
-        //  "messageBytesSent" and "messageSize" are signed and unsigned types respectively. Explicit conversion is required to compare them.
-        //  "messageBytesSent" is guaranteed to be non-negative at this point, thus it can be correctly cast to "size_t".
-        else if ( static_cast<size_t>(messageBytesSent) < messageSize )
-        {
-            throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
-        }
-        std::cout << message << std::endl;
+                            clientSocket.sendMessage("@",MSG_NOSIGNAL);
                         }
-                        catch ( std::exception& e )
+                        catch ( std::exception& exception )
                         {
-                            std::cout << e.what() << std::endl;
-//                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-//                            return true;
+                            std::cout << exception.what() << std::endl;
+                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+                            return true;
                         }
                         return false;
                     }
@@ -269,7 +254,7 @@ namespace Unet
 
             serverUniqueLock.unlock();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(tcpServerPtr->clientsPingTimeout));
+            std::this_thread::sleep_for(std::chrono::milliseconds(tcpServerPtr->keepAliveTimeout));
 
         }
 

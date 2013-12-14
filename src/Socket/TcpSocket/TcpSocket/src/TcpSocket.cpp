@@ -26,7 +26,7 @@ namespace Unet
                                 Socket(domain,SOCK_STREAM,protocol,descriptor),
                                 connectionsLimit(128),
                                 messageSize(8),
-                                messageDelimiter("\0")
+                                messageDelimiter("\r\n")
     {
 
     }
@@ -48,10 +48,9 @@ namespace Unet
     void                TcpSocket::swap ( TcpSocket& tcpSocket )
     {
         std::swap(this->descriptor,tcpSocket.descriptor);
-        std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
         std::swap(this->connectionsLimit,tcpSocket.connectionsLimit);
-        std::swap(this->messageSize,tcpSocket.messageSize);
         std::swap(this->messageDelimiter,tcpSocket.messageDelimiter);
+        std::swap(this->messageSize,tcpSocket.messageSize);
     }
 
     int                 TcpSocket::getConnectionsLimit ( void ) const
@@ -147,6 +146,16 @@ namespace Unet
             this->setOption(TCP_KEEPCNT,probes,SOL_TCP);
         }
 
+    }
+
+    int                 TcpSocket::getUserTimeout ( void ) const
+    {
+        return this->getOptionValue<int>(TCP_USER_TIMEOUT,SOL_TCP);
+    }
+
+    void                TcpSocket::setUserTimeout ( int userTimeout )
+    {
+        this->setOption(TCP_USER_TIMEOUT,userTimeout,SOL_TCP);
     }
 
     TcpSocket           TcpSocket::accept ( void )
@@ -264,13 +273,13 @@ namespace Unet
             //  Peek all unread data
             unreadData = this->peekDataBySize();
 
-            messageTerminatorPosition = unreadData.find_first_of(this->getMessageDelimiter());
+            messageTerminatorPosition = unreadData.find_first_of(this->messageDelimiter);
 
             if ( messageTerminatorPosition != std::string::npos )
             {
                 //  "messageDelimiter" found in the "unreadData"
                 std::string messageReceived = this->receiveDataBySize(messageTerminatorPosition,receiveOptions);
-                this->receiveDataBySize(this->getMessageDelimiter().size(),receiveOptions);
+                this->receiveDataBySize(this->messageDelimiter.size(),receiveOptions);
                 return messageReceived;
             }
 
@@ -329,8 +338,6 @@ namespace Unet
         {
             throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
         }
-
-        std::cout << "Write " << message << std::endl;
 
     }
 

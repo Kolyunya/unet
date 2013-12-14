@@ -10,7 +10,7 @@
 #include <Unet/TcpSocket.hpp>
 #include <Unet/Datagram.hpp>
 #include <Unet/TcpServerEvents.hpp>
-#include <iostream>
+
 namespace Unet
 {
 
@@ -37,8 +37,10 @@ namespace Unet
             void                                setConnectionsLimit ( int connectionsLimit );
             TcpReceiveMode                      getReceiveMode ( void ) const;
             void                                setReceiveMode ( TcpReceiveMode receiveMode );
-            unsigned int                        getClientsPingTimeout ( void ) const;
-            void                                setClientsPingTimeout ( unsigned int clientsPingTimeout );
+            unsigned int                        getKeepAliveTimeout ( void ) const;
+            void                                setKeepAliveTimeout ( unsigned int keepAliveTimeout );
+            unsigned int                        getDisconnectTimeout ( void ) const;
+            void                                setDisconnectTimeout ( unsigned int disconnectTimeout );
             size_t                              getMessageSize ( void ) const;
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
@@ -54,14 +56,15 @@ namespace Unet
             void                                stopSocket ( void );
             static void                         routineAccept ( TcpServer* tcpServerPtr );
             static void                         routineReceive ( TcpServer* tcpServerPtr );
-            static void                         routinePing ( TcpServer* tcpServerPtr );
+            static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
             TcpSocketsVec                       clientSockets;
             std::raii_thread_manual             threadAccept;
             std::raii_thread_manual             threadReceive;
-            std::raii_thread_manual             threadPing;
+            std::raii_thread_manual             threadKeepAlive;
             TcpReceiveMode                      receiveMode;
-            unsigned int                        clientsPingTimeout;
+            unsigned int                        keepAliveTimeout;
+            unsigned int                        disconnectTimeout;
             TcpServerEventClientConnected       clientConnectedEvent;
             TcpServerEventClientDisconnected    clientDisconnectedEvent;
             TcpServerEventMessageReceived       messageReceivedEvent;

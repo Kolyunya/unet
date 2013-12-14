@@ -19,6 +19,8 @@
 #ifndef _UNET_TCP_SOCKET_HPP_
 #define _UNET_TCP_SOCKET_HPP_
 
+#define TCP_USER_TIMEOUT 18
+
 #include <utility>                          //  std::swap
 #include <netinet/in.h>                     //  IPPROTO_TCP
 #include <netinet/tcp.h>                    //  TCP_KEEPIDLE
@@ -26,7 +28,7 @@
                                             //  TCP_KEEPCNT
 #include <Unet/Socket.hpp>                  //  Unet::Socket
 #include <Unet/TcpSocketExceptions.hpp>
-#include <iostream>
+
 namespace Unet
 {
     class TcpSocket
@@ -49,6 +51,8 @@ namespace Unet
             void                setKeepAliveEnabled ( bool keepAliveEnabled );
             int                 getKeepAliveParameter ( int parameter );
             void                setKeepAliveParameters ( unsigned int time = 0 , unsigned int interval = 0 , unsigned int probes = 0 );
+            int                 getUserTimeout ( void ) const;
+            void                setUserTimeout ( int userTimeout );
             void                listen ( void );
             TcpSocket           accept ( void );
             void                checkDisconnect ( void ) const;
