@@ -9,8 +9,8 @@ namespace Unet
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
                                 threadKeepAlive(std::bind(TcpServer::routineKeepAlive,this)),
                                 receiveMode(TCP_RECEIVE_MODE_DEFAULT),
-                                keepAliveTimeout(1000),
-                                disconnectTimeout(10000)
+                                keepAliveTimeout(5),
+                                disconnectTimeout(5)
     {
 
     }
@@ -120,8 +120,20 @@ namespace Unet
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
 
-        //  TCP server must use "MSG_NOSIGNAL" otherwise it will be terminated after writing to a dead socket
-        tcpSocket.sendMessage(message,MSG_NOSIGNAL);
+        try
+        {
+
+            //  TCP server must use "MSG_NOSIGNAL" otherwise it will be terminated after writing to a dead socket
+            tcpSocket.sendMessage(message,MSG_NOSIGNAL);
+
+        }
+        catch ( Exception<OutgoingDataCouldNotBeSent> )
+        {
+            if ( errno == 32 )
+            {
+                this->removeClient(tcpSocket);
+            }
+        }
 
         this->messageSentEvent.dispatch(tcpSocket,message);
     }
@@ -162,16 +174,34 @@ namespace Unet
         this->serverSocket.close();
     }
 
+    void                TcpServer::removeClient ( const TcpSocket&  )
+    {
+/*
+        TcpSocketsVecItr clientSocketsCitr = this->clientSockets.begin();
+        for ( ; clientSocketsCitr != this->clientSockets.end() ; clientSocketsCitr++ )
+        {
+            if ( (*clientSocketsCitr).getDescriptor() == clientSocket.getDescriptor() )
+            {
+                this->clientSockets.erase(clientSocketsCitr);
+                return;
+            }
+        }
+
+        tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+*/
+    }
+
     void                TcpServer::routineAccept ( TcpServer* tcpServerPtr )
     {
-
         //  Try to lock "serverMutex"
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
             tcpSocket.setNonBlocking();
-            tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout);
+            tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout*1000);
+            tcpSocket.setKeepAliveEnabled(true);
+            tcpSocket.setKeepAliveParameters(tcpServerPtr->disconnectTimeout,1,1);
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
             tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
@@ -226,23 +256,15 @@ namespace Unet
                         TcpSocket& clientSocket
                     )
                     {
-                        try
+
+                        int clientSocketError = clientSocket.getOptionValue<int>(SO_ERROR);
+                        std::cout << clientSocketError << std::endl;
+                        if ( clientSocketError == ETIMEDOUT )
                         {
-                            clientSocket.sendMessage("@",MSG_NOSIGNAL | MSG_OOB);
+                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+                            return true;
                         }
-                        catch ( Exception<OutgoingDataCouldNotBeSent>& exception )
-                        {
-                            if
-                            (
-                                errno == 110    //  Connection timed out
-                                    ||
-                                errno == 32     //  Broken pipe
-                            )
-                            {
-                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                                return true;
-                            }
-                        }
+
                         return false;
                     }
                 ),
@@ -251,7 +273,7 @@ namespace Unet
 
             serverUniqueLock.unlock();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(tcpServerPtr->keepAliveTimeout));
+            std::this_thread::sleep_for(std::chrono::seconds(tcpServerPtr->keepAliveTimeout));
 
         }
 

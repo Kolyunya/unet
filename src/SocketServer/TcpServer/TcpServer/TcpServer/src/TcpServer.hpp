@@ -18,6 +18,8 @@ namespace Unet
 
     typedef TcpSocketsVec::const_iterator       TcpSocketsVecCitr;
 
+    typedef TcpSocketsVec::iterator             TcpSocketsVecItr;
+
     enum TcpReceiveMode
     {
         TCP_RECEIVE_MODE_DEFAULT,
@@ -54,6 +56,7 @@ namespace Unet
             void                                launchRoutines ( void );
             void                                stopRoutines ( void );
             void                                stopSocket ( void );
+            void                                removeClient ( const TcpSocket& clientSocket );
             static void                         routineAccept ( TcpServer* tcpServerPtr );
             static void                         routineReceive ( TcpServer* tcpServerPtr );
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
