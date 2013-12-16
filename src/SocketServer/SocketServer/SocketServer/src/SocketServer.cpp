@@ -3,14 +3,6 @@
 namespace Unet
 {
 
-                            SocketServer::SocketServer ( void )
-                                :
-                                    keepAliveTimeout(5),
-                                    disconnectTimeout(5)
-    {
-
-    }
-
 							SocketServer::~SocketServer ( void ) noexcept
 	{
 
@@ -27,26 +19,6 @@ namespace Unet
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->addressUniPtr = std::move(addressUniPtr);
-    }
-
-    unsigned int            SocketServer::getKeepAliveTimeout ( void ) const
-    {
-        return this->keepAliveTimeout;
-    }
-
-    void                    SocketServer::setKeepAliveTimeout ( unsigned int keepAliveTimeout )
-    {
-        this->keepAliveTimeout = keepAliveTimeout;
-    }
-
-    unsigned int            SocketServer::getDisconnectTimeout ( void ) const
-    {
-        return this->disconnectTimeout;
-    }
-
-    void                    SocketServer::setDisconnectTimeout ( unsigned int disconnectTimeout )
-    {
-        this->disconnectTimeout = disconnectTimeout;
     }
 
     void                    SocketServer::restart ( void )
