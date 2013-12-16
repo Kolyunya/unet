@@ -39,10 +39,6 @@ namespace Unet
             void                                setConnectionsLimit ( int connectionsLimit );
             TcpReceiveMode                      getReceiveMode ( void ) const;
             void                                setReceiveMode ( TcpReceiveMode receiveMode );
-            unsigned int                        getKeepAliveTimeout ( void ) const;
-            void                                setKeepAliveTimeout ( unsigned int keepAliveTimeout );
-            unsigned int                        getDisconnectTimeout ( void ) const;
-            void                                setDisconnectTimeout ( unsigned int disconnectTimeout );
             size_t                              getMessageSize ( void ) const;
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
@@ -66,8 +62,6 @@ namespace Unet
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadKeepAlive;
             TcpReceiveMode                      receiveMode;
-            unsigned int                        keepAliveTimeout;
-            unsigned int                        disconnectTimeout;
             TcpServerEventClientConnected       clientConnectedEvent;
             TcpServerEventClientDisconnected    clientDisconnectedEvent;
             TcpServerEventMessageReceived       messageReceivedEvent;

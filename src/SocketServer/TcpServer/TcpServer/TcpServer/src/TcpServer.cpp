@@ -8,9 +8,7 @@ namespace Unet
                                 threadAccept(std::bind(TcpServer::routineAccept,this)),
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
                                 threadKeepAlive(std::bind(TcpServer::routineKeepAlive,this)),
-                                receiveMode(TCP_RECEIVE_MODE_DEFAULT),
-                                keepAliveTimeout(5),
-                                disconnectTimeout(5)
+                                receiveMode(TCP_RECEIVE_MODE_DEFAULT)
     {
 
     }
@@ -53,26 +51,6 @@ namespace Unet
     void                TcpServer::setReceiveMode ( TcpReceiveMode receiveMode )
     {
         this->receiveMode = receiveMode;
-    }
-
-    unsigned int        TcpServer::getKeepAliveTimeout ( void ) const
-    {
-        return this->keepAliveTimeout;
-    }
-
-    void                TcpServer::setKeepAliveTimeout ( unsigned int keepAliveTimeout )
-    {
-        this->keepAliveTimeout = keepAliveTimeout;
-    }
-
-    unsigned int        TcpServer::getDisconnectTimeout ( void ) const
-    {
-        return this->disconnectTimeout;
-    }
-
-    void                TcpServer::setDisconnectTimeout ( unsigned int disconnectTimeout )
-    {
-        this->disconnectTimeout = disconnectTimeout;
     }
 
     size_t              TcpServer::getMessageSize ( void ) const
@@ -151,7 +129,7 @@ namespace Unet
         this->serverSocket.open();
         this->serverSocket.setNonBlocking();
         this->serverSocket.setOption(SO_REUSEADDR,1);
-        this->serverSocket.bind(*this->addressUniPtr.get());
+        this->serverSocket.bind(this->addressUniPtr);
         this->serverSocket.listen();
     }
 

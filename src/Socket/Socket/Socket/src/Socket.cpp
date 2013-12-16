@@ -31,14 +31,15 @@ namespace Unet
 
     }
 
-    void                Socket::bind ( const Address& address )
+    void                Socket::bind ( const AddressUniPtr& addressUniPtr )
     {
 
         int socketDescriptor = this->getDescriptor();
-        const sockaddr* addressDataPtr = reinterpret_cast<const sockaddr*>(address.getDataPtr());
-        socklen_t addressSize = address.getSizeRef();
+        const sockaddr* addressDataPtr = addressUniPtr->getDataPtr();
+        socklen_t addressSize = addressUniPtr->getSizeRef();
 
         int socketBindResult = ::bind(socketDescriptor,addressDataPtr,addressSize);
+
         if ( socketBindResult != 0 )
         {
             throw SYSTEM_EXCEPTION(SocketCouldNotBeBound);
@@ -46,7 +47,7 @@ namespace Unet
 
     }
 
-    void                Socket::connect ( AddressUniPtr addressUniPtr )
+    void                Socket::connect ( const AddressUniPtr& addressUniPtr )
     {
 
         /*
