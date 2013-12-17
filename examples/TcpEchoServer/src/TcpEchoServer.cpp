@@ -41,6 +41,12 @@ int main ( int argc , char** argv )
 	//	Define the address which the server will listen to
     tcpEchoServer.setAddress(std::move(tcpEchoServerAddressUniPtr));
 
+    //	Set the receive mode of the server to delimited messages
+    tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_BY_DELIMITER);
+
+    //	Set the messages delimiter
+    tcpEchoServer.setMessageDelimiter("$");
+
 	//	Start the server
     tcpEchoServer.start();
 

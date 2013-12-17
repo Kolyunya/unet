@@ -32,6 +32,7 @@ namespace Unet
     struct OutgoingDataCouldNotBeSent { constexpr static char const * const message = "OutgoingDataCouldNotBeSent"; };
     struct OutgoingDataCouldNotBeSentCompletely { constexpr static char const * const message = "OutgoingDataCouldNotBeSentCompletely"; };
     struct PeerDisconnected { constexpr static char const * const message = "PeerDisconnected"; };
+    struct BrokenPipe { constexpr static char const * const message = "BrokenPipe"; };
 }
 
 #endif  //  _UNET_TCP_SOCKET_EXCEPTIONS_HPP_

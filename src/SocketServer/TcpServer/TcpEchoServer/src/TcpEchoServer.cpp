@@ -35,15 +35,7 @@ namespace Unet
         messageReceievedEventMessage += " -> ";
         messageReceievedEventMessage += message;
         this->log(messageReceievedEventMessage);
-
-        if ( this->receiveMode == TCP_RECEIVE_MODE_BY_DELIMITER )
-        {
-            this->sendMessageWithDelimiter(tcpSocket,message);
-        }
-        else
-        {
-            this->sendMessage(tcpSocket,message);
-        }
+        this->sendMessage(tcpSocket,message);
     }
 
     void    TcpEchoServer::messageSentEventHandler ( const TcpSocket& tcpSocket , const std::string& message )

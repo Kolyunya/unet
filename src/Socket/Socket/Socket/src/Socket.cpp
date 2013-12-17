@@ -326,8 +326,20 @@ namespace Unet
             throw -1;
         }
 
+        if ( dataReadSize == 0 )
+        {
+            throw 0;
+        }
+
         return dataRead;
 
+    }
+
+    std::string         Socket::peek ( int peekOptions )
+    {
+        //  Add "MSG_PEEK" to "peekOptions". Otherwise data will be removed from socket input buffer
+        peekOptions |= MSG_PEEK;
+        return this->read(peekOptions);
     }
 
     void                Socket::write ( const std::string& data , int writeOptions )

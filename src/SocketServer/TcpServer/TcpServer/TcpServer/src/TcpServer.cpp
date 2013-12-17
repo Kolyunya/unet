@@ -9,8 +9,8 @@ namespace Unet
                                 threadReceive(std::bind(TcpServer::routineReceive,this)),
                                 threadKeepAlive(std::bind(TcpServer::routineKeepAlive,this)),
                                 receiveMode(TCP_RECEIVE_MODE_DEFAULT),
-                                keepAliveTimeout(5),
-                                disconnectTimeout(5)
+                                keepAliveTimeout(1),
+                                disconnectTimeout(1)
     {
 
     }
@@ -117,33 +117,32 @@ namespace Unet
 
     void                TcpServer::sendMessage ( const TcpSocket& tcpSocket , const std::string& message )
     {
+
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
 
         try
         {
 
-            //  TCP server must use "MSG_NOSIGNAL" otherwise it will be terminated after writing to a dead socket
-            tcpSocket.sendMessage(message,MSG_NOSIGNAL);
-
-        }
-        catch ( Exception<OutgoingDataCouldNotBeSent> )
-        {
-            if ( errno == 32 )
+            if ( this->receiveMode == TCP_RECEIVE_MODE_BY_DELIMITER )
             {
-                this->removeClient(tcpSocket);
+                tcpSocket.sendMessageWithDelimiter(message,MSG_NOSIGNAL);
             }
+
+            else
+            {
+                tcpSocket.sendMessage(message,MSG_NOSIGNAL);
+            }
+
+        }
+
+        catch ( Exception<BrokenPipe> )
+        {
+            this->removeClient(tcpSocket);
         }
 
         this->messageSentEvent.dispatch(tcpSocket,message);
-    }
 
-    void                TcpServer::sendMessageWithDelimiter ( const TcpSocket& tcpSocket , const std::string& message )
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->checkIsLaunched();
-        tcpSocket.sendMessageWithDelimiter(message);
-        this->messageSentEvent.dispatch(tcpSocket,message);
     }
 
     void                TcpServer::launchSocket ( void )
@@ -174,21 +173,20 @@ namespace Unet
         this->serverSocket.close();
     }
 
-    void                TcpServer::removeClient ( const TcpSocket&  )
+    void                TcpServer::removeClient ( const TcpSocket& clientSocket )
     {
-/*
+
         TcpSocketsVecItr clientSocketsCitr = this->clientSockets.begin();
         for ( ; clientSocketsCitr != this->clientSockets.end() ; clientSocketsCitr++ )
         {
             if ( (*clientSocketsCitr).getDescriptor() == clientSocket.getDescriptor() )
             {
                 this->clientSockets.erase(clientSocketsCitr);
+                this->clientDisconnectedEvent.dispatch(clientSocket);
                 return;
             }
         }
 
-        tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-*/
     }
 
     void                TcpServer::routineAccept ( TcpServer* tcpServerPtr )
@@ -243,6 +241,10 @@ namespace Unet
         if ( serverUniqueLock.try_lock() )
         {
 
+            //std::cout << tcpServerPtr->clientSockets.size() << std::endl;
+
+            try{
+
             tcpServerPtr->clientSockets.erase
             (
                 std::remove_if
@@ -257,19 +259,44 @@ namespace Unet
                     )
                     {
 
-                        int clientSocketError = clientSocket.getOptionValue<int>(SO_ERROR);
-                        std::cout << clientSocketError << std::endl;
-                        if ( clientSocketError == ETIMEDOUT )
+                        try
+                        {
+                            //  If client disconnected improperly and TCP keepalive fails to get a response
+                            int clientSocketError = clientSocket.getOptionValue<int>(SO_ERROR);
+                            if ( clientSocketError == ETIMEDOUT )
+                            {
+                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
+                                return true;
+                            }
+                        }
+                        catch ( ... )
+                        {
+
+                        }
+
+                        try
+                        {
+                            //  If client disconnected properly "Exception<PeerDisconnected>" will be emited by "peekMessageBySize"
+                            clientSocket.peekDataBySize();
+                        }
+                        catch ( Exception<PeerDisconnected> )
                         {
                             tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
                             return true;
                         }
+                        catch ( ... )
+                        {
+                            //  E.g. Exception<IncommingDataCouldNotBeRetrieved>
+                        }
 
                         return false;
+
                     }
                 ),
                 tcpServerPtr->clientSockets.end()
             );
+
+            }catch(std::exception& e ){std::cout << e.what() << std::endl;}
 
             serverUniqueLock.unlock();
 

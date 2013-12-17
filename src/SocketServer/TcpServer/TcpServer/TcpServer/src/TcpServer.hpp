@@ -50,7 +50,6 @@ namespace Unet
             void                                start ( void ) override;
             void                                stop ( void ) override;
             void                                sendMessage ( const TcpSocket& tcpSocket , const std::string& message );
-            void                                sendMessageWithDelimiter ( const TcpSocket& tcpSocket , const std::string& message );
         protected:
             void                                launchSocket ( void );
             void                                launchRoutines ( void );

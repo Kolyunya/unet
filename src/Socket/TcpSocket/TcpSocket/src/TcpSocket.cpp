@@ -209,15 +209,6 @@ namespace Unet
         if ( dataSize == 0 )
         {
 
-            //  And there is no unread data
-            if ( unreadDataSize == 0 )
-            {
-
-                //  return empty string
-                throw EXCEPTION(IncommingDataIsNotAvailableNow);
-
-            }
-
             //  Resize the buffer to hold all unread data
             receivedData.resize(unreadDataSize);
 
@@ -250,6 +241,12 @@ namespace Unet
         if ( receivedDataBytesRead < 0 )
         {
             throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
+        }
+
+        else if ( receivedDataBytesRead == 0 )
+        {
+            throw SYSTEM_EXCEPTION(PeerDisconnected);
+
         }
 
         return receivedData;
@@ -328,7 +325,14 @@ namespace Unet
 
         if ( messageBytesSent < 0 )
         {
+
+            if ( errno == EPIPE )
+            {
+                throw SYSTEM_EXCEPTION(BrokenPipe);
+            }
+
             throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
+
         }
 
         //  "sendMessage" may actually sendMessage less bytes than "data" contains. It's also an exceptional situation, thus must be checked for.
