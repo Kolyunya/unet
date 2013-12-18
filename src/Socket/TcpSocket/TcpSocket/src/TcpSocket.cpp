@@ -351,5 +351,4 @@ namespace Unet
         this->sendMessage(messageWithDelimiter,sendOptions);
     }
 
-
 }

@@ -68,6 +68,7 @@ namespace Unet
             int                 connectionsLimit;
             size_t              messageSize;
             std::string         messageDelimiter;
+            std::string         inputBuffer;
     };
 }
 
