@@ -45,12 +45,10 @@ int main ( int argc , char** argv )
 
 	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
 	//	to prevent the program from finishing it's execution
-    while ( false )
+    while ( true )
 	{
 
 	}
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     return 0;
 
