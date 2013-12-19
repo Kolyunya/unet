@@ -47,10 +47,10 @@ namespace Unet
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
             void                                setMessageDelimiter ( const std::string& messageDelimiter );
-            void                                start ( void ) override;
-            void                                stop ( void ) override;
             void                                sendMessage ( const TcpSocket& tcpSocket , const std::string& message );
         protected:
+            void                                startProcedure ( void ) override;
+            void                                stopProcedure ( void ) override;
             void                                launchSocket ( void );
             void                                launchRoutines ( void );
             void                                stopRoutines ( void );

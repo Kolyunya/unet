@@ -15,6 +15,8 @@ namespace Unet
             explicit            TcpEchoServer ( void );
             virtual             ~TcpEchoServer ( void ) noexcept override = default;
         protected:
+            void                startedHandler ( void );
+            void                stoppedHandler ( void );
             void                clientConnectedEventHandler ( const TcpSocket& tcpSocket );
             void                clientDisconnectedEventHandler ( const TcpSocket& tcpSocket );
             void                messageReceievedEventHandler ( const TcpSocket& tcpSocket , const std::string& message );

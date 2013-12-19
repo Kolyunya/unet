@@ -99,22 +99,6 @@ namespace Unet
         this->serverSocket.setMessageDelimiter(messageDelimiter);
     }
 
-    void                TcpServer::start ( void )
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->checkIsNotLaunched();
-        this->launchSocket();
-        this->launchRoutines();
-    }
-
-    void                TcpServer::stop ( void )
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->checkIsLaunched();
-        this->stopRoutines();
-        this->stopSocket();
-    }
-
     void                TcpServer::sendMessage ( const TcpSocket& tcpSocket , const std::string& message )
     {
 
@@ -143,6 +127,22 @@ namespace Unet
 
         this->messageSentEvent.dispatch(tcpSocket,message);
 
+    }
+
+    void                TcpServer::startProcedure ( void )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->checkIsNotLaunched();
+        this->launchSocket();
+        this->launchRoutines();
+    }
+
+    void                TcpServer::stopProcedure ( void )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->checkIsLaunched();
+        this->stopRoutines();
+        this->stopSocket();
     }
 
     void                TcpServer::launchSocket ( void )
