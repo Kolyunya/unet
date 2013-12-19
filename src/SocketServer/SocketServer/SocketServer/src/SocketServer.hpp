@@ -4,6 +4,7 @@
 #include <mutex>
 #include <thread>
 #include <Unet/Address.hpp>
+#include <Unet/SocketServerEvents.hpp>
 
 namespace Unet
 {
@@ -15,10 +16,14 @@ namespace Unet
             Unet::AddressUniPtr             getAddress ( void ) const;
             void                            setAddress ( Unet::AddressUniPtr addressUniPtr );
             virtual bool                    getLaunched ( void ) const = 0;
-            virtual void                    start ( void ) = 0;
-            virtual void                    stop ( void ) = 0;
+            void                            start ( void );
+            void                            stop ( void );
             void                            restart ( void );
+            SocketServerEventStarted        startedEvent;
+            SocketServerEventStopped        stoppedEvent;
         protected:
+            virtual void                    startProcedure ( void ) = 0;
+            virtual void                    stopProcedure ( void ) = 0;
             void                            checkIsLaunched ( void ) const;
             void                            checkIsNotLaunched ( void ) const;
             mutable std::recursive_mutex    serverMutex;

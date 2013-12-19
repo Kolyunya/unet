@@ -29,7 +29,15 @@ namespace Unet
         return this->recieveThread.isActive();
     }
 
-    void    UdpServer::start ( void )
+    void    UdpServer::sendDatagram ( const Unet::Datagram& datagram )
+    {
+        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
+        this->checkIsLaunched();
+        this->socket.sendDatagram(datagram);
+        this->datagramSentEvent.dispatch(datagram);
+    }
+
+    void    UdpServer::startProcedure ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsNotLaunched();
@@ -37,7 +45,7 @@ namespace Unet
         this->launchRoutine();
     }
 
-    void    UdpServer::stop ( void )
+    void    UdpServer::stopProcedure ( void )
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
         this->checkIsLaunched();
@@ -45,24 +53,16 @@ namespace Unet
         this->stopSocket();
     }
 
-    void    UdpServer::sendDatagram ( Unet::Datagram& datagram )
-    {
-        std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        this->checkIsLaunched();
-        this->socket.sendDatagram(datagram);
-        this->dispatchEvent(SocketServerEvent::MESSAGE_SENT,&datagram);
-    }
-
     void    UdpServer::launchSocket ( void )
     {
         this->socket.open();
         this->socket.setOption(SO_REUSEADDR,1);
-        this->socket.bind(*(this->addressShrPtr.get()));
+        this->socket.bind(this->addressUniPtr);
     }
 
     void    UdpServer::launchRoutine ( void )
     {
-        this->recieveThread.launch();
+        this->recieveThread.start();
     }
 
     void    UdpServer::stopRoutine ( void )
@@ -97,7 +97,7 @@ namespace Unet
                 Unet::Datagram recievedDatagram = UdpServerPtr->socket.recieveDatagram();
 
                 //  Emit respective event
-                UdpServerPtr->dispatchEvent(SocketServerEvent::MESSAGE_RECIEVED,&recievedDatagram);
+                UdpServerPtr->datagramReceivedEvent.dispatch(recievedDatagram);
             }
         }
 

@@ -11,11 +11,6 @@ namespace Unet
         this->messageSentEvent.add_listener(this,&TcpEchoServer::messageSentEventHandler);
     }
 
-            TcpEchoServer::~TcpEchoServer ( void ) noexcept
-    {
-
-    }
-
     void    TcpEchoServer::clientConnectedEventHandler ( const TcpSocket& tcpSocket )
     {
         std::string clientConnectedEventMessage = tcpSocket.getPeerAddress()->toString();

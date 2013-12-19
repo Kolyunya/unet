@@ -21,6 +21,18 @@ namespace Unet
         this->addressUniPtr = std::move(addressUniPtr);
     }
 
+    void                    SocketServer::start ( void )
+    {
+        this->startProcedure();
+        this->startedEvent.dispatch();
+    }
+
+    void                    SocketServer::stop ( void )
+    {
+        this->stopProcedure();
+        this->stoppedEvent.dispatch();
+    }
+
     void                    SocketServer::restart ( void )
     {
         this->stop();

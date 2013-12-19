@@ -13,7 +13,7 @@ namespace Unet
     {
         public:
             explicit            TcpEchoServer ( void );
-            virtual             ~TcpEchoServer ( void ) noexcept override;
+            virtual             ~TcpEchoServer ( void ) noexcept override = default;
         protected:
             void                clientConnectedEventHandler ( const TcpSocket& tcpSocket );
             void                clientDisconnectedEventHandler ( const TcpSocket& tcpSocket );

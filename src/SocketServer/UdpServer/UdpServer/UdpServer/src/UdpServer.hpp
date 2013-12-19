@@ -2,36 +2,37 @@
 #define _UDP_SERVER_HPP_
 
 #include <thread.hpp>
-#include <Util/Event.hpp>
-#include <Unet/SocketServer.hpp>
-#include <Unet/SocketServerEvent.hpp>
+#include <event.hpp>
 #include <Unet/UdpSocket.hpp>
+#include <Unet/SocketServer.hpp>
+#include <Unet/UdpServerEvents.hpp>
 
 namespace Unet
 {
     class UdpServer
         :
-            public SocketServer,
-            public Util::EventDispatcher
+            public SocketServer
     {
         public:
-            explicit                        UdpServer ( void );
-            virtual                         ~UdpServer ( void ) noexcept override;
-            bool                            getLaunched ( void ) const override;
-            void                            start ( void ) override;
-            void                            stop ( void ) override;
-            void                            sendDatagram ( Unet::Datagram& datagram );
+            explicit                            UdpServer ( void );
+            virtual                             ~UdpServer ( void ) noexcept override;
+            bool                                getLaunched ( void ) const override;
+            void                                sendDatagram ( const Unet::Datagram& datagram );
+            UdpServerEventDatagramReceived      datagramReceivedEvent;
+            UdpServerEventDatagramSent          datagramSentEvent;
         protected:
-            void                            launchSocket ( void );
-            void                            launchRoutine ( void );
-            void                            stopRoutine ( void );
-            void                            stopSocket ( void );
-            static void                     routine ( UdpServer* UdpServerPtr );
-            std::raii_thread_manual         recieveThread;
-            UdpSocket                       socket;
+            void                                startProcedure ( void ) override;
+            void                                stopProcedure ( void ) override;
+            void                                launchSocket ( void );
+            void                                launchRoutine ( void );
+            void                                stopRoutine ( void );
+            void                                stopSocket ( void );
+            static void                         routine ( UdpServer* UdpServerPtr );
+            std::raii_thread_manual             recieveThread;
+            UdpSocket                           socket;
         private:
-                                            UdpServer ( const UdpServer& UdpServer );
-            UdpServer&                      operator= ( const UdpServer& UdpServer );
+                                                UdpServer ( const UdpServer& UdpServer );
+            UdpServer&                          operator= ( const UdpServer& UdpServer );
     };
 }
 
