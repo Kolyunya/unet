@@ -31,6 +31,11 @@ namespace Unet
 
     }
 
+    bool                Socket::operator== ( const Socket& socket ) const
+    {
+        return this->getDescriptor() == socket.getDescriptor();
+    }
+
     void                Socket::bind ( const AddressUniPtr& addressUniPtr )
     {
 

@@ -38,6 +38,7 @@ namespace Unet
         public:
             explicit            Socket ( int domain , int type , int protocol = 0 , int descriptor = -1 );
             virtual             ~Socket ( void ) noexcept override = default;
+            bool                operator== ( const Socket& socket ) const;
             void                bind ( const AddressUniPtr& addressUniPtr );
             void                connect ( const AddressUniPtr& addressUniPtr );
             void                disconnect ( void );
