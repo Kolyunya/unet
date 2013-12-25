@@ -47,7 +47,7 @@ namespace Unet
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
             void                                setMessageDelimiter ( const std::string& messageDelimiter );
-            void                                sendMessage ( const TcpSocket& tcpSocket , const std::string& message );
+            void                                sendMessage ( TcpSocket& tcpSocket , const std::string& message );
             TcpServerEventClientConnected       clientConnectedEvent;
             TcpServerEventClientDisconnected    clientDisconnectedEvent;
             TcpServerEventMessageReceived       messageReceivedEvent;
@@ -59,7 +59,7 @@ namespace Unet
             void                                launchRoutines ( void );
             void                                stopRoutines ( void );
             void                                stopSocket ( void );
-            void                                removeClient ( const TcpSocket& clientSocket );
+            void                                removeClient ( TcpSocket& clientSocket );
             static void                         routineAccept ( TcpServer* tcpServerPtr );
             static void                         routineReceive ( TcpServer* tcpServerPtr );
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );

@@ -99,7 +99,7 @@ namespace Unet
         this->serverSocket.setMessageDelimiter(messageDelimiter);
     }
 
-    void                TcpServer::sendMessage ( const TcpSocket& tcpSocket , const std::string& message )
+    void                TcpServer::sendMessage ( TcpSocket& tcpSocket , const std::string& message )
     {
 
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
@@ -173,7 +173,7 @@ namespace Unet
         this->serverSocket.close();
     }
 
-    void                TcpServer::removeClient ( const TcpSocket& clientSocket )
+    void                TcpServer::removeClient ( TcpSocket& clientSocket )
     {
 
         TcpSocketsVecItr clientSocketsCitr = this->clientSockets.begin();

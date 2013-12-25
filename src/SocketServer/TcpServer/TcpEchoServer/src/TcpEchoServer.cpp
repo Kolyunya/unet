@@ -25,20 +25,20 @@ namespace Unet
         this->log(stopEventMessage);
     }
 
-    void    TcpEchoServer::clientConnectedEventHandler ( const TcpSocket& tcpSocket )
+    void    TcpEchoServer::clientConnectedEventHandler ( TcpSocket& tcpSocket )
     {
         std::string clientConnectedEventMessage = tcpSocket.getPeerAddress()->toString();
         clientConnectedEventMessage += " - connected";
         this->log(clientConnectedEventMessage);
     }
 
-    void    TcpEchoServer::clientDisconnectedEventHandler ( const TcpSocket& )
+    void    TcpEchoServer::clientDisconnectedEventHandler ( TcpSocket& )
     {
         std::string clientDisconnectedEventMessage = "client disconnected";
         this->log(clientDisconnectedEventMessage);
     }
 
-    void    TcpEchoServer::messageReceievedEventHandler ( const TcpSocket& tcpSocket , const std::string& message )
+    void    TcpEchoServer::messageReceievedEventHandler ( TcpSocket& tcpSocket , const std::string& message )
     {
         std::string messageReceievedEventMessage = tcpSocket.getPeerAddress()->toString();
         messageReceievedEventMessage += " -> ";
@@ -47,7 +47,7 @@ namespace Unet
         this->sendMessage(tcpSocket,message);
     }
 
-    void    TcpEchoServer::messageSentEventHandler ( const TcpSocket& tcpSocket , const std::string& message )
+    void    TcpEchoServer::messageSentEventHandler ( TcpSocket& tcpSocket , const std::string& message )
     {
         std::string messageSentEventMessage = tcpSocket.getPeerAddress()->toString();
         messageSentEventMessage += " <- ";

@@ -10,28 +10,28 @@ namespace Unet
 
     class TcpServerEventClientConnected
         :
-            public std::event<const TcpSocket&>
+            public std::event<TcpSocket&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventClientDisconnected
         :
-            public std::event<const TcpSocket&>
+            public std::event<TcpSocket&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventMessageReceived
         :
-            public std::event<const TcpSocket&,const std::string&>
+            public std::event<TcpSocket&,const std::string&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventMessageSent
         :
-            public std::event<const TcpSocket&,const std::string&>
+            public std::event<TcpSocket&,const std::string&>
     {
         friend class TcpServer;
     };
