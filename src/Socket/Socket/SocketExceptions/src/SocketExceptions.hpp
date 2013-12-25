@@ -30,6 +30,8 @@ namespace Unet
     struct SocketCouldNotBeConnected { constexpr static char const * const message = "ExcSocketCouldNotBeConnected"; };
     struct SocketCouldNotBeShutdown { constexpr static char const * const message = "ExcSocketCouldNotBeShutdown"; };
     struct IncommingDataIsNotAvailableNow { constexpr static char const * const message = "IncommingDataIsNotAvailableNow"; };
+    struct IncommingDataCouldNotBeRetrieved { constexpr static char const * const message = "IncommingDataCouldNotBeRetrieved"; };
+    struct OutgoingDataCouldNotBeSent { constexpr static char const * const message = "OutgoingDataCouldNotBeSent"; };
     struct CouldNotRetrieveSocketLocalAddress { constexpr static char const * const message = "ExcCouldNotRetrieveSocketLocalAddress"; };
     struct CouldNotRetrieveSocketPeerAddress { constexpr static char const * const message = "ExcCouldNotRetrieveSocketPeerAddress"; };
     struct IncommingDataSizeCouldNotBeRetrieved { constexpr static char const * const message = "ExcIncommingDataSizeCouldNotBeRetrieved"; };

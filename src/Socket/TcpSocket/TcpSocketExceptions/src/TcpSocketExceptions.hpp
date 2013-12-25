@@ -27,9 +27,7 @@ namespace Unet
     struct InvalidMessageSize { constexpr static char const * const message = "InvalidMessageSize"; };
     struct SocketCouldNotBeListened { constexpr static char const * const message = "SocketCouldNotBeListened"; };
     struct SocketCouldNotAcceptConnection { constexpr static char const * const message = "SocketCouldNotAcceptConnection"; };
-    struct IncommingDataCouldNotBeRetrieved { constexpr static char const * const message = "IncommingDataCouldNotBeRetrieved"; };
     struct MessageHasNotBeenDelieveredYet { constexpr static char const * const message = "MessageHasNotBeenDelieveredYet"; };
-    struct OutgoingDataCouldNotBeSent { constexpr static char const * const message = "OutgoingDataCouldNotBeSent"; };
     struct OutgoingDataCouldNotBeSentCompletely { constexpr static char const * const message = "OutgoingDataCouldNotBeSentCompletely"; };
     struct PeerDisconnected { constexpr static char const * const message = "PeerDisconnected"; };
     struct BrokenPipe { constexpr static char const * const message = "BrokenPipe"; };

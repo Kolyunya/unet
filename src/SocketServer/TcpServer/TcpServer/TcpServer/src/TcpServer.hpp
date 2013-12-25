@@ -48,6 +48,10 @@ namespace Unet
             std::string                         getMessageDelimiter ( void ) const;
             void                                setMessageDelimiter ( const std::string& messageDelimiter );
             void                                sendMessage ( const TcpSocket& tcpSocket , const std::string& message );
+            TcpServerEventClientConnected       clientConnectedEvent;
+            TcpServerEventClientDisconnected    clientDisconnectedEvent;
+            TcpServerEventMessageReceived       messageReceivedEvent;
+            TcpServerEventMessageSent           messageSentEvent;
         protected:
             void                                startProcedure ( void ) override;
             void                                stopProcedure ( void ) override;
@@ -67,10 +71,6 @@ namespace Unet
             TcpReceiveMode                      receiveMode;
             unsigned int                        keepAliveTimeout;
             unsigned int                        disconnectTimeout;
-            TcpServerEventClientConnected       clientConnectedEvent;
-            TcpServerEventClientDisconnected    clientDisconnectedEvent;
-            TcpServerEventMessageReceived       messageReceivedEvent;
-            TcpServerEventMessageSent           messageSentEvent;
         private:
                                                 TcpServer ( const TcpServer& tcpServer );
             TcpServer&                          operator= ( const TcpServer& tcpServer );

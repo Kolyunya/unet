@@ -23,8 +23,7 @@
 
 namespace Unet
 {
-    struct IncommingDataCouldNotBeRetrieved { constexpr static char const * const message = "IncommingDataCouldNotBeRetrieved"; };
-    struct OutgoingDataCouldNotBeSent { constexpr static char const * const message = "OutgoingDataCouldNotBeSent"; };
+
 }
 
 #endif  //  _UNET_UDP_SOCKET_EXCEPTIONS_HPP_
