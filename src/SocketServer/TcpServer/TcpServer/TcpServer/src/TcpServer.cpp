@@ -30,7 +30,7 @@ namespace Unet
     bool                TcpServer::getLaunched ( void ) const
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        return this->threadAccept.isActive();
+        return this->threadAccept.get_is_initialized();
     }
 
     int                 TcpServer::getConnectionsLimit ( void ) const

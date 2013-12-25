@@ -26,7 +26,7 @@ namespace Unet
     bool    UdpServer::getLaunched ( void ) const
     {
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
-        return this->recieveThread.isActive();
+        return this->recieveThread.get_is_initialized();
     }
 
     void    UdpServer::sendDatagram ( const Unet::Datagram& datagram )
