@@ -202,8 +202,18 @@ namespace Unet
             tcpSocket.setKeepAliveParameters(tcpServerPtr->disconnectTimeout,1,1);
             tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
-            tcpServerPtr->clientConnectedEvent.dispatch(tcpSocket);
+
+            int tcpSocketDescriptor = tcpSocket.getDescriptor();
+
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
+
+            for ( TcpSocket& sock : tcpServerPtr->clientSockets )
+            {
+                if ( sock.getDescriptor() == tcpSocketDescriptor )
+                {
+                    tcpServerPtr->clientConnectedEvent.dispatch(sock);
+                }
+            }
         }
     }
 
