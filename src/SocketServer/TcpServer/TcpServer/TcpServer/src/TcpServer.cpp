@@ -250,11 +250,6 @@ namespace Unet
 
         if ( serverUniqueLock.try_lock() )
         {
-
-            //std::cout << tcpServerPtr->clientSockets.size() << std::endl;
-
-            try{
-
             tcpServerPtr->clientSockets.erase
             (
                 std::remove_if
@@ -305,8 +300,6 @@ namespace Unet
                 ),
                 tcpServerPtr->clientSockets.end()
             );
-
-            }catch(std::exception& e ){std::cout << e.what() << std::endl;}
 
             serverUniqueLock.unlock();
 
