@@ -265,7 +265,7 @@ namespace Unet
                 catch ( Exception<PeerDisconnected> )
                 {
                     tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
-                    tcpServerPtr->clientSockets.erase(tcpSocketsListItr++);
+                    tcpSocketsListItr = tcpServerPtr->clientSockets.erase(tcpSocketsListItr);
                     continue;
                 }
                 catch ( ... )
@@ -280,7 +280,7 @@ namespace Unet
                     if ( clientSocketError == ETIMEDOUT )
                     {
                         tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
-                        tcpServerPtr->clientSockets.erase(tcpSocketsListItr++);
+                        tcpSocketsListItr = tcpServerPtr->clientSockets.erase(tcpSocketsListItr);
                         continue;
                     }
                 }
