@@ -176,7 +176,7 @@ namespace Unet
     void                TcpServer::removeClient ( TcpSocket& clientSocket )
     {
 
-        TcpSocketsVecItr clientSocketsCitr = this->clientSockets.begin();
+        TcpSocketsListItr clientSocketsCitr = this->clientSockets.begin();
         for ( ; clientSocketsCitr != this->clientSockets.end() ; clientSocketsCitr++ )
         {
             if ( (*clientSocketsCitr).getDescriptor() == clientSocket.getDescriptor() )
@@ -195,6 +195,7 @@ namespace Unet
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
+
             TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
             tcpSocket.setNonBlocking();
             tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout*1000);
@@ -251,56 +252,46 @@ namespace Unet
 
         if ( serverUniqueLock.try_lock() )
         {
-            tcpServerPtr->clientSockets.erase
-            (
-                std::remove_if
-                (
-                    tcpServerPtr->clientSockets.begin(),
-                    tcpServerPtr->clientSockets.end(),
-                    [
-                        tcpServerPtr
-                    ]
-                    (
-                        TcpSocket& clientSocket
-                    )
+
+            TcpSocketsListItr tcpSocketsListItr = tcpServerPtr->clientSockets.begin();
+            while ( tcpSocketsListItr != tcpServerPtr->clientSockets.end() )
+            {
+
+                try
+                {
+                    //  If client disconnected properly "Exception<PeerDisconnected>" will be emited by "peekMessageBySize"
+                    (*tcpSocketsListItr).peekDataBySize();
+                }
+                catch ( Exception<PeerDisconnected> )
+                {
+                    tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
+                    tcpServerPtr->clientSockets.erase(tcpSocketsListItr++);
+                    continue;
+                }
+                catch ( ... )
+                {
+                    //  E.g. Exception<IncommingDataCouldNotBeRetrieved>
+                }
+
+                try
+                {
+                    //  If client disconnected improperly and TCP keepalive fails to get a response
+                    int clientSocketError = (*tcpSocketsListItr).getOptionValue<int>(SO_ERROR);
+                    if ( clientSocketError == ETIMEDOUT )
                     {
-
-                        try
-                        {
-                            //  If client disconnected improperly and TCP keepalive fails to get a response
-                            int clientSocketError = clientSocket.getOptionValue<int>(SO_ERROR);
-                            if ( clientSocketError == ETIMEDOUT )
-                            {
-                                tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                                return true;
-                            }
-                        }
-                        catch ( ... )
-                        {
-
-                        }
-
-                        try
-                        {
-                            //  If client disconnected properly "Exception<PeerDisconnected>" will be emited by "peekMessageBySize"
-                            clientSocket.peekDataBySize();
-                        }
-                        catch ( Exception<PeerDisconnected> )
-                        {
-                            tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocket);
-                            return true;
-                        }
-                        catch ( ... )
-                        {
-                            //  E.g. Exception<IncommingDataCouldNotBeRetrieved>
-                        }
-
-                        return false;
-
+                        tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
+                        tcpServerPtr->clientSockets.erase(tcpSocketsListItr++);
+                        continue;
                     }
-                ),
-                tcpServerPtr->clientSockets.end()
-            );
+                }
+                catch ( ... )
+                {
+
+                }
+
+                tcpSocketsListItr++;
+
+            }
 
             serverUniqueLock.unlock();
 

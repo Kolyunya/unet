@@ -1,7 +1,7 @@
 #ifndef _TCP_SERVER_HPP_
 #define _TCP_SERVER_HPP_
 
-#include <vector>
+#include <list>
 #include <algorithm>
 #include <chrono>
 #include <thread.hpp>
@@ -14,11 +14,11 @@
 namespace Unet
 {
 
-    typedef std::vector<TcpSocket>              TcpSocketsVec;
+    typedef std::list<TcpSocket>                TcpSocketsList;
 
-    typedef TcpSocketsVec::const_iterator       TcpSocketsVecCitr;
+    typedef TcpSocketsList::iterator            TcpSocketsListItr;
 
-    typedef TcpSocketsVec::iterator             TcpSocketsVecItr;
+    typedef TcpSocketsList::const_iterator      TcpSocketsListCitr;
 
     enum TcpReceiveMode
     {
@@ -64,7 +64,7 @@ namespace Unet
             static void                         routineReceive ( TcpServer* tcpServerPtr );
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
-            TcpSocketsVec                       clientSockets;
+            TcpSocketsList                       clientSockets;
             std::raii_thread_manual             threadAccept;
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadKeepAlive;
