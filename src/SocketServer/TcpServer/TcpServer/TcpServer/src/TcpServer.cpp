@@ -204,16 +204,17 @@ namespace Unet
             tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
 
             int tcpSocketDescriptor = tcpSocket.getDescriptor();
-
             tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
 
-            for ( TcpSocket& sock : tcpServerPtr->clientSockets )
+            //  We can not dispatch "tcpSocket" since it was moved
+            for ( TcpSocket& clientSocket : tcpServerPtr->clientSockets )
             {
-                if ( sock.getDescriptor() == tcpSocketDescriptor )
+                if ( clientSocket.getDescriptor() == tcpSocketDescriptor )
                 {
-                    tcpServerPtr->clientConnectedEvent.dispatch(sock);
+                    tcpServerPtr->clientConnectedEvent.dispatch(clientSocket);
                 }
             }
+
         }
     }
 
