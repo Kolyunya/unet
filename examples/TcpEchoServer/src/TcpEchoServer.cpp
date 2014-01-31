@@ -44,7 +44,7 @@ int main ( int argc , char** argv )
     //  Set the receive mode of the server to delimited messages
     tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_DEFAULT);
 
-    //    Start the server
+    //  Start the server
     tcpEchoServer.start();
 
     //  The server runs asynchronously in a separate thread thus this indefinite loop is used
