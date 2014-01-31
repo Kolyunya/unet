@@ -27,7 +27,7 @@ int main ( int argc , char** argv )
     //  Check if server IP address and port command line parameters were provided
     if ( argc != 3 )
     {
-		//	Show how the program is supposed to be launched
+        //  Show how the program is supposed to be launched
         std::cout << "Usage: TcpEchoServer $(SERVER_IP) $(SERVER_PORT)" << std::endl;
         return -1;
     }
@@ -38,21 +38,21 @@ int main ( int argc , char** argv )
     //  Create an instance of TCP echo server
     Unet::TcpEchoServer tcpEchoServer;
 
-	//	Define the address which the server will listen to
+    //  Define the address which the server will listen to
     tcpEchoServer.setAddress(std::move(tcpEchoServerAddressUniPtr));
 
-    //	Set the receive mode of the server to delimited messages
+    //  Set the receive mode of the server to delimited messages
     tcpEchoServer.setReceiveMode(Unet::TCP_RECEIVE_MODE_DEFAULT);
 
-	//	Start the server
+    //    Start the server
     tcpEchoServer.start();
 
-	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
-	//	to prevent the program from finishing it's execution
+    //  The server runs asynchronously in a separate thread thus this indefinite loop is used
+    //  to prevent the program from finishing it's execution
     while ( true )
-	{
+    {
 
-	}
+    }
 
     return 0;
 
