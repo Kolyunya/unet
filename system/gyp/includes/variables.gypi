@@ -8,7 +8,7 @@
                                                                                             'CONDITIONAL_UNIT_STANDARD' :   'gnu++11',
                                                                                         },
                                                                                         {
-                                                                                            'CONDITIONAL_UNIT_STANDARD' :   'gnu++11',
+                                                                                            'CONDITIONAL_UNIT_STANDARD' :   'c++11',
                                                                                         },
                                                                                     ],
                                                                                 ],

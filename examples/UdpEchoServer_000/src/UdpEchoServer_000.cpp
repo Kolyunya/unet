@@ -19,10 +19,10 @@
 #include <Unet/UdpSocket.hpp>
 #include <Unet/Ipv4Address.hpp>
 int main ( int , char** argv ) {
-	Unet::Ipv4Address address(argv[1],argv[2]);
+	Unet::AddressUniPtr addressUniPtr(new Unet::Ipv4Address(argv[1],argv[2]));
 	Unet::UdpSocket udpSocket;
 	udpSocket.open();
-	udpSocket.bind(address);
+	udpSocket.bind(addressUniPtr);
 	while ( true ) {
 		try {
 			Unet::Datagram datagram = udpSocket.recieveDatagram();

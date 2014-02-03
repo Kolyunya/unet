@@ -41,7 +41,7 @@ int main ( int argc , char** argv )
 	std::cout << "Server socket option \"SO_REUSEADDR\" was set to \"1\"." << std::endl;
 
 	//	Bind socket to the specified local address
-	udpSocket.bind(Unet::Ipv4Address(argv[1],argv[2]));
+	udpSocket.bind(Unet::AddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2])));
 	std::cout << "Server socket was bound successfully to " << udpSocket.getLocalAddress()->toString() << std::endl;
 
 	//	Datagram which will be recieved and sent back
@@ -55,11 +55,11 @@ int main ( int argc , char** argv )
 			{
 				//	Recieve incomming datagram
 				datagram = udpSocket.recieveDatagram();
-				std::cout << "[ <-- ] [" << datagram.addressShrPtr->toString() << "] - " << datagram.message << std::endl;
+				std::cout << "[ <-- ] [" << datagram.addressUniPtr->toString() << "] - " << datagram.message << std::endl;
 
 				//	And send it back
 				udpSocket.sendDatagram(datagram);
-				std::cout << "[ --> ] [" << datagram.addressShrPtr->toString() << "] - " << datagram.message << std::endl;
+				std::cout << "[ --> ] [" << datagram.addressUniPtr->toString() << "] - " << datagram.message << std::endl;
 			}
 		}
 		catch ( ... )
