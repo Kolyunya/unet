@@ -64,7 +64,7 @@ namespace Unet
             static void                         routineReceive ( TcpServer* tcpServerPtr );
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
-            TcpSocketsList                       clientSockets;
+            TcpSocketsList                      clientSockets;
             std::raii_thread_manual             threadAccept;
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadKeepAlive;
