@@ -24,7 +24,7 @@ namespace Unet
                 File::File ( int descriptor ) noexcept
     {
         /***
-            @description    Constructor which creates a file object which manages file refered by "descriptor"
+            @description    Constructor which creates a file object which manages file referred by "descriptor"
         ***/
 
         if ( descriptor < -1 )
@@ -305,9 +305,9 @@ namespace Unet
     void        File::deallocate ( void )
     {
 
-        int closeSuccess = ::close(this->descriptor);
+        int deallocateSuccess = ::close(this->descriptor);
 
-        if ( closeSuccess == -1 )
+        if ( deallocateSuccess == -1 )
         {
 
             throw SYSTEM_EXCEPTION(FileDescriptorCouldNotBeClosed);

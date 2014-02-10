@@ -16,8 +16,8 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _FILE_HPP_
-#define _FILE_HPP_
+#ifndef _UNET_FILE_HPP_
+#define _UNET_FILE_HPP_
 
 #include <sys/select.h>                 //  select
                                         //  timeval
@@ -42,7 +42,7 @@ namespace Unet
     {
         public:
             explicit        File ( int descriptor = -1 ) noexcept;
-                            File ( File&& file );
+            explicit        File ( File&& file );
             File&           operator= ( File&& file );
             void            swap ( File& file );
             virtual         ~File ( void ) noexcept = default;
@@ -65,4 +65,4 @@ namespace Unet
     };
 }
 
-#endif  //  _FILE_HPP_
+#endif  //  _UNET_FILE_HPP_
