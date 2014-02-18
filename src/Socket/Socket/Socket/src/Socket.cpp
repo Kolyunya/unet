@@ -312,68 +312,6 @@ namespace Unet
         this->enableOptions(O_NONBLOCK);
     }
 
-    std::string         Socket::read ( int readOptions )
-    {
-
-        size_t dataSize = this->getUnreadDataSize();
-        std::string dataRead(dataSize,0);
-
-        ssize_t dataReadSize = recv (
-                                        this->getDescriptor(),
-                                        &dataRead[0],
-                                        dataSize,
-                                        readOptions
-                                    );
-
-        if ( dataReadSize < 0 )
-        {
-            //throw SYSTEM_EXCEPTION(IncommingDataCouldNotBeRetrieved);
-            throw -1;
-        }
-
-        if ( dataReadSize == 0 )
-        {
-            throw 0;
-        }
-
-        return dataRead;
-
-    }
-
-    std::string         Socket::peek ( int peekOptions )
-    {
-        //  Add "MSG_PEEK" to "peekOptions". Otherwise data will be removed from socket input buffer
-        peekOptions |= MSG_PEEK;
-        return this->read(peekOptions);
-    }
-
-    void                Socket::write ( const std::string& data , int writeOptions )
-    {
-
-        ssize_t dataBytesWritten = ::send   (
-                                                this->getDescriptor(),
-                                                data.data(),
-                                                data.size(),
-                                                writeOptions
-                                            );
-
-        if ( dataBytesWritten < 0 )
-        {
-            //throw SYSTEM_EXCEPTION(OutgoingDataCouldNotBeSent);
-            throw -1;
-        }
-
-        //  "sendMessage" may actually send less bytes than "data" contains. It's also an exceptional situation, thus must be checked for.
-        //  "dataBytesWritten" and "messageSize" are signed and unsigned types respectively. Explicit conversion is required to compare them.
-        //  "dataBytesWritten" is guaranteed to be non-negative at this point, thus it can be correctly cast to "size_t".
-        else if ( static_cast<size_t>(dataBytesWritten) < data.size() )
-        {
-            //throw EXCEPTION(OutgoingDataCouldNotBeSentCompletely);
-            throw -1;
-        }
-
-    }
-
     int                 Socket::allocate ( void )
     {
 

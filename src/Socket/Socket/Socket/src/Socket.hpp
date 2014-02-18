@@ -57,9 +57,6 @@ namespace Unet
             OptionType          getOptionValue ( int optionName , int protocolLevel = SOL_SOCKET ) const;
             void                setBlocking ( void );
             void                setNonBlocking ( void );
-            std::string         read ( int readOptions = 0 );
-            std::string         peek ( int peekOptions = 0 );
-            void                write ( const std::string& data , int writeOptions = 0 );
         protected:
             virtual int         allocate ( void ) override;
             int                 domain;
