@@ -184,6 +184,42 @@ namespace Unet
                                 this->protocol,
                                 acceptedSocketDescriptor
                             );
+
+    }
+
+    TcpSocketUniPtr     TcpSocket::_accept ( void )
+    {
+        //  @description    Extracts the first connection request on the queue of pending connections for the listening socket.
+        //                  Creates a new connected socket, and returns a new file descriptor  referring  to that socket.
+        //                  The newly created socket is not in the listening state.
+        //                  The original socket  sockfd  is  unaffected  by  this call.
+
+        //  Try to accept client socket
+        int acceptedSocketDescriptor = ::accept (
+                                                    this->getDescriptor(),
+                                                    nullptr,
+                                                    nullptr
+                                                );
+
+        //  Check if the socket was accepted successfully
+        if ( acceptedSocketDescriptor < 0 )
+        {
+            throw SYSTEM_EXCEPTION(SocketCouldNotAcceptConnection);
+        }
+
+        //  Construct the socket which will manage accepted descriptor
+        TcpSocketUniPtr tcpSocketUniPtr
+        (
+            new TcpSocket
+            (
+                this->domain,
+                this->protocol,
+                acceptedSocketDescriptor
+            )
+        );
+
+        return tcpSocketUniPtr;
+
     }
 
     void                TcpSocket::checkDisconnect ( void ) const

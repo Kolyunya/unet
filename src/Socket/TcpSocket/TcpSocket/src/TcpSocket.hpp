@@ -31,6 +31,11 @@
 
 namespace Unet
 {
+
+    class TcpSocket;
+
+    using TcpSocketUniPtr = std::unique_ptr<TcpSocket>;
+
     class TcpSocket
         :
             public Socket
@@ -55,6 +60,7 @@ namespace Unet
             void                setUserTimeout ( int userTimeout );
             void                listen ( void );
             TcpSocket           accept ( void );
+            TcpSocketUniPtr     _accept ( void );
             void                checkDisconnect ( void ) const;
             std::string         receiveDataBySize ( size_t dataSize = 0 , int receiveOptions = 0 );
             std::string         receiveMessageBySize ( int receiveOptions = 0 );
