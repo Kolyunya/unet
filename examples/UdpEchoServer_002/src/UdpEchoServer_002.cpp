@@ -37,18 +37,18 @@ int main ( int argc , char** argv )
     //  Create an instance of UDP echo server
     Unet::UdpEchoServer udpEchoServer;
 
-	//	Set server address which it will listen to
+    //  Set server address which it will listen to
     udpEchoServer.setAddress(std::move(udpEchoServerAddressUniPtr));
 
-	//	Launch the server
+    //  Launch the server
     udpEchoServer.start();
 
-	//	The server runs asynchronously in a separate thread thus this indefinite loop is used
-	//	to prevent the program from finishing it's execution
+    //  The server runs asynchronously in a separate thread thus this indefinite loop is used
+    //  to prevent the program from finishing it's execution
     while ( true )
-	{
+    {
 
-	}
+    }
 
     return 0;
 
