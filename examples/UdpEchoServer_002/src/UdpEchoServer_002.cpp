@@ -26,12 +26,12 @@ int main ( int argc , char** argv )
     //  Check if server IP address and port command line parameters were provided
     if ( argc != 3 )
     {
-		//	Show how the program is supposed to be launched
+        //  Show how the program is supposed to be launched
         std::cout << "Usage: UdpEchoServer_002 $(SERVER_IP) $(SERVER_PORT)" << std::endl;
         return -1;
     }
 
-	//	Create an instance of IPv4 address on the heap wrapped by a smart pointer
+    //  Create an instance of IPv4 address on the heap wrapped by a smart pointer
     Unet::AddressUniPtr udpEchoServerAddressUniPtr(new Unet::Ipv4Address(argv[1],argv[2]));
 
     //  Create an instance of UDP echo server
