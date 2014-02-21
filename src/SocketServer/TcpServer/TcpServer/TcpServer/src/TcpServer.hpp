@@ -20,6 +20,12 @@ namespace Unet
 
     typedef TcpSocketsList::const_iterator      TcpSocketsListCitr;
 
+    typedef std::list<TcpSocketUniPtr>          TcpSocketCollection;
+
+    typedef TcpSocketCollection::iterator       TcpSocketCollectionItr;
+
+    typedef TcpSocketCollection::const_iterator TcpSocketCollectionCitr;
+
     enum TcpReceiveMode
     {
         TCP_RECEIVE_MODE_DEFAULT,
@@ -65,6 +71,7 @@ namespace Unet
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
             TcpSocketsList                      clientSockets;
+            TcpSocketCollection                 clientSocketsCollection;
             std::raii_thread_manual             threadAccept;
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadKeepAlive;

@@ -20,6 +20,7 @@
 
 namespace Unet
 {
+
                     Datagram::Datagram ( const Datagram& datagram )
     {
         this->deepCopy(datagram);
@@ -92,4 +93,5 @@ namespace Unet
         // No need to preliminary reset the shared pointer.
         this->addressUniPtr = datagram.addressUniPtr->getCopyByUniPtr();
     }
+
 }
