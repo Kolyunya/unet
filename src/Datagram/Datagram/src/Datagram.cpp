@@ -48,7 +48,7 @@ namespace Unet
     void            Datagram::swap ( Datagram& datagram )
     {
         this->message.swap(datagram.message);
-        std::swap(this->addressUniPtr,datagram.addressUniPtr);
+        this->addressUniPtr.swap(datagram.addressUniPtr);
     }
 
     bool            Datagram::operator== ( const Datagram& datagram ) const
