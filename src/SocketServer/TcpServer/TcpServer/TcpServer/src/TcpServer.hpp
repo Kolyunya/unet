@@ -14,17 +14,11 @@
 namespace Unet
 {
 
-    typedef std::list<TcpSocket>                TcpSocketsList;
+    using TcpSocketShrPtrList = std::list<TcpSocketShrPtr>;
 
-    typedef TcpSocketsList::iterator            TcpSocketsListItr;
+    using TcpSocketShrPtrListItr = TcpSocketShrPtrList::iterator;
 
-    typedef TcpSocketsList::const_iterator      TcpSocketsListCitr;
-
-    typedef std::list<TcpSocketUniPtr>          TcpSocketCollection;
-
-    typedef TcpSocketCollection::iterator       TcpSocketCollectionItr;
-
-    typedef TcpSocketCollection::const_iterator TcpSocketCollectionCitr;
+    using TcpSocketShrPtrListCitr = TcpSocketShrPtrList::const_iterator;
 
     enum TcpReceiveMode
     {
@@ -53,7 +47,7 @@ namespace Unet
             void                                setMessageSize ( size_t messageSize );
             std::string                         getMessageDelimiter ( void ) const;
             void                                setMessageDelimiter ( const std::string& messageDelimiter );
-            void                                sendMessage ( TcpSocket& tcpSocket , const std::string& message );
+            void                                sendMessage ( TcpSocketShrPtr tcpSocketShrPtr , const std::string& message );
             TcpServerEventClientConnected       clientConnectedEvent;
             TcpServerEventClientDisconnected    clientDisconnectedEvent;
             TcpServerEventMessageReceived       messageReceivedEvent;
@@ -65,13 +59,12 @@ namespace Unet
             void                                launchRoutines ( void );
             void                                stopRoutines ( void );
             void                                stopSocket ( void );
-            void                                removeClient ( TcpSocket& clientSocket );
+            void                                removeClient ( TcpSocketShrPtr clientSocketShrPtr );
             static void                         routineAccept ( TcpServer* tcpServerPtr );
             static void                         routineReceive ( TcpServer* tcpServerPtr );
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
-            TcpSocketsList                      clientSockets;
-            TcpSocketCollection                 clientSocketsCollection;
+            TcpSocketShrPtrList                 clientSockets;
             std::raii_thread_manual             threadAccept;
             std::raii_thread_manual             threadReceive;
             std::raii_thread_manual             threadKeepAlive;

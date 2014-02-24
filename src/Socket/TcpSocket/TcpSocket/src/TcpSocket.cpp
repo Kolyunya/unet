@@ -187,7 +187,7 @@ namespace Unet
 
     }
 
-    TcpSocketUniPtr     TcpSocket::_accept ( void )
+    TcpSocketShrPtr     TcpSocket::_accept ( void )
     {
         //  @description    Extracts the first connection request on the queue of pending connections for the listening socket.
         //                  Creates a new connected socket, and returns a new file descriptor  referring  to that socket.
@@ -208,7 +208,7 @@ namespace Unet
         }
 
         //  Construct the socket which will manage accepted descriptor
-        TcpSocketUniPtr tcpSocketUniPtr
+        TcpSocketShrPtr tcpSocketShrPtr
         (
             new TcpSocket
             (
@@ -218,7 +218,7 @@ namespace Unet
             )
         );
 
-        return tcpSocketUniPtr;
+        return tcpSocketShrPtr;
 
     }
 

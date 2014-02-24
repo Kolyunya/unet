@@ -26,7 +26,7 @@
 
 namespace Unet
 {
-    class Datagram4
+    class Datagram
     {
         public:
                                 Datagram ( void ) = default;

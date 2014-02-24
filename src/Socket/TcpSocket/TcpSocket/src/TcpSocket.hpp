@@ -16,8 +16,8 @@
 //
 //  Author email: OleynikovNY@mail.ru
 
-#ifndef _UNET_TCP_SOCKET_HPP_
-#define _UNET_TCP_SOCKET_HPP_
+#ifndef _UNET_TCP_SOCKET_INCLUDED_
+#define _UNET_TCP_SOCKET_INCLUDED_
 
 #define TCP_USER_TIMEOUT 18
 
@@ -35,6 +35,8 @@ namespace Unet
     class TcpSocket;
 
     using TcpSocketUniPtr = std::unique_ptr<TcpSocket>;
+
+    using TcpSocketShrPtr = std::shared_ptr<TcpSocket>;
 
     class TcpSocket
         :
@@ -60,7 +62,7 @@ namespace Unet
             void                setUserTimeout ( int userTimeout );
             void                listen ( void );
             TcpSocket           accept ( void );
-            TcpSocketUniPtr     _accept ( void );
+            TcpSocketShrPtr     _accept ( void );
             void                checkDisconnect ( void ) const;
             std::string         receiveDataBySize ( size_t dataSize = 0 , int receiveOptions = 0 );
             std::string         receiveMessageBySize ( int receiveOptions = 0 );
@@ -77,4 +79,4 @@ namespace Unet
     };
 }
 
-#endif  //  _UNET_TCP_SOCKET_HPP_
+#endif  //  _UNET_TCP_SOCKET_INCLUDED_
