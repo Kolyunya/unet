@@ -1,0 +1,9 @@
+/*
+/*/
+!/.gitignore
+!/build/
+/build/*
+/build/*/
+!/build/*.gyp
+!/tests
+!/src
