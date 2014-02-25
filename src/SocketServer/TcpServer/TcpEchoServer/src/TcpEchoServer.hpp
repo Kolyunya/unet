@@ -1,5 +1,5 @@
-#ifndef _UNET_TCP_ECHO_SERVER_HPP_
-#define _UNET_TCP_ECHO_SERVER_HPP_
+#ifndef _UNET_TCP_ECHO_SERVER_INCLUDED_
+#define _UNET_TCP_ECHO_SERVER_INCLUDED_
 
 #include <log.hpp>
 #include <Unet/TcpServer.hpp>
@@ -14,17 +14,17 @@ namespace Unet
         public:
             explicit            TcpEchoServer ( void );
             virtual             ~TcpEchoServer ( void ) noexcept override = default;
-        protected:
-            void                startedHandler ( void );
-            void                stoppedHandler ( void );
-            void                clientConnectedEventHandler ( TcpSocket& tcpSocket );
-            void                clientDisconnectedEventHandler ( TcpSocket& tcpSocket );
-            void                messageReceievedEventHandler ( TcpSocket& tcpSocket , const std::string& message );
-            void                messageSentEventHandler ( TcpSocket& tcpSocket , const std::string& message );
         private:
-                                TcpEchoServer ( const TcpEchoServer& TcpEchoServer );
-            TcpEchoServer&      operator= ( const TcpEchoServer& TcpEchoServer );
+                                TcpEchoServer ( const TcpEchoServer& TcpEchoServer ) = delete;
+            TcpEchoServer&      operator= ( const TcpEchoServer& TcpEchoServer ) = delete;
+            void                registerEventListeneter ( void );
+            void                serverStartedHandler ( void );
+            void                serverStoppedHandler ( void );
+            void                clientConnectedEventHandler ( TcpSocketShrPtr& tcpSocketShrPtr );
+            void                clientDisconnectedEventHandler ( TcpSocketShrPtr& tcpSocketShrPtr );
+            void                messageReceievedEventHandler ( TcpSocketShrPtr& tcpSocketShrPtr , const std::string& message );
+            void                messageSentEventHandler ( TcpSocketShrPtr& tcpSocketShrPtr , const std::string& message );
     };
 }
 
-#endif // _UNET_TCP_ECHO_SERVER_HPP_
+#endif  //  _UNET_TCP_ECHO_SERVER_INCLUDED_

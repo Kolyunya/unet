@@ -99,7 +99,7 @@ namespace Unet
         this->serverSocket.setMessageDelimiter(messageDelimiter);
     }
 
-    void                TcpServer::sendMessage ( TcpSocket& tcpSocket , const std::string& message )
+    void                TcpServer::sendMessage ( TcpSocketShrPtr tcpSocketShrPtr , const std::string& message )
     {
 
         std::lock_guard<std::recursive_mutex> lockGuard(this->serverMutex);
@@ -110,22 +110,22 @@ namespace Unet
 
             if ( this->receiveMode == TCP_RECEIVE_MODE_BY_DELIMITER )
             {
-                tcpSocket.sendMessageWithDelimiter(message,MSG_NOSIGNAL);
+                tcpSocketShrPtr->sendMessageWithDelimiter(message,MSG_NOSIGNAL);
             }
 
             else
             {
-                tcpSocket.sendMessage(message,MSG_NOSIGNAL);
+                tcpSocketShrPtr->sendMessage(message,MSG_NOSIGNAL);
             }
 
         }
 
         catch ( Exception<BrokenPipe> )
         {
-            this->removeClient(tcpSocket);
+            this->removeClient(tcpSocketShrPtr);
         }
 
-        this->messageSentEvent.dispatch(tcpSocket,message);
+        this->messageSentEvent.dispatch(tcpSocketShrPtr,message);
 
     }
 
@@ -173,18 +173,27 @@ namespace Unet
         this->serverSocket.close();
     }
 
-    void                TcpServer::removeClient ( TcpSocket& clientSocket )
+    void                TcpServer::removeClient ( TcpSocketShrPtr clientSocketShrPtr )
     {
 
-        TcpSocketsListItr clientSocketsCitr = this->clientSockets.begin();
-        for ( ; clientSocketsCitr != this->clientSockets.end() ; clientSocketsCitr++ )
+        TcpSocketShrPtrListItr clientSocketsBegin = this->clientSockets.begin();
+        TcpSocketShrPtrListItr clientSocketsEnd = this->clientSockets.end();
+        TcpSocketShrPtrListItr clientSocketItr = clientSocketsBegin;
+        TcpSocket* clientSocketPtr = clientSocketShrPtr.get();
+        TcpSocket& clientSocket = *clientSocketPtr;
+
+        while ( clientSocketItr != clientSocketsEnd )
         {
-            if ( (*clientSocketsCitr).getDescriptor() == clientSocket.getDescriptor() )
+            TcpSocketShrPtr currentClientSocketShrPtr = *clientSocketItr;
+            TcpSocket* currentClientSocketPtr = clientSocketItr->get();
+            TcpSocket& currentClientSocket = *currentClientSocketPtr;
+            if ( currentClientSocket == clientSocket )
             {
-                this->clientSockets.erase(clientSocketsCitr);
-                this->clientDisconnectedEvent.dispatch(clientSocket);
+                this->clientSockets.erase(clientSocketItr);
+                this->clientDisconnectedEvent.dispatch(currentClientSocketShrPtr);
                 return;
             }
+            clientSocketItr++;
         }
 
     }
@@ -195,48 +204,39 @@ namespace Unet
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
+            TcpSocketShrPtr clientSocketShrPtr = tcpServerPtr->serverSocket._accept();
 
-            TcpSocket tcpSocket = tcpServerPtr->serverSocket.accept();
-            tcpSocket.setNonBlocking();
-            tcpSocket.setUserTimeout(tcpServerPtr->disconnectTimeout*1000);
-            tcpSocket.setKeepAliveEnabled(true);
-            tcpSocket.setKeepAliveParameters(tcpServerPtr->disconnectTimeout,1,1);
-            tcpSocket.setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
-            tcpSocket.setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
+            clientSocketShrPtr->setNonBlocking();
+            clientSocketShrPtr->setUserTimeout(tcpServerPtr->disconnectTimeout*1000);
+            clientSocketShrPtr->setKeepAliveEnabled(true);
+            clientSocketShrPtr->setKeepAliveParameters(tcpServerPtr->disconnectTimeout,1,1);
+            clientSocketShrPtr->setMessageSize(tcpServerPtr->serverSocket.getMessageSize());
+            clientSocketShrPtr->setMessageDelimiter(tcpServerPtr->serverSocket.getMessageDelimiter());
 
-            int tcpSocketDescriptor = tcpSocket.getDescriptor();
-            tcpServerPtr->clientSockets.push_back(std::move(tcpSocket));
-
-            //  We can not dispatch "tcpSocket" since it was moved
-            for ( TcpSocket& clientSocket : tcpServerPtr->clientSockets )
-            {
-                if ( clientSocket.getDescriptor() == tcpSocketDescriptor )
-                {
-                    tcpServerPtr->clientConnectedEvent.dispatch(clientSocket);
-                }
-            }
+            tcpServerPtr->clientSockets.push_back(clientSocketShrPtr);
+            tcpServerPtr->clientConnectedEvent.dispatch(clientSocketShrPtr);
 
         }
     }
 
     void                TcpServer::routineReceive ( TcpServer* tcpServerPtr )
     {
+
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
         if ( serverUniqueLock.try_lock() )
         {
-            for ( TcpSocket& clientSocket : tcpServerPtr->clientSockets )
+            for ( TcpSocketShrPtr& clientSocketShrPtr : tcpServerPtr->clientSockets )
             {
                 try
                 {
-                    //  Receive message
                     std::string receivedMessage;
                     switch ( tcpServerPtr->receiveMode )
                     {
-                        case TCP_RECEIVE_MODE_DEFAULT: receivedMessage = clientSocket.receiveDataBySize(); break;
-                        case TCP_RECEIVE_MODE_BY_SIZE: receivedMessage = clientSocket.receiveMessageBySize(); break;
-                        case TCP_RECEIVE_MODE_BY_DELIMITER: receivedMessage = clientSocket.receiveMessageByDelimiter(); break;
+                        case TCP_RECEIVE_MODE_DEFAULT: receivedMessage = clientSocketShrPtr->receiveDataBySize(); break;
+                        case TCP_RECEIVE_MODE_BY_SIZE: receivedMessage = clientSocketShrPtr->receiveMessageBySize(); break;
+                        case TCP_RECEIVE_MODE_BY_DELIMITER: receivedMessage = clientSocketShrPtr->receiveMessageByDelimiter(); break;
                     };
-                    tcpServerPtr->messageReceivedEvent.dispatch(clientSocket,receivedMessage);
+                    tcpServerPtr->messageReceivedEvent.dispatch(clientSocketShrPtr,receivedMessage);
                 }
                 catch ( ... )
                 {
@@ -244,28 +244,37 @@ namespace Unet
                 }
             }
         }
+
     }
 
     void                TcpServer::routineKeepAlive ( TcpServer* tcpServerPtr )
     {
+
         std::unique_lock<std::recursive_mutex> serverUniqueLock(tcpServerPtr->serverMutex,std::defer_lock);
 
         if ( serverUniqueLock.try_lock() )
         {
 
-            TcpSocketsListItr tcpSocketsListItr = tcpServerPtr->clientSockets.begin();
-            while ( tcpSocketsListItr != tcpServerPtr->clientSockets.end() )
+
+            TcpSocketShrPtrListItr clientSocketsBegin = tcpServerPtr->clientSockets.begin();
+            TcpSocketShrPtrListItr clientSocketsEnd = tcpServerPtr->clientSockets.end();
+            TcpSocketShrPtrListItr clientSocketItr = clientSocketsBegin;
+
+            while ( clientSocketItr != clientSocketsEnd )
             {
+
+                TcpSocketShrPtr clientSocketShrPtr = *clientSocketItr;
+                TcpSocket* clientSocketPtr = clientSocketItr->get();
 
                 try
                 {
                     //  If client disconnected properly "Exception<PeerDisconnected>" will be emited by "peekMessageBySize"
-                    (*tcpSocketsListItr).peekDataBySize();
+                    clientSocketPtr->peekDataBySize();
                 }
                 catch ( Exception<PeerDisconnected> )
                 {
-                    tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
-                    tcpSocketsListItr = tcpServerPtr->clientSockets.erase(tcpSocketsListItr);
+                    tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocketShrPtr);
+                    clientSocketItr = tcpServerPtr->clientSockets.erase(clientSocketItr);
                     continue;
                 }
                 catch ( ... )
@@ -276,11 +285,11 @@ namespace Unet
                 try
                 {
                     //  If client disconnected improperly and TCP keepalive fails to get a response
-                    int clientSocketError = (*tcpSocketsListItr).getOptionValue<int>(SO_ERROR);
+                    int clientSocketError = clientSocketPtr->getOptionValue<int>(SO_ERROR);
                     if ( clientSocketError == ETIMEDOUT )
                     {
-                        tcpServerPtr->clientDisconnectedEvent.dispatch(*tcpSocketsListItr);
-                        tcpSocketsListItr = tcpServerPtr->clientSockets.erase(tcpSocketsListItr);
+                        tcpServerPtr->clientDisconnectedEvent.dispatch(clientSocketShrPtr);
+                        clientSocketItr = tcpServerPtr->clientSockets.erase(clientSocketItr);
                         continue;
                     }
                 }
@@ -289,7 +298,7 @@ namespace Unet
 
                 }
 
-                tcpSocketsListItr++;
+                clientSocketItr++;
 
             }
 
