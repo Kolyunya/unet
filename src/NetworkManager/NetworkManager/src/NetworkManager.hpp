@@ -36,6 +36,7 @@ namespace Unet
             void                    clientDisconnectHandler ( Unet::TcpSocket& clientSocket );
             void                    clientTcpRequestHandler ( Unet::TcpSocket& clientSocket , const std::string& clientRequest );
             void                    clientUdpRequestHandler ( const Unet::Datagram& clientRequest );
+            NetworkActivityEvent    networkActivity;
             Unet::TcpServer         tcpServer;
             Unet::UdpServer         udpServer;
     };
