@@ -33,17 +33,19 @@ namespace Unet
     class Protocol
     {
         public:
-            explicit            Protocol ( ProtocolType type );
-            virtual             ~Protocol ( void ) = default;
-            bool                operator== ( const Protocol& protocol ) const;
-            bool                operator!= ( const Protocol& protocol ) const;
-            ProtocolType        getType ( void ) const;
-            void                setType ( ProtocolType type );
+            explicit                    Protocol ( ProtocolType type );
+            virtual                     ~Protocol ( void ) = default;
+            bool                        operator== ( const Protocol& protocol ) const;
+            bool                        operator!= ( const Protocol& protocol ) const;
+            ProtocolType                getType ( void ) const;
+            void                        setType ( ProtocolType type );
+            static const Protocol       TCP;
+            static const Protocol       UDP;
         private:
-            static bool         getTypeIsValid ( ProtocolType type );
-            static bool         getTypeIsNotValid ( ProtocolType type );
-            static void         validateType ( ProtocolType type );
-            ProtocolType        type;
+            static bool                 getTypeIsValid ( ProtocolType type );
+            static bool                 getTypeIsNotValid ( ProtocolType type );
+            static void                 validateType ( ProtocolType type );
+            ProtocolType                type;
     };
 
 }
