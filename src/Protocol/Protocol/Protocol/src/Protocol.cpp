@@ -53,6 +53,20 @@ namespace Unet
         this->type = type;
     }
 
+    Protocol       Protocol::tcp ( void )
+    {
+        ProtocolType type = ProtocolTypeTcp;
+        Protocol protocol = Protocol(type);
+        return protocol;
+    }
+
+    Protocol       Protocol::udp ( void )
+    {
+        ProtocolType type = ProtocolTypeUdp;
+        Protocol protocol = Protocol(type);
+        return protocol;
+    }
+
     bool            Protocol::getTypeIsValid ( ProtocolType type )
     {
         bool typeIsValid = type < ProtocolTypeLimit;
@@ -71,7 +85,7 @@ namespace Unet
         bool typeIsNotValid = Protocol::getTypeIsNotValid(type);
         if ( typeIsNotValid )
         {
-            throw -1;
+            EXCEPTION(UnknownProtocolType);
         }
     }
 
