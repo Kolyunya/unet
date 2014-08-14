@@ -26,7 +26,7 @@ namespace Unet
                                 Socket(domain,SOCK_STREAM,protocol,descriptor),
                                 connectionsLimit(128),
                                 messageSize(8),
-                                messageDelimiter("\r\n")
+                                messageDelimiter("$")
     {
 
     }
