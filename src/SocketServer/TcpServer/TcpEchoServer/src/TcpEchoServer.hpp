@@ -1,7 +1,7 @@
 #ifndef _UNET_TCP_ECHO_SERVER_INCLUDED_
 #define _UNET_TCP_ECHO_SERVER_INCLUDED_
 
-#include <log.hpp>
+#include <xtd/log.hpp>
 #include <Unet/TcpServer.hpp>
 
 namespace Unet
@@ -9,7 +9,7 @@ namespace Unet
     class TcpEchoServer
         :
             public TcpServer,
-            public std::console_logger
+            public xtd::log::console_logger
     {
         public:
             explicit            TcpEchoServer ( void );

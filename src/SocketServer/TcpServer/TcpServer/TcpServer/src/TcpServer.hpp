@@ -4,8 +4,8 @@
 #include <list>
 #include <algorithm>
 #include <chrono>
-#include <thread.hpp>
-#include <event.hpp>
+#include <xtd/thread.hpp>
+#include <xtd/pubsub.hpp>
 #include <Unet/SocketServer.hpp>
 #include <Unet/TcpSocket.hpp>
 #include <Unet/Datagram.hpp>
@@ -65,9 +65,9 @@ namespace Unet
             static void                         routineKeepAlive ( TcpServer* tcpServerPtr );
             TcpSocket                           serverSocket;
             TcpSocketShrPtrList                 clientSockets;
-            std::raii_thread_manual             threadAccept;
-            std::raii_thread_manual             threadReceive;
-            std::raii_thread_manual             threadKeepAlive;
+            xtd::thread::raii_thread_manual     threadAccept;
+            xtd::thread::raii_thread_manual     threadReceive;
+            xtd::thread::raii_thread_manual     threadKeepAlive;
             TcpReceiveMode                      receiveMode;
             unsigned int                        keepAliveTimeout;
             unsigned int                        disconnectTimeout;

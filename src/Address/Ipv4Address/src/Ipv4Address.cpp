@@ -104,7 +104,7 @@ namespace Unet
     sockaddr_in         Ipv4Address::stringToIpv4Address ( const std::string& ipv4 , const std::string& port )
     {
 
-        return stringToIpv4Address(ipv4,std::string_to_int(port));
+        return stringToIpv4Address(ipv4,xtd::string::to_int(port));
 
     }
 
@@ -147,7 +147,7 @@ namespace Unet
     {
 
         std::string ipv4AddressIp = Ipv4Address::ipv4AddressToString(ipv4Address.sin_addr);
-        std::string ipv4AddressPort = std::number_to_string(ntohs(ipv4Address.sin_port));
+        std::string ipv4AddressPort = xtd::string::from(ntohs(ipv4Address.sin_port));
 
         return ipv4AddressIp + ":" + ipv4AddressPort;
 

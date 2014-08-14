@@ -1,7 +1,7 @@
 #ifndef _UNET_TCP_SERVER_EVENTS_HPP_
 #define _UNET_TCP_SERVER_EVENTS_HPP_
 
-#include <event.hpp>
+#include <xtd/pubsub.hpp>
 
 namespace Unet
 {
@@ -10,28 +10,28 @@ namespace Unet
 
     class TcpServerEventClientConnected
         :
-            public std::event<TcpSocketShrPtr&>
+            public xtd::pubsub::event<TcpSocketShrPtr&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventClientDisconnected
         :
-            public std::event<TcpSocketShrPtr&>
+            public xtd::pubsub::event<TcpSocketShrPtr&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventMessageReceived
         :
-            public std::event<TcpSocketShrPtr&,const std::string&>
+            public xtd::pubsub::event<TcpSocketShrPtr&,const std::string&>
     {
         friend class TcpServer;
     };
 
     class TcpServerEventMessageSent
         :
-            public std::event<TcpSocketShrPtr&,const std::string&>
+            public xtd::pubsub::event<TcpSocketShrPtr&,const std::string&>
     {
         friend class TcpServer;
     };

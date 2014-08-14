@@ -1,7 +1,7 @@
 #ifndef _UNET_SOCKET_SERVER_EVENTS_HPP_
 #define _UNET_SOCKET_SERVER_EVENTS_HPP_
 
-#include <event.hpp>
+#include <xtd/pubsub.hpp>
 
 namespace Unet
 {
@@ -10,14 +10,14 @@ namespace Unet
 
     class SocketServerEventStarted
         :
-            public std::event<>
+            public xtd::pubsub::event<>
     {
         friend class UdpServer;
     };
 
     class SocketServerEventStopped
         :
-            public std::event<>
+            public xtd::pubsub::event<>
     {
         friend class UdpServer;
     };

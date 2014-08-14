@@ -106,7 +106,7 @@ namespace Unet
     sockaddr_in6        Ipv6Address::stringToIpv6Address ( const std::string& ipv6 , const std::string& port )
     {
 
-        return stringToIpv6Address(ipv6,std::string_to_int(port));
+        return stringToIpv6Address(ipv6,xtd::string::to_int(port));
 
     }
 
@@ -152,7 +152,7 @@ namespace Unet
     {
 
         std::string ipv6AddressIp = Ipv6Address::ipv6AddressToString(ipv6Address.sin6_addr);
-        std::string ipv6AddressPort = std::number_to_string(ntohs(ipv6Address.sin6_port));
+        std::string ipv6AddressPort = xtd::string::from(ntohs(ipv6Address.sin6_port));
         return    ipv6AddressIp + ":" + ipv6AddressPort;
 
     }

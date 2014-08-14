@@ -21,8 +21,6 @@
 
 #include <netinet/in.h>                 //  sockaddr_in
 #include <arpa/inet.h>                  //  inet_pton
-#include <string.hpp>                   //  std::string_to_int
-                                        //  std::number_to_string
 #include <Unet/Address.hpp>             //  Unet::Address
 
 namespace Unet

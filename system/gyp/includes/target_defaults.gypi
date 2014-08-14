@@ -1,7 +1,7 @@
 {
     'target_defaults'   :   {
                                 'include_dirs'      :   [
-                                                            '$(STD_HOME)/include',
+                                                            '$(XTD_HOME)/include',
                                                             '$(UNET_HOME)/include',
                                                         ],
                                 'sources'           :   [

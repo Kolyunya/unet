@@ -47,7 +47,7 @@ namespace Unet
         {
             this->message += "\n";
             this->message += "System error #";
-            this->message += std::number_to_string(errno);
+            this->message += xtd::string::from(errno);
             this->message += " - ";
             this->message += strerror(errno);
         }
